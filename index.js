@@ -44,6 +44,4 @@ if (process.env.NODE_ENV == "production") {
     });
 }
 
-app.listen(port, hostname, () => {
-    console.log(`Server running at http://${hostname}:${port}/`);
-});
+app.listen(process.env.PORT || 8080, () => console.log(`I'm listening on 8080.`));

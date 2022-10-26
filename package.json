@@ -1,0 +1,24 @@
+{
+    "name": "connect-four-or-more",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "start": "node index.js & npm --prefix ./connect-4-vue/ run build",
+        "run": "node index.js & npm --prefix ./connect-4-vue/ run build"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/IrinaStelea/connect-four-or-more.git"
+    },
+    "author": "Robert Morávek",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/IrinaStelea/connect-four-or-more/issues"
+    },
+    "homepage": "https://github.com/IrinaStelea/connect-four-or-more#readme",
+    "dependencies": {
+        "express": "^4.18.2"
+    }
+}

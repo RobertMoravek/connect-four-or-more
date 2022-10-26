@@ -24,6 +24,15 @@ const generateRandomString = (myLength) => {
 };
 
 
+if (process.env.NODE_ENV == "production") {
+    app.use((req, res, next) => {
+        if (typeof req.headers["x-forwarded-proto"] == "string" && req.headers["x-forwarded-proto"].startsWith("https")) {
+            return next();
+        }
+        res.redirect(`https://${req.hostname}${req.url}`);
+    });
+}
+
 
 app.use(express.static(path.resolve(__dirname, "../build")));
 

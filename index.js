@@ -36,8 +36,9 @@ if (process.env.NODE_ENV == "production") {
 }
 
 app.get("*", (req, res) => {
-        res.sendFile("index.html");
+    res.sendFile(path.join(__dirname, "index.html"));
 });
+
 
 app.listen(port, hostname, () => {
     console.log(`Server running at http://${hostname}:${port}/`);

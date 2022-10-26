@@ -1,26 +1,36 @@
-import express, { Request, Response } from "express";
+import express from "express";
 const app = express();
 const path = require("path");
+const server = require("http").Server(app);
+const io = require("socket.io")(server, {
+    allowRequest: (req, callback) => {
+        callback(null, req.headers.referer.startsWith("http://localhost:3000"));
+    },
+});
 
-if (process.env.NODE_ENV == "production") {
-    app.use(express.static(path.resolve(__dirname, "../build")));
-} else {
-    app.use(express.static(path.join(__dirname, "../build")));
-}
+const port: number = 8080;
 
-if (process.env.NODE_ENV == "production") {
-    app.get("/*", (req, res) => {
-        res.sendFile(path.resolve(__dirname, "/index.html"));
-    });
-} else {
-    app.get("/*", (req, res) => {
-        res.sendFile(path.resolve(__dirname, "index.html"));
-    });
-}
+// Create a function for reusable perpose
+const generateRandomString = (myLength) => {
+    const chars =
+        "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
+    const randomArray = Array.from(
+        { length: myLength },
+        (v, k) => chars[Math.floor(Math.random() * chars.length)]
+    );
+
+    const randomString = randomArray.join("");
+    return randomString;
+};
 
 
-const port = 8080;
 
-app.listen(port, (): void => {
-    console.log(`App is listening at http://localhost:${port}`);
+app.use(express.static(path.resolve(__dirname, "../build")));
+
+app.get("/*", (req, res) => {
+    res.sendFile(path.resolve(__dirname, "/index.html"));
+});
+
+server.listen(process.env.PORT || port, function () {
+    console.log("I'm listening.");
 });

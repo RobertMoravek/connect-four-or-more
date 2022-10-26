@@ -35,6 +35,18 @@ if (process.env.NODE_ENV == "production") {
     });
 }
 
+app.get("*", (req, res) => {
+
+    if (process.env.NODE_ENV == "production") {
+        res.sendFile(path.resolve(__dirname, "index.html"));
+
+    } else {
+        res.sendFile(path.join(__dirname, "index.html"));
+
+    }
+
+});
+
 app.listen(port, hostname, () => {
     console.log(`Server running at http://${hostname}:${port}/`);
 });

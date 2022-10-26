@@ -33,11 +33,16 @@ if (process.env.NODE_ENV == "production") {
     });
 }
 
-app.use(express.static(path.join(__dirname, "dist")));
-app.get("*", (req, res) => {
-    res.sendFile(path.resolve(__dirname, "index.html"));
-});
-
+app.use(express.static(path.resolve(__dirname, "./dist")));
+if (process.env.NODE_ENV == "production") {
+    app.get("/*", (req, res) => {
+        res.sendFile(path.resolve("dist", "index.html"));
+    });
+} else {
+    app.get("/*", (req, res) => {
+        res.sendFile(path.resolve("dist", "index.html"));
+    });
+}
 
 app.listen(port, hostname, () => {
     console.log(`Server running at http://${hostname}:${port}/`);

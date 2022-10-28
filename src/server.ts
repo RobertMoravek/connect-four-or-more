@@ -4,7 +4,7 @@ const path = require("path");
 const server = require("http").Server(app);
 const io = require("socket.io")(server, {
     allowRequest: (req, callback) => {
-        callback(null, req.headers.referer.startsWith("http://localhost:3000"));
+        callback(null, req.headers.referer.startsWith("http://localhost:8080"));
     },
 });
 
@@ -40,6 +40,15 @@ app.get("/*", (req, res) => {
     res.sendFile(path.resolve(__dirname, "/index.html"));
 });
 
+io.on('connection', (socket) => {
+    console.log('a user connected: socket-id:', socket.id);
+    socket.on('disconnect', () => {
+      console.log('user disconnected: socket-id:', socket.id);
+    });
+  });
+
 server.listen(process.env.PORT || port, function () {
     console.log("I'm listening.");
 });
+
+

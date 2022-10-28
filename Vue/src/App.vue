@@ -1,91 +1,54 @@
 <script setup lang="ts">
-import { RouterLink, RouterView } from "vue-router";
-import HelloWorld from "./components/HelloWorld.vue";
+import { ref } from "vue";
+// import { RouterLink, RouterView } from "vue-router";
+import StartMenu from "./components/StartMenu.vue";
+import ConfigMenu from "./components/ConfigMenu.vue";
+import GameBoard from "./components/GameBoard.vue";
+import type { Player, GameState } from "../types";
+
+const colCount = ref<number>(7);
+const rowCount = ref<number>(6);
+const winningSlots = ref<number>(4);
+const player = ref<Player>(null);
+const gameState = ref<GameState>("config");
+
+// const toggle = (): void => {
+//   newGame.value = !newGame.value;
+// };
 </script>
 
 <template>
-  <header>
-    <img
-      alt="Vue logo"
-      class="logo"
-      src="@/assets/logo.svg"
-      width="125"
-      height="125"
+  <div id="container">
+    <StartMenu
+      @update-player="(p:Player) => player = p"
+      v-if="player === null"
     />
-
-    <div class="wrapper">
-      <HelloWorld msg="You did it! 🍣 🍣 🍣 Veggie sushi sucks" />
-
-      <nav>
+    <ConfigMenu
+      v-if="player !== null && gameState === 'config'"
+      @update-gameState="(s:GameState) => gameState = s"
+      v-model:col-count="colCount"
+      v-model:row-count="rowCount"
+      v-model:winning-slots="winningSlots"
+    />
+    <GameBoard
+      v-if="player !== null && gameState === 'ready'"
+      :row-count="rowCount"
+      :col-count="colCount"
+      :player="player"
+    />
+  </div>
+  <!-- <nav>
         <RouterLink to="/">Home</RouterLink>
         <RouterLink to="/about">About</RouterLink>
-      </nav>
-    </div>
-  </header>
-
-  <RouterView />
+  </nav>
+  <RouterView /> -->
 </template>
 
 <style scoped>
-header {
-  line-height: 1.5;
-  max-height: 100vh;
-}
-
-.logo {
-  display: block;
-  margin: 0 auto 2rem;
-}
-
-nav {
-  width: 100%;
-  font-size: 12px;
-  text-align: center;
-  margin-top: 2rem;
-}
-
-nav a.router-link-exact-active {
-  color: var(--color-text);
-}
-
-nav a.router-link-exact-active:hover {
-  background-color: transparent;
-}
-
-nav a {
-  display: inline-block;
-  padding: 0 1rem;
-  border-left: 1px solid var(--color-border);
-}
-
-nav a:first-of-type {
-  border: 0;
-}
-
-@media (min-width: 1024px) {
-  header {
-    display: flex;
-    place-items: center;
-    padding-right: calc(var(--section-gap) / 2);
-  }
-
-  .logo {
-    margin: 0 2rem 0 0;
-  }
-
-  header .wrapper {
-    display: flex;
-    place-items: flex-start;
-    flex-wrap: wrap;
-  }
-
-  nav {
-    text-align: left;
-    margin-left: -1rem;
-    font-size: 1rem;
-
-    padding: 1rem 0;
-    margin-top: 1rem;
-  }
+#container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
 }
 </style>

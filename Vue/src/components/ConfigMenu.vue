@@ -6,19 +6,6 @@ defineProps<{
   winningSlots: number;
 }>();
 
-// const cols = definecomputed({
-//   get() {
-//     return colCount.value;
-//   },
-//   set(val) {
-//     colCount.value = val;
-//   },
-// });
-// const emit = defineEmits([
-//   "update:colCount",
-//   "update:rowCount",
-//   "update:winningSlots",
-// ]);
 defineEmits<{
   (e: "update:colCount", n: number): void;
   (e: "update:rowCount", n: number): void;

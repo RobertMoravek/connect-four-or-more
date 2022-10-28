@@ -1,23 +1,23 @@
 <script setup lang="ts">
+import { computed, useCssVars } from "vue";
 import type { Player } from "../../types";
 
 const props = defineProps<{
-  rowCount: number;
+  rowCount: number[];
+  slotSize: number;
   // slots: number;
   player: Player;
 }>();
 
-//renumber the rows from 0
-const renumberRows = (param: number): number[] => {
-  return [...Array(param).keys()];
-};
-const updatedRowCount = renumberRows(props.rowCount);
+// const cssVars = computed:((): string=>
+//   return 'width': props.slotSize + "vw";
+// });
 </script>
 
 <template>
   <div class="column">
     <div
-      v-for="row in updatedRowCount"
+      v-for="row in rowCount"
       :key="row"
       :idx="row"
       :class="'slot row-' + row"
@@ -35,7 +35,7 @@ const updatedRowCount = renumberRows(props.rowCount);
 
 <style scoped>
 .slot {
-  width: 7vw;
+  width: v-bind(slotSize + "vw");
   aspect-ratio: 1/1;
   /* height: 7vw; */
   /*center the hole in the middle of the square*/

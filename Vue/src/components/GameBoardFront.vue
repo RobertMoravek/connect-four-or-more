@@ -1,22 +1,25 @@
 <script setup lang="ts">
 import type { Player } from "../../types";
-import GameColumn from "./GameColumn.vue";
+import GameColumnFront from "./GameColumnFront.vue";
 
 const props = defineProps<{
-  colCount: number;
-  rowCount: number;
+  colCount: number[];
+  rowCount: number[];
+  slotSize: number;
   player: Player;
 }>();
+console.log("slot size", props.slotSize);
 </script>
 
 <template>
   <div id="game">
-    <GameColumn
+    <GameColumnFront
       v-for="column in props.colCount"
       :key="column"
       :idx="column"
       :row-count="props.rowCount"
       :player="props.player"
+      :slot-size="slotSize"
     />
   </div>
 </template>
@@ -25,9 +28,8 @@ const props = defineProps<{
 #game {
   display: flex;
   margin: auto;
-  /* styling for round game border */
-  /* border: 2px solid royalblue;
-    border-radius: 5%;
-    overflow: hidden; */
+  border: 2px solid transparent;
+  border-radius: 4%;
+  overflow: hidden;
 }
 </style>

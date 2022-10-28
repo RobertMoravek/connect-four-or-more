@@ -1,4 +1,9 @@
 type Player = 1 | 2 | null;
 type GameState = "config" | "ready" | "run" | "end" | "closed";
 
-export type { Player, GameState };
+interface LeaveEventPayload {
+  player: Player;
+  gameState: GameState;
+}
+
+export type { Player, GameState, LeaveEventPayload };

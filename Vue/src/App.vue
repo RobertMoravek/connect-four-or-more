@@ -1,21 +1,19 @@
 <script setup lang="ts">
-import { onMounted, onUnmounted, ref } from "vue";
+import { onMounted, onUnmounted, ref, computed } from "vue";
 // import { RouterLink, RouterView } from "vue-router";
 import StartMenu from "./components/StartMenu.vue";
 import ConfigMenu from "./components/ConfigMenu.vue";
 import GameScreen from "./components/GameScreen.vue";
-import type { Player, GameState } from "../types";
-let shortEdge;
-//get window size for game board
+import ResultsView from "./components/ResultsView.vue";
+import type { Player, GameState, LeaveEventPayload } from "../types";
+
+//get window size dynamically
 let windowWidth = ref<number>(window.innerWidth);
-console.log(windowWidth.value);
+console.log("window width", windowWidth.value);
 let windowHeight = ref<number>(window.innerHeight);
-const useWindowSize = (): number => {
+const useWindowSize = (): void => {
   windowHeight.value = window.innerHeight;
   windowWidth.value = window.innerWidth;
-  shortEdge = Math.min(windowHeight.value, windowWidth.value);
-  console.log(windowWidth.value);
-  return shortEdge;
 };
 
 onMounted(() => window.addEventListener("resize", useWindowSize));
@@ -25,9 +23,14 @@ const colCount = ref<number>(7);
 const rowCount = ref<number>(6);
 const winningSlots = ref<number>(4);
 const player = ref<Player>(null);
-const gameState = ref<GameState>("config");
-const slotSize: number = shortEdge ? Math.floor(shortEdge - 100) : 0;
+const gameState = ref<GameState>("end");
 
+const slotSize = computed<number>(() =>
+  Math.floor(
+    (Math.min(windowHeight.value, windowWidth.value) * 0.8) /
+      Math.max(colCount.value, rowCount.value)
+  )
+);
 // const toggle = (): void => {
 //   newGame.value = !newGame.value;
 // };
@@ -37,7 +40,7 @@ const slotSize: number = shortEdge ? Math.floor(shortEdge - 100) : 0;
   <div id="container">
     <StartMenu
       @update-player="(p:Player) => player = p"
-      v-if="player === null"
+      v-if="player === null && gameState === 'config'"
     />
     <ConfigMenu
       v-if="player !== null && gameState === 'config'"
@@ -54,6 +57,11 @@ const slotSize: number = shortEdge ? Math.floor(shortEdge - 100) : 0;
       :slot-size="slotSize"
     />
   </div>
+  <div class="modal" v-if="player === null && gameState === 'end'">
+    <ResultsView
+      @leave-game="(p:LeaveEventPayload) => ({player, gameState} = p)"
+    />
+  </div>
   <!-- <nav>
         <RouterLink to="/">Home</RouterLink>
         <RouterLink to="/about">About</RouterLink>
@@ -67,5 +75,20 @@ const slotSize: number = shortEdge ? Math.floor(shortEdge - 100) : 0;
   justify-content: center;
   align-items: center;
   height: 100vh;
+}
+
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  background-color: rgba(255, 255, 255, 0.7);
+  inset: 0;
+  z-index: 101;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 10vh;
+  /* transform: translateY(-100%); */
 }
 </style>

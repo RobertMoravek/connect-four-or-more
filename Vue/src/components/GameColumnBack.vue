@@ -56,7 +56,7 @@ const previewColor = computed<string>(() =>
   border-radius: 50%;
   /*set a big border on the transparent hole*/
   /* box-shadow: 0 0 0 100vh blue; */
-  border: v-bind(holeSize + "px") solid royalblue;
+  border: 5vw solid royalblue;
   /*don't allow the hole to shrink to the container*/
   flex-shrink: 0;
   transform-style: preserve-3d;

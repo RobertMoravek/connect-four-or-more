@@ -36,6 +36,12 @@ const heightBack = computed<number>(
         :player="props.player"
         :slot-size="slotSize"
       />
+      <!-- <GameColumnBack
+        :col-count="props.colCount"
+        :row-count="props.rowCount"
+        :player="props.player"
+        :slot-size="slotSize"
+      /> -->
     </div>
   </div>
 </template>
@@ -54,7 +60,7 @@ const heightBack = computed<number>(
   display: flex;
   height: v-bind(heightBack + "px");
   margin: auto;
-  border: 2px solid transparent;
+  /* border: 2px solid transparent; */
   border-radius: 4%;
   overflow: hidden;
   position: absolute;

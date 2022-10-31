@@ -21,8 +21,7 @@ const previewColor = computed<string>(() =>
 const rowCountBack: number[] = [props.rowCount.length, ...props.rowCount];
 console.log("row count back", rowCountBack);
 
-const nbCols = computed<number>(() => props.colCount.length);
-const nbRows = computed<number>(() => props.rowCount.length);
+const nbRows = computed<number>(() => props.rowCount.length + 1);
 </script>
 
 <template>
@@ -31,6 +30,13 @@ const nbRows = computed<number>(() => props.rowCount.length);
     @mouseover="hover = true"
     @mouseleave="hover = false"
   >
+    <!-- <GamePiece
+      v-for="row in rowCountBack"
+      :key="row"
+      :idx="row"
+      :player="props.player"
+      :slot-size="slotSize"
+    /> -->
     <GamePiece
       v-for="row in rowCountBack"
       :key="row"
@@ -43,7 +49,11 @@ const nbRows = computed<number>(() => props.rowCount.length);
 
 <style scoped>
 .column-back {
-  width: v-bind(slotSize + "px");
+  display: grid;
+  grid-template-columns: v-bind(slotSize + "px");
+  grid-template-rows: repeat(v-bind(nbRows), v-bind(slotSize + "px"));
+  align-items: center;
+  justify-items: center;
 }
 /* .slot-back {
   height: v-bind(slotSize + "px");

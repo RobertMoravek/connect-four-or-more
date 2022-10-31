@@ -46,7 +46,7 @@ io.on("connection", (socket) => {
         let gameCode: string = setCodeForNewGame(activeGames, socket.id);
         console.log("activeGames", activeGames);
         socket.join(gameCode);
-        io.to(gameCode).emit("gameUpdate", gameCode, activeGames[gameCode]);
+        io.to(gameCode).emit("gameUpdate", activeGames[gameCode], gameCode );
     });
 
     socket.on("disconnect", () => {

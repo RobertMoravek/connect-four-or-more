@@ -1,8 +1,9 @@
 export type gameObject = {
     gameBoard: [1 | 2 | null][][];
+    playerName?: [string, string];
     playerTurn: 1 | 2 | null;
     score: [number, number];
-    gameState: "config" | "ready" | "running" | "ended" | "closed";
+    gameState: "config" | "ready" | "running" | "end" | "closed";
     winner: null | 1 | 2;
     config: [number, number, number];
     sockets: [string, string];

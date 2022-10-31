@@ -14,7 +14,7 @@ const props = defineProps<{
 const renumber = (param: number): number[] => {
   return [...Array(param).keys()];
 };
-const updatedRowCount = renumber(props.rowCount);
+const updatedRowCount = renumber(props.rowCount).reverse();
 const updatedColCount = renumber(props.colCount);
 </script>
 

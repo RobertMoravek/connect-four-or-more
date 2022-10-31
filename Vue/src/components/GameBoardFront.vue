@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { computed } from "vue";
 import type { Player } from "../../types";
 import GameColumnFront from "./GameColumnFront.vue";
 import GameColumnBack from "./GameColumnBack.vue";
@@ -9,6 +10,10 @@ const props = defineProps<{
   slotSize: number;
   player: Player;
 }>();
+
+const heightBack = computed<number>(
+  () => props.slotSize * (props.rowCount.length + 1)
+);
 </script>
 
 <template>
@@ -39,17 +44,19 @@ const props = defineProps<{
   display: flex;
   margin: auto;
   border: 2px solid transparent;
-  border-radius: 4%;
+  border-radius: 8px;
   overflow: hidden;
   position: relative;
 }
 
 #game-back {
   display: flex;
+  height: v-bind(heightBack + "px");
   margin: auto;
   border: 2px solid transparent;
   border-radius: 4%;
   overflow: hidden;
   position: absolute;
+  bottom: 0;
 }
 </style>

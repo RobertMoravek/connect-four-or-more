@@ -1,33 +1,34 @@
 <script setup lang="ts">
+import { computed } from "vue";
+import type { Player } from "../../types";
 const props = defineProps<{
-  playerTurn: Number;
-  slots: Number;
+  slotSize: number;
+  player: Player;
 }>();
-// console.log("idx", props.idx);
+
+const holeSize = computed<number>(() => (props.slotSize * 5) / 7);
 </script>
 
 <template>
-  <div :class="'player-' + props.playerTurn">
-    <div class="hole"></div>
-  </div>
+  <div class="piece"></div>
 </template>
 
 <style scoped>
-.slot {
+/* .slot {
   width: 7vw;
-  aspect-ratio: 1/1;
-  /* height: 7vw; */
-  /*center the hole in the middle of the square*/
-  display: flex;
+  aspect-ratio: 1/1; */
+/* height: 7vw; */
+/*center the hole in the middle of the square*/
+/* display: flex;
   justify-content: center;
-  align-items: center;
-  /*hide the huge border of the hole*/
-  overflow: hidden;
-  /* margin: 3px; */
-}
+  align-items: center; */
+/*hide the huge border of the hole*/
+/* overflow: hidden; */
+/* margin: 3px; */
+/* } */
 
-.hole {
-  width: 5vw;
+.piece {
+  width: v-bind(holeSize + "px");
   /* height: 5vw; */
   aspect-ratio: 1/1;
   border-radius: 50%;

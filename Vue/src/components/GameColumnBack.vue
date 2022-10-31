@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, computed } from "vue";
+import GamePiece from "./GamePiece.vue";
 import type { Player } from "../../types";
 
 const props = defineProps<{
@@ -15,40 +16,43 @@ const holeSize = computed<number>(() => (props.slotSize * 5) / 7);
 const previewColor = computed<string>(() =>
   props.player === 1 ? "tomato" : props.player === 2 ? "yellow " : ""
 );
+
+const rowCountBack: number[] = [props.rowCount.length, ...props.rowCount];
+console.log("row count back", rowCountBack);
 </script>
 
 <template>
-  <div class="column" @mouseover="hover = true" @mouseleave="hover = false">
-    <div
-      v-for="row in rowCount"
+  <div
+    class="column-back"
+    @mouseover="hover = true"
+    @mouseleave="hover = false"
+  >
+    <GamePiece
+      v-for="row in rowCountBack"
       :key="row"
       :idx="row"
-      :class="'slot row-' + row"
-    >
-      <div class="hole" :class="hover && 'active'">
-        <!-- <GameSlot
-        v-for="slot in slots"
-        :key="slot"
-        :current-player="currentPlayer"
-      /> -->
-      </div>
-    </div>
+      :player="props.player"
+      :slot-size="slotSize"
+    />
   </div>
 </template>
 
 <style scoped>
-.slot {
+.column-back {
   width: v-bind(slotSize + "px");
-  aspect-ratio: 1/1;
-  /* height: 7vw; */
-  /*center the hole in the middle of the square*/
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  /*hide the huge border of the hole*/
-  overflow: hidden;
-  /* margin: 3px; */
 }
+/* .slot-back {
+  height: v-bind(slotSize + "px");
+  /* aspect-ratio: 1/1;
+  /* height: 7vw; */
+/*center the hole in the middle of the square*/
+/* display: flex;
+  justify-content: center;
+  align-items: center; */
+/*hide the huge border of the hole*/
+/* overflow: hidden; */
+/* margin: 3px; */
+/* } */
 
 .hole {
   width: v-bind(holeSize + "px");

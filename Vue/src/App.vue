@@ -23,12 +23,14 @@ const colCount = ref<number>(7);
 const rowCount = ref<number>(6);
 const winningSlots = ref<number>(4);
 const player = ref<Player>(null);
-const gameState = ref<GameState>("end");
+const gameState = ref<GameState>("config");
 
 const slotSize = computed<number>(() =>
   Math.floor(
-    (Math.min(windowHeight.value, windowWidth.value) * 0.8) /
-      Math.max(colCount.value, rowCount.value)
+    Math.min(
+      (windowHeight.value * 0.8) / rowCount.value,
+      (windowWidth.value * 0.8) / colCount.value
+    )
   )
 );
 // const toggle = (): void => {

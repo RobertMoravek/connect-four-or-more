@@ -15,5 +15,5 @@ export type gameObject = {
 
 export type activeGames = {
     [key:string]: gameObject
-} | null;
+};
 

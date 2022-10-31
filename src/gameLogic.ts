@@ -2,39 +2,40 @@ import { activeGames, gameObject } from "./types";
 
 
 // Set a code for a new Game
-export function setCodeForNewGame (activeGames:activeGames, socketId:string):void {
-    let tempRandomString: string = generateRandomString();
+export function setCodeForNewGame (activeGames:activeGames, socketId:string):string {
+    let tempRandomString: string = generateRandomString(6);
     if (isRandomStringUnique(tempRandomString, activeGames)) {
         activeGames[tempRandomString] = newGameObject(socketId)
     } else {
         setCodeForNewGame(activeGames, socketId);
     }
+    return tempRandomString;
 }
 
 // Generate a random 6 letter and digit uppercase string
-export function generateRandomString(): string {
-    const chars: string = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
-    const randomArray: string[] = Array.from(
-        { length: 6 },
+export const generateRandomString = (myLength:number) => {
+    const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
+    const randomArray = Array.from(
+        { length: myLength },
         (v, k) => chars[Math.floor(Math.random() * chars.length)]
     );
 
-    const randomString: string = randomArray.join("");
+    const randomString = randomArray.join("");
     return randomString;
-}
+};
 
 // Check wether tempRandomString is already in use
 export function isRandomStringUnique (tempRandomString: string, activeGames: activeGames): boolean {
-    // If the activeGames has no games, return false
+    // If the activeGames has no games, return true
     if (activeGames === null) {
-        return false
+        return true
     };
     // If activeGames doesn't have the created key, return false
     if (!(tempRandomString in activeGames)) {
-        return false
+        return true
     };
     // Otherwise return true
-    return true;
+    return false;
 }
 
 // Create new gameObject

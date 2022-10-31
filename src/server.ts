@@ -1,6 +1,10 @@
 import express from "express";
 import { gameObject, activeGames } from "./types";
-import { generateRandomString, isRandomStringUnique, setCodeForNewGame } from "./gameLogic";
+import {
+    generateRandomString,
+    isRandomStringUnique,
+    setCodeForNewGame,
+} from "./gameLogic";
 
 const app = express();
 const path = require("path");
@@ -13,7 +17,7 @@ const io = require("socket.io")(server, {
 
 const port: number = 8080;
 
-const activeGames: activeGames = null;
+const activeGames: activeGames = {};
 
 if (process.env.NODE_ENV == "production") {
     app.use((req, res, next) => {
@@ -39,13 +43,11 @@ io.on("connection", (socket) => {
     // Start a new Game
     socket.on("new-game", () => {
         console.log("Starting a new Game");
-        setCodeForNewGame(activeGames, socket.id);
-        console.log('activeGames', activeGames);
-
+        let gameCode: string = setCodeForNewGame(activeGames, socket.id);
+        console.log("activeGames", activeGames);
+        socket.join(gameCode);
+        io.to(gameCode).emit("gameUpdate", gameCode, activeGames[gameCode]);
     });
-
-
-
 
     socket.on("disconnect", () => {
         console.log("user disconnected: socket-id:", socket.id);

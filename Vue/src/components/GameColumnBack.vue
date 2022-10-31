@@ -4,6 +4,7 @@ import GamePiece from "./GamePiece.vue";
 import type { Player } from "../../types";
 
 const props = defineProps<{
+  colCount: number[];
   rowCount: number[];
   slotSize: number;
   // slots: number;
@@ -19,6 +20,9 @@ const previewColor = computed<string>(() =>
 
 const rowCountBack: number[] = [props.rowCount.length, ...props.rowCount];
 console.log("row count back", rowCountBack);
+
+const nbCols = computed<number>(() => props.colCount.length);
+const nbRows = computed<number>(() => props.rowCount.length);
 </script>
 
 <template>

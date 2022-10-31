@@ -31,6 +31,7 @@ const heightBack = computed<number>(
         v-for="column in props.colCount"
         :key="column"
         :idx="column"
+        :col-count="props.colCount"
         :row-count="props.rowCount"
         :player="props.player"
         :slot-size="slotSize"

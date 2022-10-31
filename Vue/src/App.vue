@@ -1,6 +1,15 @@
 <script setup lang="ts">
 import { onMounted, onUnmounted, ref, computed } from "vue";
 // import { RouterLink, RouterView } from "vue-router";
+
+import { RouterLink, RouterView } from "vue-router";
+import HelloWorld from "./components/HelloWorld.vue";
+
+import { io } from "socket.io-client";
+const URL = "http://localhost:8080";
+const socket = io(URL, { autoConnect: false });
+socket.connect();
+
 import StartMenu from "./components/StartMenu.vue";
 import ConfigMenu from "./components/ConfigMenu.vue";
 import GameScreen from "./components/GameScreen.vue";

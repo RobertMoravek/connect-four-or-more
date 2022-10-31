@@ -8,8 +8,5 @@
         "outDir": "dist" //Specifies the transpiler directory.
     },
     "lib": ["es2015"],
-    "exclude": [
-        "Vue",
-        "node_modules"
-    ]
+    "exclude": ["Vue", "node_modules"]
 }

@@ -1,9 +1,10 @@
 import express from "express";
 import { gameObject, activeGames } from "./types";
 import {
+    deleteSocketfromActiveGames,
     generateRandomString,
     isRandomStringUnique,
-    setCodeForNewGame,
+    createNewGame,
 } from "./gameLogic";
 
 const app = express();
@@ -37,20 +38,27 @@ app.get("/*", (req, res) => {
     res.sendFile(path.resolve(__dirname, "/index.html"));
 });
 
+
+
 io.on("connection", (socket) => {
     console.log("a user connected: socket-id:", socket.id);
+    // console.log('socket', socket);
 
     // Start a new Game
     socket.on("new-game", () => {
         console.log("Starting a new Game");
-        let gameCode: string = setCodeForNewGame(activeGames, socket.id);
+        let gameCode: string = createNewGame(activeGames, socket.id);
         console.log("activeGames", activeGames);
         socket.join(gameCode);
-        io.to(gameCode).emit("gameUpdate", activeGames[gameCode], gameCode );
+        io.to(gameCode).emit("gameUpdate", activeGames[gameCode], gameCode);
     });
+
+
 
     socket.on("disconnect", () => {
         console.log("user disconnected: socket-id:", socket.id);
+        deleteSocketfromActiveGames(socket.id, activeGames);
+
     });
 });
 

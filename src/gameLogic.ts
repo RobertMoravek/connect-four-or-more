@@ -62,6 +62,30 @@ export function newGameObject(socketId: string): gameObject {
     };
 }
 
+// Check if user config makes sense for the game 
+export function checkUserConfig (config: [number, number, number]): boolean {
+    config.map((item) => {
+        if (Number.isInteger(!item)) {
+            return false
+        }
+    })
+    return true;
+}
+
+// Check if requested game exists
+export function checkForExistingGame (activeGames:activeGames, code: string): boolean {
+    Object.keys(activeGames).map((item) => {
+        if (item === code) {
+            return true;
+        }
+    })
+    return false;
+}
+
+
+
+
+
 // On disconnect delete the socket from active games
 export function deleteSocketfromActiveGames(socketId, activeGames: activeGames): void {
     Object.entries(activeGames).map((item, index) => {

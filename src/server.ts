@@ -5,6 +5,8 @@ import {
     generateRandomString,
     isRandomStringUnique,
     createNewGame,
+    checkUserConfig,
+    checkForExistingGame,
 } from "./gameLogic";
 
 const app = express();
@@ -52,6 +54,31 @@ io.on("connection", (socket) => {
         socket.join(gameCode);
         io.to(gameCode).emit("gameUpdate", activeGames[gameCode], gameCode);
     });
+
+    // Check and set user game config
+    socket.on("config-ready", (config: [number, number, number], code: string) => {
+        console.log('receiving config');
+        if (checkUserConfig(config)) {
+            activeGames[code].config = config;
+        } else {
+            activeGames[code].config = [6, 7, 4];
+        }
+        activeGames[code].gameState = "ready";
+        io.to(code).emit("gameUpdate", activeGames[code]);
+    });
+
+    // Check code and join second player to game (if it exists)
+    socket.on("join-game", (code: string) => {
+        console.log('receiving join request');
+        if (checkForExistingGame(activeGames, code)) {
+            activeGames[code].sockets[1] = socket.id;
+        } else {
+            // send an ERROR back
+        }
+        console.log(activeGames);
+        io.to(code).emit("gameUpdate", activeGames[code], code);
+    });
+
 
 
 

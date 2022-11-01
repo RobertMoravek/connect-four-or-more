@@ -5,16 +5,10 @@ import type { Player } from "../../types";
 const props = defineProps<{
   rowCount: number[];
   slotSize: number;
-  // slots: number;
   player: Player;
 }>();
 
-const hover = ref<boolean>(false);
-
 const holeSize = computed<number>(() => (props.slotSize * 5) / 7);
-// const previewColor = computed<string>(() =>
-//   props.player === 1 ? "tomato" : props.player === 2 ? "yellow " : ""
-// );
 </script>
 
 <template>
@@ -25,13 +19,7 @@ const holeSize = computed<number>(() => (props.slotSize * 5) / 7);
       :idx="row"
       :class="'slot row-' + row"
     >
-      <div class="hole" :class="hover && 'active'">
-        <!-- <GameSlot
-        v-for="slot in slots"
-        :key="slot"
-        :current-player="currentPlayer"
-      /> -->
-      </div>
+      <div class="hole"></div>
     </div>
   </div>
 </template>
@@ -40,14 +28,10 @@ const holeSize = computed<number>(() => (props.slotSize * 5) / 7);
 .slot {
   width: v-bind(slotSize + "px");
   aspect-ratio: 1/1;
-  /* height: 7vw; */
-  /*center the hole in the middle of the square*/
   display: flex;
   justify-content: center;
   align-items: center;
-  /*hide the huge border of the hole*/
   overflow: hidden;
-  /* margin: 3px; */
 }
 
 .hole {
@@ -65,8 +49,4 @@ const holeSize = computed<number>(() => (props.slotSize * 5) / 7);
     position: absolute;
     background: transparent; */
 }
-
-/* .active {
-  background-color: v-bind(previewColor);
-} */
 </style>

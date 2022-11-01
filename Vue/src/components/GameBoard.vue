@@ -9,7 +9,7 @@ const gameBoard: GameBoard = [
   [2, 1, 1, null, null, null],
   [2, null, null, null, null, null],
   [null, null, null, null, null, null],
-  [1, 2, 1, 2, null, null],
+  [1, 2, 1, 2, 2, 1],
   [null, null, null, null, null, null],
   [null, null, null, null, null, null],
 ];
@@ -65,7 +65,6 @@ const heightBack = computed<number>(
   display: flex;
   height: v-bind(heightBack + "px");
   margin: auto;
-  /* border: 2px solid transparent; */
   border-radius: 4%;
   overflow: hidden;
   position: absolute;

@@ -94,28 +94,40 @@ export function checkForExistingGame(
 export function deleteSocketfromActiveGames(
     socketId,
     activeGames: activeGames
-): void {
+): [boolean, string?] {
+    // set up a variable to receive the Code of the game with a leftover player (if there is one)
+    let isSecondPlayerLeft: boolean | string = false;
+    // Go through all games and look for the socket.id that disconnected
     Object.entries(activeGames).map((item) => {
-        console.log(socketId, item[1].sockets[0]);
         if (socketId === item[1].sockets[0]) {
             item[1].sockets[0] = null;
-            console.log("after disconnect", activeGames);
-            deleteGameIfNoPlayers(activeGames);
+            // Check if there is still another player in that game
+            isSecondPlayerLeft = checkIfSecondPlayerStillThere(activeGames, item[0], 1)
         }
         if (socketId === item[1].sockets[1]) {
             item[1].sockets[1] = null;
-            console.log("after disconnect", activeGames);
-            deleteGameIfNoPlayers(activeGames);
+            // Check if there is still another player in that game
+            isSecondPlayerLeft = checkIfSecondPlayerStillThere(activeGames, item[0], 0)
         }
     });
+    // If a player was left, return the Code of their game
+    if (isSecondPlayerLeft) {
+        return [true, isSecondPlayerLeft]
+    } else {
+        return [false]
+    }
 }
 
-// If a game has no more open sockets, delete it from activeGames
-export function deleteGameIfNoPlayers(activeGames: activeGames): void {
-    Object.entries(activeGames).map((item) => {
-        if (item[1].sockets[0] === null && item[1].sockets[1] === null) {
-            delete activeGames[item[0]];
-            console.log("after delete", activeGames);
-        }
-    });
+// Check if there is a player left in the room, when one socket disconnects
+export function checkIfSecondPlayerStillThere(activeGames: activeGames, gameCode: string, socketSlot: 0 | 1): boolean | string {
+    // If not, then delete that game from the activeGames and return false
+    if (activeGames[gameCode].sockets[socketSlot] === null) {
+        delete activeGames[gameCode];
+        return false
+    //  If yes, then set gameState to "closed", turn "off" playerTurn and return the Code of that game
+    } else {
+        activeGames[gameCode].gameState = "closed";
+        activeGames[gameCode].playerTurn = null; 
+        return gameCode
+    }
 }

@@ -7,6 +7,7 @@ import {
     checkUserConfigValues,
     checkForExistingGame,
 } from "./gameLogic";
+import { createErrorMessage } from "./errors";
 
 const app = express();
 const path = require("path");
@@ -41,7 +42,6 @@ app.get("/*", (req, res) => {
 
 io.on("connection", (socket) => {
     console.log("a user connected: socket-id:", socket.id);
-    // console.log('socket', socket);
 
     // Start a new Game
     socket.on("new-game", () => {
@@ -49,7 +49,7 @@ io.on("connection", (socket) => {
         let gameCode: string = createNewGame(activeGames, socket.id);
         console.log("activeGames", activeGames);
         socket.join(gameCode);
-        io.to(gameCode).emit("game-update", activeGames[gameCode], gameCode);
+        io.in(gameCode).emit("game-update", activeGames[gameCode], gameCode);
     });
 
     // Check and set user game config
@@ -61,7 +61,7 @@ io.on("connection", (socket) => {
             activeGames[code].config = [6, 7, 4];
         }
         activeGames[code].gameState = "ready";
-        io.to(code).emit("game-update", activeGames[code]);
+        io.in(code).emit("game-update", activeGames[code]);
     });
 
     // Check code and join second player to game (if it exists)
@@ -69,11 +69,11 @@ io.on("connection", (socket) => {
         console.log('receiving join request');
         if (checkForExistingGame(activeGames, code)) {
             activeGames[code].sockets[1] = socket.id;
+            io.in(code).emit("game-update", activeGames[code], code);
         } else {
-            // send an ERROR back
+            io.to(socket.id).emit("error", createErrorMessage(1));
         }
         console.log(activeGames);
-        io.to(code).emit("game-update", activeGames[code], code);
     });
 
 
@@ -81,8 +81,14 @@ io.on("connection", (socket) => {
 
     socket.on("disconnect", () => {
         console.log("user disconnected: socket-id:", socket.id);
-        // Delete the disconnecting socket from existing games (also then checks wether a game can be deleted)
-        deleteSocketfromActiveGames(socket.id, activeGames);
+        // Delete the disconnecting socket from existing games & if there is still another player in that game, give back the Code of that game
+        let leftOverPlayer: [boolean, string?] = deleteSocketfromActiveGames(socket.id, activeGames);
+        // If there was a player left, send appropriate error message to the room and update the game to be "closed"
+        if (leftOverPlayer) {
+            io.in(leftOverPlayer[1]).emit("error", createErrorMessage(2));
+            io.in(leftOverPlayer[1]).emit("game-update", activeGames[leftOverPlayer[1]]);
+        }
+        console.log('after leaving', activeGames);
     });
 });
 

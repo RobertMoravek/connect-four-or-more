@@ -48,8 +48,6 @@ const nbRows = computed<number>(() => props.rowCount.length + 1);
 <style scoped>
 .column-back {
   display: grid;
-  grid-auto-flow: dense;
-  direction: rtl;
   grid-template-columns: v-bind(slotSize + "px");
   grid-template-rows: repeat(v-bind(nbRows), v-bind(slotSize + "px"));
   align-items: center;

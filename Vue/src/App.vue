@@ -7,22 +7,24 @@ import GameScreen from "./components/GameScreen.vue";
 import ResultsView from "./components/ResultsView.vue";
 import type { Player, GameState, LeaveEventPayload } from "../types";
 import { io } from "socket.io-client";
+import throttle from "lodash/throttle";
 
 const URL = "http://localhost:8080";
 const socket = io(URL, { autoConnect: false });
 socket.connect();
 
-//get window size dynamically
+//get window size dynamically & with throttle
 let windowWidth = ref<number>(window.innerWidth);
-console.log("window width", windowWidth.value);
 let windowHeight = ref<number>(window.innerHeight);
 const useWindowSize = (): void => {
   windowHeight.value = window.innerHeight;
   windowWidth.value = window.innerWidth;
 };
 
-onMounted(() => window.addEventListener("resize", useWindowSize));
-onUnmounted(() => window.removeEventListener("resize", useWindowSize));
+const useWindowSizeThrottled = throttle(useWindowSize, 200);
+
+onMounted(() => window.addEventListener("resize", useWindowSizeThrottled));
+onUnmounted(() => window.removeEventListener("resize", useWindowSizeThrottled));
 
 const colCount = ref<number>(7);
 const rowCount = ref<number>(6);

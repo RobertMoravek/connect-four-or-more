@@ -1,8 +1,18 @@
 <script setup lang="ts">
 import { computed } from "vue";
-import type { Player } from "../../types";
+import type { Player, GameBoard } from "../../types";
 import GameColumnFront from "./GameColumnFront.vue";
 import GameColumnBack from "./GameColumnBack.vue";
+
+const gameBoard: GameBoard = [
+  [1, 2, null, null, null, null],
+  [2, 1, 1, null, null, null],
+  [2, null, null, null, null, null],
+  [null, null, null, null, null, null],
+  [1, 2, 1, 2, 2, 1],
+  [null, null, null, null, null, null],
+  [null, null, null, null, null, null],
+];
 
 const props = defineProps<{
   colCount: number[];
@@ -30,7 +40,8 @@ const heightBack = computed<number>(
       <GameColumnBack
         v-for="column in props.colCount"
         :key="column"
-        :idx="column"
+        :index="column"
+        :slot-config="gameBoard[column].reverse()"
         :col-count="props.colCount"
         :row-count="props.rowCount"
         :player="props.player"
@@ -44,6 +55,8 @@ const heightBack = computed<number>(
 #game {
   display: flex;
   margin: auto;
+  height: v-bind(heightBack + "px");
+  align-items: flex-end;
   border: 2px solid transparent;
   border-radius: 8px;
   overflow: hidden;
@@ -54,10 +67,10 @@ const heightBack = computed<number>(
   display: flex;
   height: v-bind(heightBack + "px");
   margin: auto;
-  border: 2px solid transparent;
   border-radius: 4%;
   overflow: hidden;
   position: absolute;
   bottom: 0;
+  left: 0;
 }
 </style>

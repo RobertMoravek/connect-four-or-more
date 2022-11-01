@@ -8,9 +8,8 @@ import ResultsView from "./components/ResultsView.vue";
 import type { Player, GameState, LeaveEventPayload } from "../types";
 import { io } from "socket.io-client";
 
-const URL = "http://localhost:8080";
-const socket = io(URL, { autoConnect: false });
-socket.connect();
+
+const socket = io();
 
 //get window size dynamically
 let windowWidth = ref<number>(window.innerWidth);

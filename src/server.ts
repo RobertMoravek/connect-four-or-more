@@ -11,11 +11,9 @@ import {
 const app = express();
 const path = require("path");
 const server = require("http").Server(app);
-const io = require("socket.io")(server, {
-    allowRequest: (req, callback) => {
-        callback(null, req.headers.referer.startsWith("http://localhost:8080"));
-    },
-});
+const { Server } = require("socket.io");
+const io = new Server(server);
+
 
 const port: number = 8080;
 

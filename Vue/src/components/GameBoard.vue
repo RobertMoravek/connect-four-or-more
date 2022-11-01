@@ -55,6 +55,8 @@ const heightBack = computed<number>(
 #game {
   display: flex;
   margin: auto;
+  height: v-bind(heightBack + "px");
+  align-items: flex-end;
   border: 2px solid transparent;
   border-radius: 8px;
   overflow: hidden;
@@ -69,5 +71,6 @@ const heightBack = computed<number>(
   overflow: hidden;
   position: absolute;
   bottom: 0;
+  left: 0;
 }
 </style>

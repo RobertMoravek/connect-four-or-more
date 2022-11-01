@@ -20,7 +20,7 @@ const slotConfigExtraRow = computed<Player[]>(() => [
   null,
   ...props.slotConfig,
 ]);
-const indexOfNextFreeSlot = computed<number>(() =>
+const nextFreeSlot = computed<number>(() =>
   slotConfigExtraRow.value.lastIndexOf(null)
 );
 
@@ -40,7 +40,7 @@ const nbRows = computed<number>(() => props.rowCount.length + 1);
       :player="props.player"
       :slot-size="slotSize"
       :piece-value="slotConfigExtraRow[index]"
-      :class="hover && indexOfNextFreeSlot === index && 'active'"
+      :class="hover && index !== 0 && nextFreeSlot === index && 'active'"
     />
   </div>
 </template>

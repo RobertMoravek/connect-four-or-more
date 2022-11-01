@@ -2,9 +2,10 @@ import express from "express";
 import { gameObject, activeGames } from "./types";
 import {
     deleteSocketfromActiveGames,
-    generateRandomString,
-    isRandomStringUnique,
     createNewGame,
+    checkUserConfigForInteger,
+    checkUserConfigValues,
+    checkForExistingGame,
 } from "./gameLogic";
 
 const app = express();
@@ -50,15 +51,40 @@ io.on("connection", (socket) => {
         let gameCode: string = createNewGame(activeGames, socket.id);
         console.log("activeGames", activeGames);
         socket.join(gameCode);
-        io.to(gameCode).emit("gameUpdate", activeGames[gameCode], gameCode);
+        io.to(gameCode).emit("game-update", activeGames[gameCode], gameCode);
     });
+
+    // Check and set user game config
+    socket.on("config-ready", (config: [number, number, number], code: string) => {
+        console.log('receiving config');
+        if (checkUserConfigForInteger(config) && checkUserConfigValues(config)) {
+            activeGames[code].config = config;
+        } else {
+            activeGames[code].config = [6, 7, 4];
+        }
+        activeGames[code].gameState = "ready";
+        io.to(code).emit("game-update", activeGames[code]);
+    });
+
+    // Check code and join second player to game (if it exists)
+    socket.on("join-game", (code: string) => {
+        console.log('receiving join request');
+        if (checkForExistingGame(activeGames, code)) {
+            activeGames[code].sockets[1] = socket.id;
+        } else {
+            // send an ERROR back
+        }
+        console.log(activeGames);
+        io.to(code).emit("game-update", activeGames[code], code);
+    });
+
 
 
 
     socket.on("disconnect", () => {
         console.log("user disconnected: socket-id:", socket.id);
+        // Delete the disconnecting socket from existing games (also then checks wether a game can be deleted)
         deleteSocketfromActiveGames(socket.id, activeGames);
-
     });
 });
 

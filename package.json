@@ -8,7 +8,8 @@
         "build": "npx tsc",
         "start": "node ./dist/app.js",
         "dist": "tsc -p .",
-        "dev": "npm run build --prefix Vue/ && nodemon ./src/server.ts --watch ./src/*.*",
+        "dev": "npm run build --prefix Vue/ && nodemon ./src/server.ts --watch ./src/",
+        "devbe": "nodemon ./src/server.ts --watch ./src/*.*",
         "type": "module"
     },
     "repository": {

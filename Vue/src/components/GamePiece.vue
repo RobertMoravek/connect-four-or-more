@@ -4,13 +4,22 @@ import type { Player } from "../../types";
 const props = defineProps<{
   slotSize: number;
   player: Player;
+  idx: number;
+  pieceValue: Player;
 }>();
 
 const holeSize = computed<number>(() => (props.slotSize * 5) / 7);
+const pieceColor = computed<string>(() =>
+  props.pieceValue === 1
+    ? "tomato"
+    : props.pieceValue === 2
+    ? "gold"
+    : "transparent"
+);
 </script>
 
 <template>
-  <div class="piece"></div>
+  <div class="piece" :idx="idx"></div>
 </template>
 
 <style scoped>
@@ -32,8 +41,8 @@ const holeSize = computed<number>(() => (props.slotSize * 5) / 7);
   /* height: 5vw; */
   aspect-ratio: 1/1;
   border-radius: 50%;
-  background-color: tomato;
-  z-index: -1; 
+  background-color: v-bind(pieceColor);
+  z-index: -1;
   /*set a big border on the transparent hole*/
   /* box-shadow: 0 0 0 100vh blue; */
   /* border: 5vw solid royalblue; */

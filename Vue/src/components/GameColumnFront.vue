@@ -12,13 +12,13 @@ const props = defineProps<{
 const hover = ref<boolean>(false);
 
 const holeSize = computed<number>(() => (props.slotSize * 5) / 7);
-const previewColor = computed<string>(() =>
-  props.player === 1 ? "tomato" : props.player === 2 ? "yellow " : ""
-);
+// const previewColor = computed<string>(() =>
+//   props.player === 1 ? "tomato" : props.player === 2 ? "yellow " : ""
+// );
 </script>
 
 <template>
-  <div class="column" @mouseover="hover = true" @mouseleave="hover = false">
+  <div class="column">
     <div
       v-for="row in rowCount"
       :key="row"
@@ -66,7 +66,7 @@ const previewColor = computed<string>(() =>
     background: transparent; */
 }
 
-.active {
+/* .active {
   background-color: v-bind(previewColor);
-}
+} */
 </style>

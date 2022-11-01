@@ -7,6 +7,7 @@ const props = defineProps<{
   colCount: number[];
   rowCount: number[];
   slotSize: number;
+  slotConfig: Player[];
   // slots: number;
   player: Player;
 }>();
@@ -15,11 +16,15 @@ const hover = ref<boolean>(false);
 
 const holeSize = computed<number>(() => (props.slotSize * 5) / 7);
 const previewColor = computed<string>(() =>
-  props.player === 1 ? "tomato" : props.player === 2 ? "yellow " : ""
+  props.player === 1 ? "tomato" : props.player === 2 ? "gold " : ""
 );
 
+const slotConfigExtraRow = computed<Player[]>(() => [
+  null,
+  ...props.slotConfig,
+]);
+
 const rowCountBack: number[] = [props.rowCount.length, ...props.rowCount];
-console.log("row count back", rowCountBack);
 
 const nbRows = computed<number>(() => props.rowCount.length + 1);
 </script>
@@ -30,19 +35,14 @@ const nbRows = computed<number>(() => props.rowCount.length + 1);
     @mouseover="hover = true"
     @mouseleave="hover = false"
   >
-    <!-- <GamePiece
-      v-for="row in rowCountBack"
-      :key="row"
-      :idx="row"
-      :player="props.player"
-      :slot-size="slotSize"
-    /> -->
     <GamePiece
-      v-for="row in rowCountBack"
-      :key="row"
-      :idx="row"
+      v-for="(row, index) in slotConfigExtraRow"
+      :key="index"
+      :idx="slotConfigExtraRow.length - index"
       :player="props.player"
       :slot-size="slotSize"
+      :piece-value="slotConfigExtraRow[index]"
+      :class="hover && 'active'"
     />
   </div>
 </template>
@@ -50,6 +50,8 @@ const nbRows = computed<number>(() => props.rowCount.length + 1);
 <style scoped>
 .column-back {
   display: grid;
+  grid-auto-flow: dense;
+  direction: rtl;
   grid-template-columns: v-bind(slotSize + "px");
   grid-template-rows: repeat(v-bind(nbRows), v-bind(slotSize + "px"));
   align-items: center;

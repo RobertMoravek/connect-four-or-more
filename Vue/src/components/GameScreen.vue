@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { Player } from "../../types";
-import GameBoardFront from "./GameBoardFront.vue";
+import GameBoard from "./GameBoard.vue";
 import ScoreBoard from "./ScoreBoard.vue";
 
 const props = defineProps<{
@@ -21,7 +21,7 @@ const updatedColCount = renumber(props.colCount);
 <template>
   <div id="game-screen-container">
     <ScoreBoard />
-    <GameBoardFront
+    <GameBoard
       :row-count="updatedRowCount"
       :col-count="updatedColCount"
       :player="player"

@@ -21,9 +21,7 @@ export const generateRandomString = (myLength: number) => {
         { length: myLength },
         (v, k) => chars[Math.floor(Math.random() * chars.length)]
     );
-
     const randomString = randomArray.join("");
-    console.log(randomString);
     return randomString;
 };
 
@@ -32,16 +30,12 @@ export function isRandomStringUnique(
     tempRandomString: string,
     activeGames: activeGames
 ): boolean {
-    // If the activeGames has no games, return true
-    if (activeGames === null) {
-        return true;
-    }
-    // If activeGames doesn't have the created key, return false
-    if (!(tempRandomString in activeGames)) {
-        return true;
+    // If activeGames has the created key, return false
+    if (tempRandomString in activeGames) {
+        return false;
     }
     // Otherwise return true
-    return false;
+    return true;
 }
 
 // Create new gameObject
@@ -57,38 +51,51 @@ export function newGameObject(socketId: string): gameObject {
         sockets: [socketId, null],
         lastMove: null,
         winningSlots: null,
-        error: false,
-        // errorMessage: string;
     };
 }
 
-// Check if user config makes sense for the game 
-export function checkUserConfig (config: [number, number, number]): boolean {
-    config.map((item) => {
-        if (Number.isInteger(!item)) {
-            return false
+// Check if user config contains integers
+export function checkUserConfigForInteger(
+    config: [number, number, number]
+): boolean {
+    return config.every((item) => {
+        return Number.isInteger(item);
+    });
+}
+
+// Check if user config contains integers
+export function checkUserConfigValues(
+    config: [number, number, number]
+): boolean {
+    if (config[0] > 6 && config[0] < 12 ) {
+        if (config[1] > 5 && config[1] < 12) {
+            if (config[2] > 3 && config[2] < 7) {
+                return true;
+            }
         }
-    })
-    return true;
+    }
+    return false;
 }
 
 // Check if requested game exists
-export function checkForExistingGame (activeGames:activeGames, code: string): boolean {
+export function checkForExistingGame(
+    activeGames: activeGames,
+    code: string
+): boolean {
     Object.keys(activeGames).map((item) => {
         if (item === code) {
             return true;
         }
-    })
+    });
     return false;
 }
 
-
-
-
-
 // On disconnect delete the socket from active games
-export function deleteSocketfromActiveGames(socketId, activeGames: activeGames): void {
-    Object.entries(activeGames).map((item, index) => {
+export function deleteSocketfromActiveGames(
+    socketId,
+    activeGames: activeGames
+): void {
+    Object.entries(activeGames).map((item) => {
         console.log(socketId, item[1].sockets[0]);
         if (socketId === item[1].sockets[0]) {
             item[1].sockets[0] = null;
@@ -105,7 +112,7 @@ export function deleteSocketfromActiveGames(socketId, activeGames: activeGames):
 
 // If a game has no more open sockets, delete it from activeGames
 export function deleteGameIfNoPlayers(activeGames: activeGames): void {
-    Object.entries(activeGames).map((item, index) => {
+    Object.entries(activeGames).map((item) => {
         if (item[1].sockets[0] === null && item[1].sockets[1] === null) {
             delete activeGames[item[0]];
             console.log("after delete", activeGames);

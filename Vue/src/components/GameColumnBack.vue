@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, computed } from "vue";
 import GamePiece from "./GamePiece.vue";
+import GamePiecePreview from "./GamePiecePreview.vue";
 import type { Player } from "../../types";
 
 const props = defineProps<{
@@ -12,19 +13,29 @@ const props = defineProps<{
 }>();
 
 const hover = ref<boolean>(false);
-const previewColor = computed<string>(() =>
-  props.player === 1 ? "tomato" : props.player === 2 ? "gold " : ""
-);
 
-const slotConfigExtraRow = computed<Player[]>(() => [
-  null,
-  ...props.slotConfig,
-]);
-const nextFreeSlot = computed<number>(() =>
-  slotConfigExtraRow.value.lastIndexOf(null)
+// const slotConfigExtraRow = computed<Player[]>(() => [
+//   ...props.slotConfig,
+//   null,
+// ]);
+// const nextFreeSlot = computed<number>(() =>
+//   slotConfigExtraRow.value.slice(0, -1).indexOf(null)
+// );
+
+const pieceSize = computed<number>(
+  () => Math.ceil((props.slotSize * 5) / 7) + 1
+);
+const existingSlots = computed<Player[]>(() =>
+  props.slotConfig.filter((i) => i !== null)
 );
 
 const nbRows = computed<number>(() => props.rowCount.length + 1);
+
+// const existingSlotsWithPreview = computed<Player[]>(() =>
+//   existingSlots.value.length == props.rowCount.length
+//     ? existingSlots.value
+//     : [...existingSlots.value, null]
+// );
 </script>
 
 <template>
@@ -34,13 +45,18 @@ const nbRows = computed<number>(() => props.rowCount.length + 1);
     @mouseleave="hover = false"
   >
     <GamePiece
-      v-for="(row, index) in slotConfigExtraRow"
+      v-for="(slot, index) in existingSlots"
       :key="index"
-      :idx="slotConfigExtraRow.length - index"
+      :idx="index"
       :player="props.player"
-      :slot-size="slotSize"
-      :piece-value="slotConfigExtraRow[index]"
-      :class="hover && index !== 0 && nextFreeSlot === index && 'active'"
+      :piece-size="pieceSize"
+      :piece-value="slot"
+    />
+    <GamePiecePreview
+      v-if="hover && existingSlots.length < nbRows - 1"
+      :player="props.player"
+      :piece-size="pieceSize"
+      :hover="hover"
     />
   </div>
 </template>
@@ -48,13 +64,15 @@ const nbRows = computed<number>(() => props.rowCount.length + 1);
 <style scoped>
 .column-back {
   display: grid;
+  transform: rotate(180deg);
+  transform-origin: center;
   grid-template-columns: v-bind(slotSize + "px");
   grid-template-rows: repeat(v-bind(nbRows), v-bind(slotSize + "px"));
   align-items: center;
   justify-items: center;
 }
-.active {
+/* .active {
   background-color: v-bind(previewColor);
   opacity: 0.5;
-}
+} */
 </style>

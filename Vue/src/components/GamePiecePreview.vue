@@ -4,29 +4,25 @@ import type { Player } from "../../types";
 const props = defineProps<{
   pieceSize: number;
   player: Player;
-  idx: number;
-  pieceValue: Player;
+  hover: boolean;
 }>();
 
-const pieceColor = computed<string>(() =>
-  props.pieceValue === 1
-    ? "tomato"
-    : props.pieceValue === 2
-    ? "goldenrod"
-    : "transparent"
+const previewColor = computed<string>(() =>
+  props.player === 1 ? "tomato" : props.player === 2 ? "goldenrod" : ""
 );
 </script>
 
 <template>
-  <div class="piece" :idx="idx"></div>
+  <div class="piece-preview"></div>
 </template>
 
 <style scoped>
-.piece {
+.piece-preview {
   width: v-bind(pieceSize + "px");
   aspect-ratio: 1/1;
   border-radius: 50%;
-  background-color: v-bind(pieceColor);
+  background-color: v-bind(previewColor);
   z-index: -1;
+  opacity: 0.5;
 }
 </style>

@@ -8,7 +8,7 @@ const props = defineProps<{
   player: Player;
 }>();
 
-const holeSize = computed<number>(() => (props.slotSize * 5) / 7);
+const holeSize = computed<number>(() => Math.ceil((props.slotSize * 5) / 7));
 </script>
 
 <template>
@@ -43,7 +43,7 @@ const holeSize = computed<number>(() => (props.slotSize * 5) / 7);
   border: v-bind(holeSize + "px") solid royalblue;
   /*don't allow the hole to shrink to the container*/
   flex-shrink: 0;
-  transform-style: preserve-3d;
+  /* transform-style: preserve-3d; */
   overflow: hidden;
   /* z-index: 100;
     position: absolute;

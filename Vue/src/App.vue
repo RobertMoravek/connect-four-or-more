@@ -51,7 +51,7 @@ const emit = (): void => {
 
 <template>
   <div id="container">
-    <button @click="emit">Emit to BE</button>
+    <!-- <button @click="emit">Emit to BE</button> -->
     <StartMenu
       @update-player="(p:Player) => player = p"
       v-if="player === null && gameState === 'config'"

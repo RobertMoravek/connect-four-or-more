@@ -9,6 +9,8 @@ import type { Player, GameState, LeaveEventPayload, LastMove } from "../types";
 import { io } from "socket.io-client";
 import throttle from "lodash/throttle";
 
+//TO DO render startMenu conditionally based on gameObject = null
+
 const socket = io();
 
 //get window size dynamically & with throttle
@@ -45,7 +47,6 @@ const emit = (): void => {
 // const toggle = (): void => {
 //   newGame.value = !newGame.value;
 // };
-
 </script>
 
 <template>

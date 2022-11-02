@@ -54,6 +54,20 @@ export function newGameObject(socketId: string): gameObject {
     };
 }
 
+// Validate user Config and change if neccessary, set gameState to ready
+export function validateUserConfig (config: [number, number, number ], activeGames: activeGames, code: string): void {
+    if (
+        checkUserConfigForInteger(config) &&
+        checkUserConfigValues(config)
+    ) {
+        activeGames[code].config = config;
+    } else {
+        activeGames[code].config = [6, 7, 4];
+    }
+    activeGames[code].gameState = "ready";
+}
+
+
 // Check if user config contains integers
 export function checkUserConfigForInteger(
     config: [number, number, number]

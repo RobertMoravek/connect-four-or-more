@@ -7,16 +7,10 @@ import {
     deleteSocketfromActiveGames,
     isRandomStringUnique,
     newGameObject,
+    validateUserConfig,
 } from "../src/gameLogic";
 import { activeGames } from "../src/types";
-// import { testfunction } from "../src/server";
 
-// Example Test
-// describe("sum module", () => {
-//     test("adds 1 + 2 to equal  3", () => {
-//         expect(testfunction(1, 2)).toBe(3);
-//     });
-// });
 
 // createNewGame
 describe("createNewGame", () => {
@@ -232,3 +226,4 @@ describe("deleteSocketfromActiveGames", () => {
         expect(activeGames).toEqual({});
     });
 });
+

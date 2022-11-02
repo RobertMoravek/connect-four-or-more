@@ -6,6 +6,7 @@ import {
     checkUserConfigForInteger,
     checkUserConfigValues,
     checkForExistingGame,
+    validateUserConfig,
 } from "./gameLogic";
 import { createErrorMessage } from "./errors";
 
@@ -38,13 +39,12 @@ app.get("/*", (req, res) => {
 });
 
 io.on("connection", (socket) => {
-    // console.log("a user connected: socket-id:", socket.id);
+    console.log("a user connected: socket-id:", socket.id);
 
     // Start a new Game
     socket.on("new-game", () => {
-        // console.log("Starting a new Game");
+        console.log("Starting a new Game");
         let gameCode: string = createNewGame(activeGames, socket.id);
-        // console.log("activeGames", activeGames);
         socket.join(gameCode);
         io.in(gameCode).emit("game-update", activeGames[gameCode], gameCode);
     });
@@ -53,23 +53,15 @@ io.on("connection", (socket) => {
     socket.on(
         "config-ready",
         (config: [number, number, number], code: string) => {
-            // console.log('receiving config');
-            if (
-                checkUserConfigForInteger(config) &&
-                checkUserConfigValues(config)
-            ) {
-                activeGames[code].config = config;
-            } else {
-                activeGames[code].config = [6, 7, 4];
-            }
-            activeGames[code].gameState = "ready";
+            console.log('receiving config');
+            validateUserConfig(config, activeGames, code);
             io.in(code).emit("game-update", activeGames[code]);
         }
     );
 
     // Check code and join second player to game (if it exists)
     socket.on("join-game", (code: string) => {
-        // console.log('receiving join request');
+        console.log('receiving join request');
         if (checkForExistingGame(activeGames, code)) {
             activeGames[code].sockets[1] = socket.id;
             io.in(code).emit("game-update", activeGames[code], code);
@@ -80,7 +72,7 @@ io.on("connection", (socket) => {
     });
 
     socket.on("disconnect", () => {
-        // console.log("user disconnected: socket-id:", socket.id);
+        console.log("user disconnected: socket-id:", socket.id);
         // Delete the disconnecting socket from existing games & if there is still another player in that game, give back the Code of that game
         let leftOverPlayer: [boolean, string?] = deleteSocketfromActiveGames(
             socket.id,
@@ -94,7 +86,7 @@ io.on("connection", (socket) => {
                 activeGames[leftOverPlayer[1]]
             );
         }
-        // console.log('after leaving', activeGames);
+        console.log('after leaving', activeGames);
     });
 });
 
@@ -103,9 +95,3 @@ if (process.env.NODE_ENV !== "test") {
         console.log("I'm listening.");
     });
 }
-
-
-// Example function for testing
-// export function testfunction(a: number, b: number): number {
-//     return a + b;
-// }

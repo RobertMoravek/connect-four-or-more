@@ -9,9 +9,9 @@ const gameBoard: GameBoard = [
   [2, 1, 1, null, null, null],
   [2, null, null, null, null, null],
   [null, null, null, null, null, null],
-  [1, 2, 1, 2, 2, 1],
+  [1, 2, 1, 2, 2, null],
   [null, null, null, null, null, null],
-  [null, null, null, null, null, null],
+  [1, 2, 1, 2, 2, 2],
 ];
 
 const props = defineProps<{
@@ -41,7 +41,7 @@ const heightBack = computed<number>(
         v-for="column in props.colCount"
         :key="column"
         :index="column"
-        :slot-config="gameBoard[column].reverse()"
+        :slot-config="gameBoard[column]"
         :col-count="props.colCount"
         :row-count="props.rowCount"
         :player="props.player"
@@ -54,11 +54,10 @@ const heightBack = computed<number>(
 <style scoped>
 #game {
   display: flex;
-  margin: auto;
   height: v-bind(heightBack + "px");
   align-items: flex-end;
-  border: 2px solid transparent;
-  border-radius: 8px;
+  /* border: 2px solid transparent; */
+  /* border-radius: 8px; */
   overflow: hidden;
   position: relative;
 }
@@ -66,11 +65,12 @@ const heightBack = computed<number>(
 #game-back {
   display: flex;
   height: v-bind(heightBack + "px");
-  margin: auto;
-  border-radius: 4%;
+  /* border: 2px solid transparent; */
+  /* border-radius: 4%; */
   overflow: hidden;
   position: absolute;
   bottom: 0;
-  left: 0;
+  /* top: 0;
+  right: 0; */
 }
 </style>

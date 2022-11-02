@@ -63,7 +63,7 @@ export function checkUserConfigForInteger(
     });
 }
 
-// Check if user config contains integers
+// Check user config values against what we allow
 export function checkUserConfigValues(
     config: [number, number, number]
 ): boolean {
@@ -82,12 +82,13 @@ export function checkForExistingGame(
     activeGames: activeGames,
     code: string
 ): boolean {
-    Object.keys(activeGames).map((item) => {
+    let temp: boolean = false;
+    Object.keys(activeGames).some((item) => {
         if (item === code) {
-            return true;
+            temp = true;
         }
     });
-    return false;
+    return temp;
 }
 
 // On disconnect delete the socket from active games

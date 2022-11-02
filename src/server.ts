@@ -87,7 +87,7 @@ io.on("connection", (socket) => {
             activeGames
         );
         // If there was a player left, send appropriate error message to the room and update the game to be "closed"
-        if (leftOverPlayer) {
+        if (leftOverPlayer[0]) {
             io.in(leftOverPlayer[1]).emit("error", createErrorMessage(2));
             io.in(leftOverPlayer[1]).emit(
                 "game-update",

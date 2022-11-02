@@ -10,7 +10,6 @@ const props = defineProps<{
   player: Player;
 }>();
 
-//renumber the rows & columns
 const renumber = (param: number): number[] => {
   return [...Array(param).keys()];
 };

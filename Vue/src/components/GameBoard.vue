@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { computed } from "vue";
-import type { Player, GameBoard } from "../../types";
+import { ref, computed } from "vue";
+import type { Player, GameBoard, LastMove } from "../../types";
 import GameColumnFront from "./GameColumnFront.vue";
 import GameColumnBack from "./GameColumnBack.vue";
 
@@ -13,6 +13,8 @@ const gameBoard: GameBoard = [
   [null, null, null, null, null, null],
   [1, 2, 1, 2, 2, 2],
 ];
+
+const lastMove = ref<LastMove>(null);
 
 const props = defineProps<{
   colCount: number[];
@@ -38,14 +40,17 @@ const heightBack = computed<number>(
     />
     <div id="game-back">
       <GameColumnBack
+        @add-piece="(p:LastMove) => lastMove = p"
         v-for="column in props.colCount"
         :key="column"
         :index="column"
+        :idx="column"
         :slot-config="gameBoard[column]"
         :col-count="props.colCount"
         :row-count="props.rowCount"
         :player="props.player"
         :slot-size="slotSize"
+        :last-move="lastMove"
       />
     </div>
   </div>

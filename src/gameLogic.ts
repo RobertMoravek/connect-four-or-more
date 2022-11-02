@@ -105,6 +105,13 @@ export function checkForExistingGame(
     return temp;
 }
 
+// Check if all criteria are met for the game to start and then do it by changing gameState to running
+export function startGameIfReady (activeGames: activeGames ,gameCode: string): void {
+    if (activeGames[gameCode].gameState === "ready" && typeof activeGames[gameCode].sockets[0] === "string" && typeof activeGames[gameCode].sockets[1] === "string") {
+        activeGames[gameCode].gameState = "running";
+    }
+}
+
 // On disconnect delete the socket from active games
 export function deleteSocketfromActiveGames(
     socketId,

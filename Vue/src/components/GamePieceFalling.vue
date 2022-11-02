@@ -9,18 +9,13 @@ const props = defineProps<{
   slotSize: number;
 }>();
 
-const previewColor = computed<string>(() =>
-  props.player === 1 ? "tomato" : props.player === 2 ? "goldenrod" : ""
-);
-
 const pieceColor = computed<string>(() =>
   props.player === 1 ? "tomato" : props.player === 2 ? "goldenrod" : ""
 );
-console.log("row count", props.rowCount, props.row);
+
 const startPosAnimation = computed<number>(
   () => (props.rowCount[0] - props.row + 1) * props.slotSize
 );
-console.log("start position", startPosAnimation.value);
 </script>
 
 <template>
@@ -41,19 +36,19 @@ console.log("start position", startPosAnimation.value);
 
 @keyframes bounce {
   0% {
-    transform: translate3d(0%, v-bind(startPosAnimation + "px"), 0);
+    transform: translateY(v-bind(startPosAnimation + "px"));
   }
   40% {
-    transform: translate3d(0%, v-bind(startPosAnimation * 0.5 + "px"), 0);
+    transform: translateY(v-bind(startPosAnimation * 0.5 + "px"));
   }
   65% {
-    transform: translate3d(0%, v-bind(startPosAnimation * 0.25 + "px"), 0);
+    transform: translateY(v-bind(startPosAnimation * 0.25 + "px"));
   }
   82% {
-    transform: translate3d(0%, v-bind(startPosAnimation * 0.125 + "px"), 0);
+    transform: translateY(v-bind(startPosAnimation * 0.125 + "px"));
   }
   92% {
-    transform: translate3d(0%, v-bind(startPosAnimation * 0.06 + "px"), 0);
+    transform: translateY(v-bind(startPosAnimation * 0.06 + "px"));
   }
   55%,
   75%,

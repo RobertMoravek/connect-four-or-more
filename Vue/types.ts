@@ -8,4 +8,6 @@ interface LeaveEventPayload {
 
 type GameBoard = Player[][] | null;
 
-export type { Player, GameState, LeaveEventPayload, GameBoard };
+type LastMove = [number, number, 1 | 2] | null;
+
+export type { Player, GameState, LeaveEventPayload, GameBoard, LastMove };

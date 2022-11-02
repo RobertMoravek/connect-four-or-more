@@ -5,10 +5,9 @@ import StartMenu from "./components/StartMenu.vue";
 import ConfigMenu from "./components/ConfigMenu.vue";
 import GameScreen from "./components/GameScreen.vue";
 import ResultsView from "./components/ResultsView.vue";
-import type { Player, GameState, LeaveEventPayload } from "../types";
+import type { Player, GameState, LeaveEventPayload, LastMove } from "../types";
 import { io } from "socket.io-client";
 import throttle from "lodash/throttle";
-
 
 const socket = io();
 
@@ -46,6 +45,7 @@ const emit = (): void => {
 // const toggle = (): void => {
 //   newGame.value = !newGame.value;
 // };
+
 </script>
 
 <template>

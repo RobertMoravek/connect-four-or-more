@@ -27,6 +27,6 @@ const pieceColor = computed<string>(() =>
   aspect-ratio: 1/1;
   border-radius: 50%;
   background-color: v-bind(pieceColor);
-  z-index: -1;
+  z-index: -5;
 }
 </style>

@@ -125,6 +125,67 @@ export function randomPlayerTurn (): 1 | 2 {
     }
 }
 
+
+// Check validity of player move
+export function checkValidMove(activeGames: activeGames, coloumn: number, player: 1 | 2, gameCode: string): boolean {
+    if (checkIfCorrectPlayer(activeGames, player, gameCode) && checkIfEmptySlotLeftInColoumn(activeGames, coloumn, gameCode)) {
+        return true;
+    }
+    return false;
+}
+
+// Check if the correct player made the move
+export function checkIfCorrectPlayer(activeGames: activeGames, player: 1 | 2, gameCode: string) : boolean {
+    if (activeGames[gameCode].playerTurn === player) {
+        return true;
+    }
+    return false;
+}
+
+// Check if there is at least one slot in the coloumn left
+export function checkIfEmptySlotLeftInColoumn(activeGames: activeGames, coloumn: number, gameCode: string) : boolean {
+    if (activeGames[gameCode].gameBoard[coloumn].includes(null)) {
+        return true;
+    }
+    return false;
+}
+
+// Add lastMove to gameBoard
+export function addLastMoveToGameBoard(activeGames: activeGames, coloumn:number, player: 1 | 2, gameCode:string):void {
+    let freeSlot: number = activeGames[gameCode].gameBoard[coloumn].find(item => item === null);
+    activeGames[gameCode].gameBoard[coloumn][freeSlot] = player;
+}
+
+
+// Set gameObject to reflect win-state
+export function setWinningState(activeGames: activeGames, player: 1 | 2, gameCode:string) {
+    activeGames[gameCode].gameState = "end";
+    activeGames[gameCode].winner = player;
+    activeGames[gameCode].score[player-1]++;
+}
+
+// Toggle playerTurn to next player
+export function togglePlayerTurn(activeGames:activeGames, gameCode) {
+    if (activeGames[gameCode].lastMove[1] === 1) {
+        activeGames[gameCode].playerTurn = 2
+    } else {
+        activeGames[gameCode].playerTurn = 1
+    }
+}
+
+// Check wether the gameBoard is full, returns true or false
+export function checkForDraw(activeGames: activeGames, gameCode: string): boolean {
+    let draw: boolean = false;
+    for (let i = 0; i < activeGames[gameCode].config[0]; i++) {
+        if (!activeGames[gameCode].gameBoard[i].some(null)) {
+            draw = true;
+        };
+    return draw;
+
+    }
+}
+
+
 // On disconnect delete the socket from active games
 export function deleteSocketfromActiveGames(
     socketId,

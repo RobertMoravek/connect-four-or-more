@@ -7,7 +7,7 @@ export type gameObject = {
     winner: player;
     config: [number, number, number];
     sockets: [string | null, string | null];
-    lastMove: [number, number, 1 | 2] | null;
+    lastMove: [number, 1 | 2] | null;
     winningSlots: [number, number][] | null;
 };
 

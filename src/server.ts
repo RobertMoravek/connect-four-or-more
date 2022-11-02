@@ -8,6 +8,8 @@ import {
     checkForExistingGame,
     validateUserConfig,
     startGameIfReady,
+    checkValidMove,
+    addLastMoveToGameBoard,
 } from "./gameLogic";
 import { createErrorMessage } from "./errors";
 
@@ -73,6 +75,23 @@ io.on("connection", (socket) => {
         }
         // console.log(activeGames);
     });
+
+    // Check code and join second player to game (if it exists)
+    socket.on("coloumn-cklick", (coloumn: number, player: 1 | 2, code: string) => {
+        if (checkValidMove(activeGames, coloumn, player, code)) {
+            activeGames[code].lastMove = [coloumn, player];
+            activeGames[code].playerTurn = null;
+            io.in(code).emit("game-update", activeGames[code], code);
+            setTimeout(() => {
+                addLastMoveToGameBoard(activeGames, coloumn, player, code);
+                // ******* CHECKVICTORY FUNCTION and it's following functions
+            }, 1000);
+        } else {
+            io.to(socket.id).emit("error", createErrorMessage(3));
+        }
+    
+    });
+
 
     socket.on("disconnect", () => {
         console.log("user disconnected: socket-id:", socket.id);

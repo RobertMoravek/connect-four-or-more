@@ -3,53 +3,75 @@ import { player } from "./types";
 export function checkForVictory(
     gameBoard: player[][],
     config: [number, number, number],
-    lastMove: [number, number, 1 | 2]
+    lastMove: [number, number, 1 | 2],
+    playerTurn: player
 ): boolean {
+    let colIdx: number = lastMove[0];
+    let rowIdx: number = lastMove[1];
+    let colCount: number = config[0];
+    let rowCount: number = config[1];
+    let nbWin: number = config[2];
     //vertical set
-    let verticalSet = gameBoard[lastMove[0]].slice(0, lastMove[1] + 1);
+    let verticalSet: player[] = gameBoard[colIdx].slice(0, rowIdx + 1);
     //horizontal set
-    let horizontalArray = gameBoard.map((e) => e.splice(lastMove[1], 1));
-    let horizontalSet = horizontalArray.flat();
-    //diagonal set
-    let columnIndex = config[0];
-    let rowIndex = config[1];
-    while (
-        config[1] > verticalSet.length - 1 &&
-        config[0] < horizontalSet.length - 1
-    ) {
-        rowIndex -= 1;
-        columnIndex += 1;
+    let horizontalArray: player[] = [].concat(
+        ...gameBoard.map((e) => e.slice(rowIdx, rowIdx + 1))
+    );
+
+    //diagonal sets
+    //1. backward diagonal - find the starting slot
+    let diagBack: player[];
+    while (colIdx > 0 && rowIdx < rowCount - 1) {
+        colIdx -= 1;
+        rowIdx += 1;
+    }
+    //add starting slot to backward diagonal
+    diagBack.push(gameBoard[colIdx][rowIdx]);
+
+    //add the other slots
+    while (colIdx < colCount - 1 && rowIdx > 0) {
+        colIdx += 1;
+        rowIdx -= 1;
+        diagBack.push(gameBoard[colIdx][rowIdx]);
     }
 
-    //avoid unnecessary checks for the diagonals
-    if (set.length < config[2]) {
+    //2. forward diagonal - find the starting slot
+    let diagFwd: player[];
+    while (colIdx > 0 && rowIdx > 0) {
+        colIdx -= 1;
+        rowIdx -= 1;
+    }
+    //add starting slot to backward diagonal
+    diagFwd.push(gameBoard[colIdx][rowIdx]);
+
+    //add the other slots
+    while (colIdx < colCount - 1 && rowIdx < rowCount - 1) {
+        colIdx += 1;
+        rowIdx += 1;
+        diagFwd.push(gameBoard[colIdx][rowIdx]);
+    }
+
+    //avoid unnecessary checks for shorter sets
+    if (set.length < nbWin) {
         return false;
     }
 
-    var count = 0;
-    var winningHoles = $();
-    //loop through the set (of rows or slots)
-    for (let i = 0; i < set.length; i++) {
-        var hole = set.eq(i).children().children();
+    let count = 0;
+    let winningSlots: [number, number][] | null;
 
-        if (hole.hasClass("player-" + currentPlayer)) {
+    for (let slot of set) {
+        if (slot == playerTurn) {
             count++;
-            console.log("count", count);
 
-            //keep track of winning holes
-            winningHoles = winningHoles.add(hole);
-            // console.log("winning holes", winningHoles);
+            //update winning slots array
 
-            //check for win:
-            if (count === numberWin) {
-                //styling for winning holes
-                winningHoles.addClass("win");
+            //check for win
+            if (count === nbWin) {
                 return true;
-                // alert("Player " + currentPlayer + "won");
             }
         } else {
             count = 0;
-            winningHoles = $();
+            winningSlots = null;
         }
     }
     return false;

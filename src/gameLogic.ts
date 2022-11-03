@@ -55,16 +55,16 @@ export function newGameObject(socketId: string): GameObject {
 }
 
 // Validate user Config and change if neccessary, set gameState to ready
-export function validateUserConfig (config: [number, number, number ], activeGames: ActiveGames, code: string): void {
+export function validateUserConfig (config: [number, number, number ], gameObject: GameObject): void {
     if (
         checkUserConfigForInteger(config) &&
         checkUserConfigValues(config)
     ) {
-        activeGames[code].config = config;
+        gameObject.config = config;
     } else {
-        activeGames[code].config = [6, 7, 4];
+        gameObject.config = [6, 7, 4];
     }
-    activeGames[code].gameState = "ready";
+    gameObject.gameState = "ready";
 }
 
 
@@ -106,14 +106,14 @@ export function checkForExistingGame(
 }
 
 // Check if all criteria are met for the game to start and then do it by changing gameState to running
-export function startGameIfReady (activeGames: ActiveGames ,gameCode: string): void {
-    if (activeGames[gameCode].gameState === "ready" && typeof activeGames[gameCode].sockets[0] === "string" && typeof activeGames[gameCode].sockets[1] === "string") {
-        activeGames[gameCode].gameBoard = [];
-        for (let i: number = 0; i < activeGames[gameCode].config[0]; i++) {
-            activeGames[gameCode].gameBoard[i] = new Array(activeGames[gameCode].config[1]).fill(null);
+export function startGameIfReady (gameObject: GameObject): void {
+    if (gameObject.gameState === "ready" && typeof gameObject.sockets[0] === "string" && typeof gameObject.sockets[1] === "string") {
+        gameObject.gameBoard = [];
+        for (let i: number = 0; i < gameObject.config[0]; i++) {
+            gameObject.gameBoard[i] = new Array(gameObject.config[1]).fill(null);
         }
-        activeGames[gameCode].playerTurn = randomPlayerTurn();
-        activeGames[gameCode].gameState = "running";
+        gameObject.playerTurn = randomPlayerTurn();
+        gameObject.gameState = "running";
     }
 }
 
@@ -127,57 +127,57 @@ export function randomPlayerTurn (): 1 | 2 {
 
 
 // Check validity of player move
-export function checkValidMove(activeGames: ActiveGames, coloumn: number, player: 1 | 2, gameCode: string): boolean {
-    if (checkIfCorrectPlayer(activeGames, player, gameCode) && checkIfEmptySlotLeftInColoumn(activeGames, coloumn, gameCode)) {
+export function checkValidMove(gameObject: GameObject, coloumn: number, player: 1 | 2, ): boolean {
+    if (checkIfCorrectPlayer(gameObject, player) && checkIfEmptySlotLeftInColoumn(gameObject, coloumn)) {
         return true;
     }
     return false;
 }
 
 // Check if the correct player made the move
-export function checkIfCorrectPlayer(activeGames: ActiveGames, player: 1 | 2, gameCode: string) : boolean {
-    if (activeGames[gameCode].playerTurn === player) {
+export function checkIfCorrectPlayer(gameObject: GameObject, player: 1 | 2) : boolean {
+    if (gameObject.playerTurn === player) {
         return true;
     }
     return false;
 }
 
 // Check if there is at least one slot in the coloumn left
-export function checkIfEmptySlotLeftInColoumn(activeGames: ActiveGames, coloumn: number, gameCode: string) : boolean {
-    if (activeGames[gameCode].gameBoard[coloumn].includes(null)) {
+export function checkIfEmptySlotLeftInColoumn(gameObject: GameObject, coloumn: number) : boolean {
+    if (gameObject.gameBoard[coloumn].includes(null)) {
         return true;
     }
     return false;
 }
 
 // Add lastMove to gameBoard
-export function addLastMoveToGameBoard(activeGames: ActiveGames, gameCode:string):void {
-    let lastMove: [number, number, Player] = activeGames[gameCode].lastMove;
-    activeGames[gameCode].gameBoard[lastMove[0]][lastMove[1]] = lastMove[2];
+export function addLastMoveToGameBoard(gameObject: GameObject):void {
+    let lastMove: [number, number, Player] = gameObject.lastMove;
+    gameObject.gameBoard[lastMove[0]][lastMove[1]] = lastMove[2];
 }
 
 
 // Set gameObject to reflect win-state
-export function setWinningState(activeGames: ActiveGames, gameCode:string) {
-    activeGames[gameCode].gameState = "end";
-    activeGames[gameCode].winner = activeGames[gameCode].lastMove[2];
-    activeGames[gameCode].score[activeGames[gameCode].lastMove[2]-1]++;
+export function setWinningState(gameObject: GameObject) {
+    gameObject.gameState = "end";
+    gameObject.winner = gameObject.lastMove[2];
+    gameObject.score[gameObject.lastMove[2]-1]++;
 }
 
 // Toggle playerTurn to next player
-export function togglePlayerTurn(activeGames:ActiveGames, gameCode) {
-    if (activeGames[gameCode].lastMove[2] === 1) {
-        activeGames[gameCode].playerTurn = 2
-    } else if (activeGames[gameCode].lastMove[2] === 2) {
-        activeGames[gameCode].playerTurn = 1
+export function togglePlayerTurn(gameObject: GameObject) {
+    if (gameObject.lastMove[2] === 1) {
+        gameObject.playerTurn = 2
+    } else if (gameObject.lastMove[2] === 2) {
+        gameObject.playerTurn = 1
     }
 }
 
 // Check wether the gameBoard is full, returns true or false
-export function checkForDraw(activeGames: ActiveGames, gameCode: string): boolean {
+export function checkForDraw(gameObject: GameObject): boolean {
     let draw: boolean = false;
-    for (let i = 0; i < activeGames[gameCode].config[0]; i++) {
-        if (!activeGames[gameCode].gameBoard[i].some(item => item === null)) {
+    for (let i = 0; i < gameObject.config[0]; i++) {
+        if (!gameObject.gameBoard[i].some(item => item === null)) {
             draw = true;
         };
     return draw;

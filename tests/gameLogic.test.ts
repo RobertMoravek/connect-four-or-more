@@ -16,7 +16,7 @@ import {
     togglePlayerTurn,
     validateUserConfig,
 } from "../src/gameLogic";
-import { ActiveGames } from "../src/types";
+import { ActiveGames, GameObject } from "../src/types";
 
 // createNewGame
 describe("createNewGame", () => {
@@ -235,8 +235,8 @@ describe("deleteSocketfromActiveGames", () => {
 
 describe("startGameIfReady", () => {
     test("checks wether the the condition for a game to start have been met and if so changes gameState to running", () => {
-        let activeGames: ActiveGames = {
-            XYZABE: {
+        let gameObject: GameObject = {
+
                 gameBoard: null,
                 // playerName?: [string, string],
                 playerTurn: null,
@@ -247,12 +247,12 @@ describe("startGameIfReady", () => {
                 sockets: ["hallo", "sdfsdf"],
                 lastMove: null,
                 winningSlots: null,
-            },
-        };
-        startGameIfReady(activeGames, "XYZABE");
-        expect(activeGames.XYZABE.gameState).toBe("running");
-        expect([1, 2]).toContain(activeGames.XYZABE.playerTurn);
-        expect(activeGames.XYZABE.gameBoard).toEqual([
+            };
+
+        startGameIfReady(gameObject);
+        expect(gameObject.gameState).toBe("running");
+        expect([1, 2]).toContain(gameObject.playerTurn);
+        expect(gameObject.gameBoard).toEqual([
             [null, null, null],
             [null, null, null],
         ]);
@@ -261,8 +261,7 @@ describe("startGameIfReady", () => {
 
 describe("checkIfCorrectPlayer", () => {
     test("checks wether the player whose turn it is made the move and returns true/false", () => {
-        let activeGames: ActiveGames = {
-            XYZABE: {
+        let gameObject: GameObject = {
                 gameBoard: null,
                 // playerName?: [string, string],
                 playerTurn: 2,
@@ -273,18 +272,17 @@ describe("checkIfCorrectPlayer", () => {
                 sockets: ["hallo", "sdfsdf"],
                 lastMove: null,
                 winningSlots: null,
-            },
+
         };
-        expect(checkIfCorrectPlayer(activeGames, 2, "XYZABE")).toBeTruthy();
-        expect(checkIfCorrectPlayer(activeGames, 1, "XYZABE")).toBeFalsy();
-        expect(checkIfCorrectPlayer(activeGames, null, "XYZABE")).toBeFalsy();
+        expect(checkIfCorrectPlayer(gameObject, 2)).toBeTruthy();
+        expect(checkIfCorrectPlayer(gameObject, 1)).toBeFalsy();
+        expect(checkIfCorrectPlayer(gameObject, null)).toBeFalsy();
     });
 });
 
 describe("checkIfEmptySlotLeftInColoumn", () => {
     test("checks wether there is at least one empty slot left in the chosen coloumn and returns true/false", () => {
-        let activeGames: ActiveGames = {
-            XYZABE: {
+        let gameObject:GameObject = {
                 gameBoard: [
                     [null, null, null],
                     [2, 1, null],
@@ -299,24 +297,23 @@ describe("checkIfEmptySlotLeftInColoumn", () => {
                 sockets: ["hallo", "sdfsdf"],
                 lastMove: null,
                 winningSlots: null,
-            },
+
         };
         expect(
-            checkIfEmptySlotLeftInColoumn(activeGames, 0, "XYZABE")
+            checkIfEmptySlotLeftInColoumn(gameObject, 0)
         ).toBeTruthy();
         expect(
-            checkIfEmptySlotLeftInColoumn(activeGames, 1, "XYZABE")
+            checkIfEmptySlotLeftInColoumn(gameObject, 1)
         ).toBeTruthy();
         expect(
-            checkIfEmptySlotLeftInColoumn(activeGames, 2, "XYZABE")
+            checkIfEmptySlotLeftInColoumn(gameObject, 2)
         ).toBeFalsy();
     });
 });
 
 describe("addLastMoveToGameBoard", () => {
     test("adds the lastMove to the gameBoard, doesn't return anything", () => {
-        let activeGames: ActiveGames = {
-            XYZABE: {
+        let gameObject: GameObject = {
                 gameBoard: [
                     [null, null, null],
                     [2, 1, null],
@@ -331,12 +328,10 @@ describe("addLastMoveToGameBoard", () => {
                 sockets: ["hallo", "sdfsdf"],
                 lastMove: [1, 2, 2],
                 winningSlots: null,
-            },
         };
-        addLastMoveToGameBoard(activeGames, "XYZABE");
-        expect(activeGames.XYZABE.gameBoard[1][2]).toBe(2);
-        activeGames = {
-            XYZABE: {
+        addLastMoveToGameBoard(gameObject);
+        expect(gameObject.gameBoard[1][2]).toBe(2);
+        gameObject = {
                 gameBoard: [
                     [null, null, null],
                     [2, 1, 1],
@@ -351,17 +346,16 @@ describe("addLastMoveToGameBoard", () => {
                 sockets: ["hallo", "sdfsdf"],
                 lastMove: [0, 0, 2],
                 winningSlots: null,
-            },
+
         };
-        addLastMoveToGameBoard(activeGames, "XYZABE");
-        expect(activeGames.XYZABE.gameBoard[0][0]).toBe(2);
+        addLastMoveToGameBoard(gameObject);
+        expect(gameObject.gameBoard[0][0]).toBe(2);
     });
 });
 
 describe("checkIfCorrectPlayer", () => {
     test("checks wether the player whose turn it is made the move and returns true/false", () => {
-        let activeGames: ActiveGames = {
-            XYZABE: {
+        let gameObject: GameObject = {
                 gameBoard: null,
                 // playerName?: [string, string],
                 playerTurn: 2,
@@ -372,19 +366,17 @@ describe("checkIfCorrectPlayer", () => {
                 sockets: ["hallo", "sdfsdf"],
                 lastMove: [1, 1, 2],
                 winningSlots: null,
-            },
         };
-        setWinningState(activeGames, "XYZABE");
-        expect(activeGames.XYZABE.gameState).toBe("end");
-        expect(activeGames.XYZABE.winner).toBe(2);
-        expect(activeGames.XYZABE.score[1]).toBe(1);
+        setWinningState(gameObject);
+        expect(gameObject.gameState).toBe("end");
+        expect(gameObject.winner).toBe(2);
+        expect(gameObject.score[1]).toBe(1);
     });
 });
 
 describe("togglePlayerTurn", () => {
     test("changes the playerTurn from 1 to 2 and the other way around, no return", () => {
-        let activeGames: ActiveGames = {
-            XYZABE: {
+        let gameObject: GameObject = {
                 gameBoard: null,
                 // playerName?: [string, string],
                 playerTurn: null,
@@ -395,12 +387,11 @@ describe("togglePlayerTurn", () => {
                 sockets: ["hallo", "sdfsdf"],
                 lastMove: [1, 1, 2],
                 winningSlots: null,
-            },
+
         };
-        togglePlayerTurn(activeGames, "XYZABE");
-        expect(activeGames.XYZABE.playerTurn).toBe(1);
-        activeGames = {
-            XYZABE: {
+        togglePlayerTurn(gameObject);
+        expect(gameObject.playerTurn).toBe(1);
+        gameObject = {
                 gameBoard: null,
                 // playerName?: [string, string],
                 playerTurn: null,
@@ -411,17 +402,15 @@ describe("togglePlayerTurn", () => {
                 sockets: ["hallo", "sdfsdf"],
                 lastMove: [1, 1, 1],
                 winningSlots: null,
-            },
         };
-        togglePlayerTurn(activeGames, "XYZABE");
-        expect(activeGames.XYZABE.playerTurn).toBe(2);
+        togglePlayerTurn(gameObject);
+        expect(gameObject.playerTurn).toBe(2);
     });
 });
 
 describe("checkForDraw", () => {
     test("returns true, if draw, false if not", () => {
-        let activeGames: ActiveGames = {
-            XYZABE: {
+        let gameObject: GameObject = {
                 gameBoard: [
                     [1, 2, 2],
                     [1, 2, 2],
@@ -436,11 +425,10 @@ describe("checkForDraw", () => {
                 sockets: ["hallo", "sdfsdf"],
                 lastMove: [1, 1, 1],
                 winningSlots: null,
-            },
+
         };
-        expect(checkForDraw(activeGames, "XYZABE")).toBeTruthy();
-        activeGames = {
-            XYZABE: {
+        expect(checkForDraw(gameObject)).toBeTruthy();
+        gameObject = {
                 gameBoard: [
                     [1, 2, null],
                     [1, 2, 2],
@@ -455,8 +443,8 @@ describe("checkForDraw", () => {
                 sockets: ["hallo", "sdfsdf"],
                 lastMove: [1, 1, 1],
                 winningSlots: null,
-            },
+
         };
-        expect(checkForDraw(activeGames, "XYZABE")).toBeFalsy();
+        expect(checkForDraw(gameObject)).toBeFalsy();
     });
 });

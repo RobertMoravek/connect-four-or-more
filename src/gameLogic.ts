@@ -51,6 +51,8 @@ export function newGameObject(socketId: string): GameObject {
         sockets: [socketId, null],
         lastMove: null,
         winningSlots: null,
+        playAgain: [false, false],
+        playerStartedLast: null,
     };
 }
 
@@ -112,7 +114,9 @@ export function startGameIfReady (gameObject: GameObject): void {
         for (let i: number = 0; i < gameObject.config[0]; i++) {
             gameObject.gameBoard[i] = new Array(gameObject.config[1]).fill(null);
         }
-        gameObject.playerTurn = randomPlayerTurn();
+        let startingPlayer: 1 | 2 = randomPlayerTurn();
+        gameObject.playerTurn = startingPlayer;
+        gameObject.playerStartedLast = startingPlayer;
         gameObject.gameState = "running";
     }
 }
@@ -184,6 +188,37 @@ export function checkForDraw(gameObject: GameObject): boolean {
 
     }
 }
+
+// Sets the playAgain flag for a player to true, doesn't return anything
+export function setPlayAgain(gameObject: GameObject, socketId: string) {
+    let player: number = gameObject.sockets.indexOf(socketId);
+    gameObject.playAgain[player] = true;
+}
+
+// If both playAgain flags are true, return true, otherwise return false
+export function checkIfBothWantToPlayAgain(gameObject: GameObject) {
+    if (gameObject.playAgain[0] && gameObject.playAgain[1]) {
+        return true;
+    }
+    return false;
+}
+
+// Reset the gameObject to restart with same players and same Config, switch starting player to the opposite of last round.
+export function prepareRestartGameWithSameConfig(gameObject: GameObject){
+    for (let i: number = 0; i < gameObject.config[0]; i++) {
+        gameObject.gameBoard[i] = new Array(gameObject.config[1]).fill(null);
+    }
+    let playerStart: 1 | 2 = gameObject.playerStartedLast== 1 ? 2 : 1;
+    gameObject.playerTurn = playerStart;
+    gameObject.playerStartedLast = playerStart;
+    gameObject.winner= null;
+    gameObject.lastMove = null;
+    gameObject.winningSlots = null;
+    gameObject.playAgain = [false, false];
+    gameObject.gameState = "running";
+}
+
+
 
 
 // On disconnect delete the socket from active games

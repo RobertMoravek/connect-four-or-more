@@ -8,6 +8,9 @@ import {
     startGameIfReady,
     checkValidMove,
     addLastMoveToGameBoard,
+    setPlayAgain,
+    checkIfBothWantToPlayAgain,
+    prepareRestartGameWithSameConfig,
 } from "./gameLogic";
 import { createErrorMessage } from "./errors";
 
@@ -75,21 +78,35 @@ io.on("connection", (socket) => {
     });
 
     // Check code and join second player to game (if it exists)
-    socket.on("coloumn-cklick", (coloumn: number, player: 1 | 2, code: string) => {
-        if (checkValidMove(activeGames[code], coloumn, player)) {
-            activeGames[code].lastMove = [coloumn, activeGames[code].gameBoard[coloumn].indexOf(null), player];
-            activeGames[code].playerTurn = null;
-            io.in(code).emit("game-update", activeGames[code], code);
-            setTimeout(() => {
-                addLastMoveToGameBoard(activeGames[code]);
-                // ******* CHECKVICTORY FUNCTION and it's following functions
-            }, 1000);
-        } else {
-            io.to(socket.id).emit("error", createErrorMessage(3));
+    socket.on(
+        "coloumn-cklick",
+        (coloumn: number, player: 1 | 2, code: string) => {
+            if (checkValidMove(activeGames[code], coloumn, player)) {
+                activeGames[code].lastMove = [
+                    coloumn,
+                    activeGames[code].gameBoard[coloumn].indexOf(null),
+                    player,
+                ];
+                activeGames[code].playerTurn = null;
+                io.in(code).emit("game-update", activeGames[code], code);
+                setTimeout(() => {
+                    addLastMoveToGameBoard(activeGames[code]);
+                    // ******* CHECKVICTORY FUNCTION and it's following functions
+                }, 1000);
+            } else {
+                io.to(socket.id).emit("error", createErrorMessage(3));
+            }
         }
-    
-    });
+    );
 
+    // If one player clicks "play again", mark them as playAgain true and check if the other player is also true. If yes, prepare the game for restart. Emit new gamestate either way.
+    socket.on("play-again", (code: string) => {
+        setPlayAgain(activeGames[code], socket.id);
+        if (checkIfBothWantToPlayAgain(activeGames[code])) {
+            prepareRestartGameWithSameConfig(activeGames[code])
+        }
+        io.in(code).emit("game-update", activeGames[code]);
+    });
 
     socket.on("disconnect", () => {
         console.log("user disconnected: socket-id:", socket.id);

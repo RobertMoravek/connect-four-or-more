@@ -1,85 +1,109 @@
-import { player } from "./types";
+import { Player, GameObject } from "./types";
 
-export function checkForVictory(
-    gameBoard: player[][],
-    config: [number, number, number],
-    lastMove: [number, number, 1 | 2],
-    playerTurn: player
-): boolean {
-    let colIdx: number = lastMove[0];
-    let rowIdx: number = lastMove[1];
-    let colCount: number = config[0];
-    let rowCount: number = config[1];
-    let nbWin: number = config[2];
-
-    //vertical set
-    let verticalSetArray: number[][] = gameBoard[colIdx]
+function getVerticalSet(gameObject: GameObject): number[][] {
+    let colIdx: number = gameObject.lastMove[0];
+    let rowIdx: number = gameObject.lastMove[1];
+    return gameObject.gameBoard[colIdx]
         .slice(0, rowIdx + 1)
-        .map((e, idx) => [colIdx, idx, e]);
+        .map((e: number, idx: number) => [colIdx, idx, e]);
+}
 
-    //horizontal set
-    let horizontalSetArray: number[][] = gameBoard.map((e, idx) =>
+function getHorizontalSet(gameObject: GameObject): number[][] {
+    let rowIdx: number = gameObject.lastMove[1];
+    return gameObject.gameBoard.map((e: number[], idx: number) =>
         [idx, rowIdx, e.slice(rowIdx, rowIdx + 1)].flat()
     );
+}
 
-    //diagonal sets
-    //1. backward diagonal - find the starting slot
-    let diagBackSetArray: number[][] = [];
+function getBackDiagonal(gameObject: GameObject): number[][] {
+    let colIdx: number = gameObject.lastMove[0];
+    let rowIdx: number = gameObject.lastMove[1];
+    let colCount: number = gameObject.config[0];
+    let rowCount: number = gameObject.config[1];
+    let diagBack: number[][] = [];
+
+    //find starting slot and add to diagonal array
     while (colIdx > 0 && rowIdx < rowCount - 1) {
         colIdx -= 1;
         rowIdx += 1;
     }
-    //add starting slot to backward diagonal
-    diagBackSetArray.push([colIdx, rowIdx, gameBoard[colIdx][rowIdx]]);
+    diagBack.push([colIdx, rowIdx, gameObject.gameBoard[colIdx][rowIdx]]);
 
     //add the other slots
     while (colIdx < colCount - 1 && rowIdx > 0) {
         colIdx += 1;
         rowIdx -= 1;
-        diagBackSetArray.push([colIdx, rowIdx, gameBoard[colIdx][rowIdx]]);
+        diagBack.push([colIdx, rowIdx, gameObject.gameBoard[colIdx][rowIdx]]);
     }
 
-    //2. forward diagonal - find the starting slot
-    let diagFwdSetArray: number[][] = [];
+    return diagBack;
+}
+
+function getFwdDiagonal(gameObject: GameObject): number[][] {
+    let colIdx: number = gameObject.lastMove[0];
+    let rowIdx: number = gameObject.lastMove[1];
+    let colCount: number = gameObject.config[0];
+    let rowCount: number = gameObject.config[1];
+
+    let diagFwd: number[][] = [];
+    //find starting slot and add to diagonal array
     while (colIdx > 0 && rowIdx > 0) {
         colIdx -= 1;
         rowIdx -= 1;
     }
-    //add starting slot to backward diagonal
-    diagFwdSetArray.push([colIdx, rowIdx, gameBoard[colIdx][rowIdx]]);
+    diagFwd.push([colIdx, rowIdx, gameObject.gameBoard[colIdx][rowIdx]]);
 
     //add the other slots
     while (colIdx < colCount - 1 && rowIdx < rowCount - 1) {
         colIdx += 1;
         rowIdx += 1;
-        diagFwdSetArray.push([colIdx, rowIdx, gameBoard[colIdx][rowIdx]]);
+        diagFwd.push([colIdx, rowIdx, gameObject.gameBoard[colIdx][rowIdx]]);
     }
 
-    //getting the slot values out of the whole set
-    // let set = [].concat(...paramSet.map((e) => e[2]));
+    return diagFwd;
+}
 
-    //???avoid unnecessary checks for shorter sets
-    // if (set.length < nbWin) {
-    //     return false;
-    // }
+function checkNbWinningSlots(set: number[][], gameObject: GameObject): boolean {
+    let winningNumber: number = gameObject.config[2];
+    let playerTurn: Player = gameObject.playerTurn;
 
-    let count = 0;
+    //avoid unnecessary checks for shorter sets
+    if (set.length < winningNumber) {
+        return false;
+    }
+
+    let count: number = 0;
     let winningSlots: [number, number][] | null = [];
 
-    for (let slot of paramSet) {
+    for (let slot of set) {
         if (slot[2] == playerTurn) {
             count++;
-
-            //update winning slots array
             winningSlots.push([slot[0], slot[1]]);
-            //check for win
-            if (count === nbWin) {
-                return true;
-            }
         } else {
-            count = 0;
-            winningSlots = null;
+            //check for win - also accounts for cases where there are more slots than the required winning slots
+            if (count >= winningNumber) {
+                gameObject.winningSlots = winningSlots;
+                return true;
+            } else {
+                count = 0;
+                winningSlots = [];
+            }
         }
     }
     return false;
+}
+
+export function checkForVictory(gameObject: GameObject): boolean {
+    let victory: boolean = false;
+
+    if (
+        checkNbWinningSlots(getVerticalSet(gameObject), gameObject) ||
+        checkNbWinningSlots(getHorizontalSet(gameObject), gameObject) ||
+        checkNbWinningSlots(getBackDiagonal(gameObject), gameObject) ||
+        checkNbWinningSlots(getFwdDiagonal(gameObject), gameObject)
+    ) {
+        victory = true;
+    }
+
+    return victory;
 }

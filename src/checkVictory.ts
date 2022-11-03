@@ -12,59 +12,78 @@ export function checkForVictory(
     let rowCount: number = config[1];
     let nbWin: number = config[2];
     //vertical set
-    let verticalSet: player[] = gameBoard[colIdx].slice(0, rowIdx + 1);
+    let verticalSetArray: number[][] = gameBoard[colIdx]
+        .slice(0, rowIdx + 1)
+        .map((e, idx) => [colIdx, idx, e]);
+
     //horizontal set
-    let horizontalArray: player[] = [].concat(
-        ...gameBoard.map((e) => e.slice(rowIdx, rowIdx + 1))
+    // let horizontalSet: player[] = [].concat(
+    //     ...gameBoard.map((e) => e.slice(rowIdx, rowIdx + 1))
+    // );
+    // let horizontalSetArray: number[][] = horizontalSet.map((e, idx) => [
+    //     idx,
+    //     rowIdx,
+    //     e,
+    // ]);
+
+    let horizontalSetArray: number[][] = gameBoard.map((e, idx) =>
+        [idx, rowIdx, e.slice(rowIdx, rowIdx + 1)].flat()
     );
 
     //diagonal sets
     //1. backward diagonal - find the starting slot
-    let diagBack: player[];
+    let diagBackSetArray: number[][];
     while (colIdx > 0 && rowIdx < rowCount - 1) {
         colIdx -= 1;
         rowIdx += 1;
     }
     //add starting slot to backward diagonal
-    diagBack.push(gameBoard[colIdx][rowIdx]);
+    diagBackSetArray.push([colIdx, rowIdx, gameBoard[colIdx][rowIdx]]);
 
     //add the other slots
     while (colIdx < colCount - 1 && rowIdx > 0) {
         colIdx += 1;
         rowIdx -= 1;
-        diagBack.push(gameBoard[colIdx][rowIdx]);
+        diagBackSetArray.push([colIdx, rowIdx, gameBoard[colIdx][rowIdx]]);
     }
+    // let diagBack: player[];
+    // diagBack = [].concat(...diagBackSetArray.map((e) => e[2]));
 
     //2. forward diagonal - find the starting slot
-    let diagFwd: player[];
+    let diagFwdSetArray: number[][];
     while (colIdx > 0 && rowIdx > 0) {
         colIdx -= 1;
         rowIdx -= 1;
     }
     //add starting slot to backward diagonal
-    diagFwd.push(gameBoard[colIdx][rowIdx]);
+    diagFwdSetArray.push([colIdx, rowIdx, gameBoard[colIdx][rowIdx]]);
 
     //add the other slots
     while (colIdx < colCount - 1 && rowIdx < rowCount - 1) {
         colIdx += 1;
         rowIdx += 1;
-        diagFwd.push(gameBoard[colIdx][rowIdx]);
+        diagFwdSetArray.push([colIdx, rowIdx, gameBoard[colIdx][rowIdx]]);
     }
+    // let diagFwd: player[];
+    // diagFwd = [].concat(...diagFwdSetArray.map((e) => e[2]));
+
+    //actual function where paramSet is the set that gets passed
+    // let set = [].concat(...paramSet.map((e) => e[2]));
 
     //avoid unnecessary checks for shorter sets
-    if (set.length < nbWin) {
-        return false;
-    }
+    // if (set.length < nbWin) {
+    //     return false;
+    // }
 
     let count = 0;
     let winningSlots: [number, number][] | null;
 
-    for (let slot of set) {
-        if (slot == playerTurn) {
+    for (let slot of paramSet) {
+        if (slot[2] == playerTurn) {
             count++;
 
             //update winning slots array
-
+            winningSlots.push([slot[0], slot[1]]);
             //check for win
             if (count === nbWin) {
                 return true;

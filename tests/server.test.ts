@@ -7,10 +7,10 @@ import {
     deleteSocketfromActiveGames,
     isRandomStringUnique,
     newGameObject,
+    startGameIfReady,
     validateUserConfig,
 } from "../src/gameLogic";
 import { activeGames } from "../src/types";
-
 
 // createNewGame
 describe("createNewGame", () => {
@@ -227,3 +227,29 @@ describe("deleteSocketfromActiveGames", () => {
     });
 });
 
+describe("startGameIfReady", () => {
+    test("checks wether the the condition for a game to start have been met and if so changes gameState to running", () => {
+        let activeGames: activeGames = {
+            XYZABE: {
+                gameBoard: null,
+                // playerName?: [string, string],
+                playerTurn: null,
+                score: [0, 0],
+                gameState: "ready",
+                winner: null,
+                config: [2, 3, 4],
+                sockets: ["hallo", "sdfsdf"],
+                lastMove: null,
+                winningSlots: null,
+            },
+        };
+        startGameIfReady(activeGames, "XYZABE");
+        expect(activeGames.XYZABE.gameState).toBe("running");
+        expect([1, 2]).toContain(activeGames.XYZABE.playerTurn);
+        expect(activeGames.XYZABE.gameBoard).toEqual([
+            [null, null, null],
+            [null, null, null],
+            
+        ]);
+    });
+});

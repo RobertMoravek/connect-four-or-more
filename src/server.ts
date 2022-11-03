@@ -7,6 +7,7 @@ import {
     checkUserConfigValues,
     checkForExistingGame,
     validateUserConfig,
+    startGameIfReady,
 } from "./gameLogic";
 import { createErrorMessage } from "./errors";
 
@@ -53,17 +54,19 @@ io.on("connection", (socket) => {
     socket.on(
         "config-ready",
         (config: [number, number, number], code: string) => {
-            console.log('receiving config');
+            console.log("receiving config");
             validateUserConfig(config, activeGames, code);
+            startGameIfReady(activeGames, code);
             io.in(code).emit("game-update", activeGames[code]);
         }
     );
 
     // Check code and join second player to game (if it exists)
     socket.on("join-game", (code: string) => {
-        console.log('receiving join request');
+        console.log("receiving join request");
         if (checkForExistingGame(activeGames, code)) {
             activeGames[code].sockets[1] = socket.id;
+            startGameIfReady(activeGames, code);
             io.in(code).emit("game-update", activeGames[code], code);
         } else {
             io.to(socket.id).emit("error", createErrorMessage(1));
@@ -86,7 +89,7 @@ io.on("connection", (socket) => {
                 activeGames[leftOverPlayer[1]]
             );
         }
-        console.log('after leaving', activeGames);
+        console.log("after leaving", activeGames);
     });
 });
 

@@ -105,6 +105,26 @@ export function checkForExistingGame(
     return temp;
 }
 
+// Check if all criteria are met for the game to start and then do it by changing gameState to running
+export function startGameIfReady (activeGames: activeGames ,gameCode: string): void {
+    if (activeGames[gameCode].gameState === "ready" && typeof activeGames[gameCode].sockets[0] === "string" && typeof activeGames[gameCode].sockets[1] === "string") {
+        activeGames[gameCode].gameBoard = [];
+        for (let i: number = 0; i < activeGames[gameCode].config[0]; i++) {
+            activeGames[gameCode].gameBoard[i] = new Array(activeGames[gameCode].config[1]).fill(null);
+        }
+        activeGames[gameCode].playerTurn = randomPlayerTurn();
+        activeGames[gameCode].gameState = "running";
+    }
+}
+
+// Generate a 1 or a 2 to use as initial playerTurn
+export function randomPlayerTurn (): 1 | 2 {
+    let tempNum: number = Math.floor(Math.random()*2)+1;
+    if (tempNum === 1 || tempNum === 2) {
+        return tempNum
+    }
+}
+
 // On disconnect delete the socket from active games
 export function deleteSocketfromActiveGames(
     socketId,

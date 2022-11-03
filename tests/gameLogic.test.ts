@@ -1,16 +1,22 @@
 import { describe, expect, test } from "@jest/globals";
 import {
+    addLastMoveToGameBoard,
+    checkForDraw,
     checkForExistingGame,
+    checkIfCorrectPlayer,
+    checkIfEmptySlotLeftInColoumn,
     checkUserConfigForInteger,
     checkUserConfigValues,
     createNewGame,
     deleteSocketfromActiveGames,
     isRandomStringUnique,
     newGameObject,
+    setWinningState,
     startGameIfReady,
+    togglePlayerTurn,
     validateUserConfig,
 } from "../src/gameLogic";
-import { activeGames } from "../src/types";
+import { ActiveGames } from "../src/types";
 
 // createNewGame
 describe("createNewGame", () => {
@@ -159,7 +165,7 @@ describe("checkForExistingGame", () => {
 
 describe("deleteSocketfromActiveGames", () => {
     test("", () => {
-        let activeGames: activeGames = {
+        let activeGames: ActiveGames = {
             ABCDEF: {
                 gameBoard: null,
                 // playerName?: [string, string],
@@ -229,7 +235,7 @@ describe("deleteSocketfromActiveGames", () => {
 
 describe("startGameIfReady", () => {
     test("checks wether the the condition for a game to start have been met and if so changes gameState to running", () => {
-        let activeGames: activeGames = {
+        let activeGames: ActiveGames = {
             XYZABE: {
                 gameBoard: null,
                 // playerName?: [string, string],
@@ -249,7 +255,208 @@ describe("startGameIfReady", () => {
         expect(activeGames.XYZABE.gameBoard).toEqual([
             [null, null, null],
             [null, null, null],
-            
         ]);
+    });
+});
+
+describe("checkIfCorrectPlayer", () => {
+    test("checks wether the player whose turn it is made the move and returns true/false", () => {
+        let activeGames: ActiveGames = {
+            XYZABE: {
+                gameBoard: null,
+                // playerName?: [string, string],
+                playerTurn: 2,
+                score: [0, 0],
+                gameState: "ready",
+                winner: null,
+                config: [2, 3, 4],
+                sockets: ["hallo", "sdfsdf"],
+                lastMove: null,
+                winningSlots: null,
+            },
+        };
+        expect(checkIfCorrectPlayer(activeGames, 2, "XYZABE")).toBeTruthy();
+        expect(checkIfCorrectPlayer(activeGames, 1, "XYZABE")).toBeFalsy();
+        expect(checkIfCorrectPlayer(activeGames, null, "XYZABE")).toBeFalsy();
+    });
+});
+
+describe("checkIfEmptySlotLeftInColoumn", () => {
+    test("checks wether there is at least one empty slot left in the chosen coloumn and returns true/false", () => {
+        let activeGames: ActiveGames = {
+            XYZABE: {
+                gameBoard: [
+                    [null, null, null],
+                    [2, 1, null],
+                    [1, 2, 2],
+                ],
+                // playerName?: [string, string],
+                playerTurn: 2,
+                score: [0, 0],
+                gameState: "ready",
+                winner: null,
+                config: [2, 3, 4],
+                sockets: ["hallo", "sdfsdf"],
+                lastMove: null,
+                winningSlots: null,
+            },
+        };
+        expect(
+            checkIfEmptySlotLeftInColoumn(activeGames, 0, "XYZABE")
+        ).toBeTruthy();
+        expect(
+            checkIfEmptySlotLeftInColoumn(activeGames, 1, "XYZABE")
+        ).toBeTruthy();
+        expect(
+            checkIfEmptySlotLeftInColoumn(activeGames, 2, "XYZABE")
+        ).toBeFalsy();
+    });
+});
+
+describe("addLastMoveToGameBoard", () => {
+    test("adds the lastMove to the gameBoard, doesn't return anything", () => {
+        let activeGames: ActiveGames = {
+            XYZABE: {
+                gameBoard: [
+                    [null, null, null],
+                    [2, 1, null],
+                    [1, 2, 2],
+                ],
+                // playerName?: [string, string],
+                playerTurn: 2,
+                score: [0, 0],
+                gameState: "ready",
+                winner: null,
+                config: [2, 3, 4],
+                sockets: ["hallo", "sdfsdf"],
+                lastMove: [1, 2, 2],
+                winningSlots: null,
+            },
+        };
+        addLastMoveToGameBoard(activeGames, "XYZABE");
+        expect(activeGames.XYZABE.gameBoard[1][2]).toBe(2);
+        activeGames = {
+            XYZABE: {
+                gameBoard: [
+                    [null, null, null],
+                    [2, 1, 1],
+                    [1, 2, 2],
+                ],
+                // playerName?: [string, string],
+                playerTurn: 2,
+                score: [0, 0],
+                gameState: "ready",
+                winner: null,
+                config: [2, 3, 4],
+                sockets: ["hallo", "sdfsdf"],
+                lastMove: [0, 0, 2],
+                winningSlots: null,
+            },
+        };
+        addLastMoveToGameBoard(activeGames, "XYZABE");
+        expect(activeGames.XYZABE.gameBoard[0][0]).toBe(2);
+    });
+});
+
+describe("checkIfCorrectPlayer", () => {
+    test("checks wether the player whose turn it is made the move and returns true/false", () => {
+        let activeGames: ActiveGames = {
+            XYZABE: {
+                gameBoard: null,
+                // playerName?: [string, string],
+                playerTurn: 2,
+                score: [0, 0],
+                gameState: "running",
+                winner: null,
+                config: [2, 3, 4],
+                sockets: ["hallo", "sdfsdf"],
+                lastMove: [1, 1, 2],
+                winningSlots: null,
+            },
+        };
+        setWinningState(activeGames, "XYZABE");
+        expect(activeGames.XYZABE.gameState).toBe("end");
+        expect(activeGames.XYZABE.winner).toBe(2);
+        expect(activeGames.XYZABE.score[1]).toBe(1);
+    });
+});
+
+describe("togglePlayerTurn", () => {
+    test("changes the playerTurn from 1 to 2 and the other way around, no return", () => {
+        let activeGames: ActiveGames = {
+            XYZABE: {
+                gameBoard: null,
+                // playerName?: [string, string],
+                playerTurn: null,
+                score: [0, 0],
+                gameState: "running",
+                winner: null,
+                config: [2, 3, 4],
+                sockets: ["hallo", "sdfsdf"],
+                lastMove: [1, 1, 2],
+                winningSlots: null,
+            },
+        };
+        togglePlayerTurn(activeGames, "XYZABE");
+        expect(activeGames.XYZABE.playerTurn).toBe(1);
+        activeGames = {
+            XYZABE: {
+                gameBoard: null,
+                // playerName?: [string, string],
+                playerTurn: null,
+                score: [0, 0],
+                gameState: "running",
+                winner: null,
+                config: [2, 3, 4],
+                sockets: ["hallo", "sdfsdf"],
+                lastMove: [1, 1, 1],
+                winningSlots: null,
+            },
+        };
+        togglePlayerTurn(activeGames, "XYZABE");
+        expect(activeGames.XYZABE.playerTurn).toBe(2);
+    });
+});
+
+describe("checkForDraw", () => {
+    test("returns true, if draw, false if not", () => {
+        let activeGames: ActiveGames = {
+            XYZABE: {
+                gameBoard: [
+                    [1, 2, 2],
+                    [1, 2, 2],
+                    [1, 2, 2],
+                ],
+                // playerName?: [string, string],
+                playerTurn: null,
+                score: [0, 0],
+                gameState: "running",
+                winner: null,
+                config: [2, 3, 4],
+                sockets: ["hallo", "sdfsdf"],
+                lastMove: [1, 1, 1],
+                winningSlots: null,
+            },
+        };
+        expect(checkForDraw(activeGames, "XYZABE")).toBeTruthy();
+        activeGames = {
+            XYZABE: {
+                gameBoard: [
+                    [1, 2, null],
+                    [1, 2, 2],
+                    [1, 2, 2],
+                ],
+                // playerName?: [string, string],
+                playerTurn: null,
+                score: [0, 0],
+                gameState: "running",
+                winner: null,
+                config: [2, 3, 4],
+                sockets: ["hallo", "sdfsdf"],
+                lastMove: [1, 1, 1],
+                winningSlots: null,
+            },
+        };
+        expect(checkForDraw(activeGames, "XYZABE")).toBeFalsy();
     });
 });

@@ -1,5 +1,5 @@
 import express from "express";
-import { gameObject, activeGames } from "./types";
+import { GameObject, ActiveGames, Player } from "./types";
 import {
     deleteSocketfromActiveGames,
     createNewGame,
@@ -8,6 +8,8 @@ import {
     checkForExistingGame,
     validateUserConfig,
     startGameIfReady,
+    checkValidMove,
+    addLastMoveToGameBoard,
 } from "./gameLogic";
 import { createErrorMessage } from "./errors";
 
@@ -19,7 +21,7 @@ const io = new Server(server);
 
 const port: number = 8080;
 
-const activeGames: activeGames = {};
+const activeGames: ActiveGames = {};
 
 if (process.env.NODE_ENV == "production") {
     app.use((req, res, next) => {
@@ -73,6 +75,23 @@ io.on("connection", (socket) => {
         }
         // console.log(activeGames);
     });
+
+    // Check code and join second player to game (if it exists)
+    socket.on("coloumn-cklick", (coloumn: number, player: 1 | 2, code: string) => {
+        if (checkValidMove(activeGames, coloumn, player, code)) {
+            activeGames[code].lastMove = [coloumn, activeGames[code].gameBoard[coloumn].indexOf(null), player];
+            activeGames[code].playerTurn = null;
+            io.in(code).emit("game-update", activeGames[code], code);
+            setTimeout(() => {
+                addLastMoveToGameBoard(activeGames, code);
+                // ******* CHECKVICTORY FUNCTION and it's following functions
+            }, 1000);
+        } else {
+            io.to(socket.id).emit("error", createErrorMessage(3));
+        }
+    
+    });
+
 
     socket.on("disconnect", () => {
         console.log("user disconnected: socket-id:", socket.id);

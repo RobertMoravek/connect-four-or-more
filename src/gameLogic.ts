@@ -1,8 +1,8 @@
-import { activeGames, gameObject } from "./types";
+import { ActiveGames, GameObject, Player } from "./types";
 
 // Set a code for a new Game
 export function createNewGame(
-    activeGames: activeGames,
+    activeGames: ActiveGames,
     socketId: string
 ): string {
     let tempRandomString: string = generateRandomString(6);
@@ -28,7 +28,7 @@ export const generateRandomString = (myLength: number) => {
 // Check wether tempRandomString is already in use
 export function isRandomStringUnique(
     tempRandomString: string,
-    activeGames: activeGames
+    activeGames: ActiveGames
 ): boolean {
     // If activeGames has the created key, return false
     if (tempRandomString in activeGames) {
@@ -39,7 +39,7 @@ export function isRandomStringUnique(
 }
 
 // Create new gameObject
-export function newGameObject(socketId: string): gameObject {
+export function newGameObject(socketId: string): GameObject {
     return {
         gameBoard: null,
         // playerName?: [string, string],
@@ -55,7 +55,7 @@ export function newGameObject(socketId: string): gameObject {
 }
 
 // Validate user Config and change if neccessary, set gameState to ready
-export function validateUserConfig (config: [number, number, number ], activeGames: activeGames, code: string): void {
+export function validateUserConfig (config: [number, number, number ], activeGames: ActiveGames, code: string): void {
     if (
         checkUserConfigForInteger(config) &&
         checkUserConfigValues(config)
@@ -93,7 +93,7 @@ export function checkUserConfigValues(
 
 // Check if requested game exists
 export function checkForExistingGame(
-    activeGames: activeGames,
+    activeGames: ActiveGames,
     code: string
 ): boolean {
     let temp: boolean = false;
@@ -106,7 +106,7 @@ export function checkForExistingGame(
 }
 
 // Check if all criteria are met for the game to start and then do it by changing gameState to running
-export function startGameIfReady (activeGames: activeGames ,gameCode: string): void {
+export function startGameIfReady (activeGames: ActiveGames ,gameCode: string): void {
     if (activeGames[gameCode].gameState === "ready" && typeof activeGames[gameCode].sockets[0] === "string" && typeof activeGames[gameCode].sockets[1] === "string") {
         activeGames[gameCode].gameBoard = [];
         for (let i: number = 0; i < activeGames[gameCode].config[0]; i++) {
@@ -125,10 +125,71 @@ export function randomPlayerTurn (): 1 | 2 {
     }
 }
 
+
+// Check validity of player move
+export function checkValidMove(activeGames: ActiveGames, coloumn: number, player: 1 | 2, gameCode: string): boolean {
+    if (checkIfCorrectPlayer(activeGames, player, gameCode) && checkIfEmptySlotLeftInColoumn(activeGames, coloumn, gameCode)) {
+        return true;
+    }
+    return false;
+}
+
+// Check if the correct player made the move
+export function checkIfCorrectPlayer(activeGames: ActiveGames, player: 1 | 2, gameCode: string) : boolean {
+    if (activeGames[gameCode].playerTurn === player) {
+        return true;
+    }
+    return false;
+}
+
+// Check if there is at least one slot in the coloumn left
+export function checkIfEmptySlotLeftInColoumn(activeGames: ActiveGames, coloumn: number, gameCode: string) : boolean {
+    if (activeGames[gameCode].gameBoard[coloumn].includes(null)) {
+        return true;
+    }
+    return false;
+}
+
+// Add lastMove to gameBoard
+export function addLastMoveToGameBoard(activeGames: ActiveGames, gameCode:string):void {
+    let lastMove: [number, number, Player] = activeGames[gameCode].lastMove;
+    activeGames[gameCode].gameBoard[lastMove[0]][lastMove[1]] = lastMove[2];
+}
+
+
+// Set gameObject to reflect win-state
+export function setWinningState(activeGames: ActiveGames, gameCode:string) {
+    activeGames[gameCode].gameState = "end";
+    activeGames[gameCode].winner = activeGames[gameCode].lastMove[2];
+    activeGames[gameCode].score[activeGames[gameCode].lastMove[2]-1]++;
+}
+
+// Toggle playerTurn to next player
+export function togglePlayerTurn(activeGames:ActiveGames, gameCode) {
+    if (activeGames[gameCode].lastMove[2] === 1) {
+        activeGames[gameCode].playerTurn = 2
+    } else if (activeGames[gameCode].lastMove[2] === 2) {
+        activeGames[gameCode].playerTurn = 1
+    }
+}
+
+// Check wether the gameBoard is full, returns true or false
+export function checkForDraw(activeGames: ActiveGames, gameCode: string): boolean {
+    let draw: boolean = false;
+    for (let i = 0; i < activeGames[gameCode].config[0]; i++) {
+        if (!activeGames[gameCode].gameBoard[i].some(item => item === null)) {
+            draw = true;
+        };
+    return draw;
+
+    }
+}
+
+
 // On disconnect delete the socket from active games
 export function deleteSocketfromActiveGames(
     socketId,
-    activeGames: activeGames
+    activeGames: ActiveGames
 ): [boolean, string?] {
     // set up a variable to receive the Code of the game with a leftover player (if there is one)
     let isSecondPlayerLeft: boolean | string = false;
@@ -154,7 +215,7 @@ export function deleteSocketfromActiveGames(
 }
 
 // Check if there is a player left in the room, when one socket disconnects
-export function checkIfSecondPlayerStillThere(activeGames: activeGames, gameCode: string, socketSlot: 0 | 1): boolean | string {
+export function checkIfSecondPlayerStillThere(activeGames: ActiveGames, gameCode: string, socketSlot: 0 | 1): boolean | string {
     // If not, then delete that game from the activeGames and return false
     if (activeGames[gameCode].sockets[socketSlot] === null) {
         delete activeGames[gameCode];

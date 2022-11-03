@@ -75,19 +75,27 @@ function checkNbWinningSlots(set: number[][], gameObject: GameObject): boolean {
     let count: number = 0;
     let winningSlots: [number, number][] | null = [];
 
-    for (let slot of set) {
-        if (slot[2] == playerTurn) {
+    for (let i: number = 0; i < set.length; i++) {
+        if (set[i][2] == playerTurn) {
             count++;
-            winningSlots.push([slot[0], slot[1]]);
+            winningSlots.push([set[i][0], set[i][1]]);
         } else {
             //check for win - also accounts for cases where there are more slots than the required winning slots
             if (count >= winningNumber) {
-                gameObject.winningSlots = winningSlots;
+                gameObject.winningSlots = gameObject.winningSlots
+                    ? [...gameObject.winningSlots, ...winningSlots]
+                    : winningSlots;
                 return true;
             } else {
                 count = 0;
                 winningSlots = [];
             }
+        }
+        if (i === set.length - 1 && count >= winningNumber) {
+            gameObject.winningSlots = gameObject.winningSlots
+                ? [...gameObject.winningSlots, ...winningSlots]
+                : winningSlots;
+            return true;
         }
     }
     return false;
@@ -95,15 +103,54 @@ function checkNbWinningSlots(set: number[][], gameObject: GameObject): boolean {
 
 export function checkForVictory(gameObject: GameObject): boolean {
     let victory: boolean = false;
+    let verticalVictory: boolean = checkNbWinningSlots(
+        getVerticalSet(gameObject),
+        gameObject
+    );
+    let horizontalVictory: boolean = checkNbWinningSlots(
+        getHorizontalSet(gameObject),
+        gameObject
+    );
+    let diagBackVictory: boolean = checkNbWinningSlots(
+        getBackDiagonal(gameObject),
+        gameObject
+    );
+    let diagFwdVictory: boolean = checkNbWinningSlots(
+        getFwdDiagonal(gameObject),
+        gameObject
+    );
 
-    if (
-        checkNbWinningSlots(getVerticalSet(gameObject), gameObject) ||
-        checkNbWinningSlots(getHorizontalSet(gameObject), gameObject) ||
-        checkNbWinningSlots(getBackDiagonal(gameObject), gameObject) ||
-        checkNbWinningSlots(getFwdDiagonal(gameObject), gameObject)
-    ) {
+    let victoryArray: boolean[] = [
+        verticalVictory,
+        horizontalVictory,
+        diagBackVictory,
+        diagFwdVictory,
+    ];
+
+    if (victoryArray.some((e: boolean) => e == true)) {
         victory = true;
     }
 
     return victory;
 }
+
+let testGameObj: GameObject = {
+    gameBoard: [
+        [1, 2, 1, null, null, null],
+        [2, null, null, null, null, null],
+        [2, 1, null, null, null, null],
+        [1, 2, 1, 2, null, null],
+        [1, 2, 2, 1, null, null],
+        [1, 2, 2, 2, null, null],
+        [2, 1, 1, 2, 1, null],
+    ],
+    playerTurn: 2,
+    score: [0, 0],
+    gameState: "config",
+    winner: null,
+    config: [7, 6, 4],
+    sockets: ["test 1", "test 2"],
+    lastMove: [6, 4, 2],
+    winningSlots: null,
+};
+checkForVictory(testGameObj);

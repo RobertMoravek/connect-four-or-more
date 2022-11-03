@@ -18,10 +18,10 @@ const gameBoard: GameBoard = [
   [1, 2, 1, null, null, null],
   [2, null, null, null, null, null],
   [2, 1, null, null, null, null],
-  [1, 1, 1, 2, null, null],
+  [1, 2, 1, 2, null, null],
   [1, 2, 2, 1, null, null],
-  [1, 2, 2, 1, null, null],
-  [2, 1, 1, 2, 1, null],
+  [1, 2, 2, 2, null, null],
+  [2, 1, 1, 2, 2, null],
 ];
 
 const lastMove = ref<LastMove>(null);

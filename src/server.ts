@@ -1,5 +1,5 @@
 import express from "express";
-import { gameObject, activeGames } from "./types";
+import { GameObject, ActiveGames, Player } from "./types";
 import {
     deleteSocketfromActiveGames,
     createNewGame,
@@ -21,7 +21,7 @@ const io = new Server(server);
 
 const port: number = 8080;
 
-const activeGames: activeGames = {};
+const activeGames: ActiveGames = {};
 
 if (process.env.NODE_ENV == "production") {
     app.use((req, res, next) => {
@@ -79,11 +79,11 @@ io.on("connection", (socket) => {
     // Check code and join second player to game (if it exists)
     socket.on("coloumn-cklick", (coloumn: number, player: 1 | 2, code: string) => {
         if (checkValidMove(activeGames, coloumn, player, code)) {
-            activeGames[code].lastMove = [coloumn, player];
+            activeGames[code].lastMove = [coloumn, activeGames[code].gameBoard[coloumn].indexOf(null), player];
             activeGames[code].playerTurn = null;
             io.in(code).emit("game-update", activeGames[code], code);
             setTimeout(() => {
-                addLastMoveToGameBoard(activeGames, coloumn, player, code);
+                addLastMoveToGameBoard(activeGames, code);
                 // ******* CHECKVICTORY FUNCTION and it's following functions
             }, 1000);
         } else {

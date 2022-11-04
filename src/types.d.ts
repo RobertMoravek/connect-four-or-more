@@ -9,6 +9,8 @@ export type GameObject = {
     sockets: [string | null, string | null];
     lastMove: [number, number, 1 | 2] | null;
     winningSlots: [number, number][] | null;
+    playAgain: [boolean,  boolean];
+    playerStartedLast: 1 | 2 | null;
 };
 
 export type Player = 1 | 2 | null;

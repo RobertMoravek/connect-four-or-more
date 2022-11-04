@@ -3,7 +3,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.testfunction = void 0;
 const express_1 = __importDefault(require("express"));
 const gameLogic_1 = require("./gameLogic");
 const errors_1 = require("./errors");
@@ -33,51 +32,71 @@ io.on("connection", (socket) => {
     socket.on("new-game", () => {
         console.log("Starting a new Game");
         let gameCode = (0, gameLogic_1.createNewGame)(activeGames, socket.id);
-        console.log("activeGames", activeGames);
         socket.join(gameCode);
         io.in(gameCode).emit("game-update", activeGames[gameCode], gameCode);
     });
     // Check and set user game config
     socket.on("config-ready", (config, code) => {
-        console.log('receiving config');
-        if ((0, gameLogic_1.checkUserConfigForInteger)(config) && (0, gameLogic_1.checkUserConfigValues)(config)) {
-            activeGames[code].config = config;
-        }
-        else {
-            activeGames[code].config = [6, 7, 4];
-        }
-        activeGames[code].gameState = "ready";
+        console.log("receiving config");
+        (0, gameLogic_1.validateUserConfig)(config, activeGames[code]);
+        (0, gameLogic_1.startGameIfReady)(activeGames[code]);
         io.in(code).emit("game-update", activeGames[code]);
     });
     // Check code and join second player to game (if it exists)
     socket.on("join-game", (code) => {
-        console.log('receiving join request');
+        console.log("receiving join request");
         if ((0, gameLogic_1.checkForExistingGame)(activeGames, code)) {
             activeGames[code].sockets[1] = socket.id;
+            (0, gameLogic_1.startGameIfReady)(activeGames[code]);
             io.in(code).emit("game-update", activeGames[code], code);
         }
         else {
             io.to(socket.id).emit("error", (0, errors_1.createErrorMessage)(1));
         }
-        console.log(activeGames);
+        // console.log(activeGames);
+    });
+    // Check code and join second player to game (if it exists)
+    socket.on("coloumn-cklick", (coloumn, player, code) => {
+        if ((0, gameLogic_1.checkValidMove)(activeGames[code], coloumn, player)) {
+            activeGames[code].lastMove = [
+                coloumn,
+                activeGames[code].gameBoard[coloumn].indexOf(null),
+                player,
+            ];
+            activeGames[code].playerTurn = null;
+            io.in(code).emit("game-update", activeGames[code], code);
+            setTimeout(() => {
+                (0, gameLogic_1.addLastMoveToGameBoard)(activeGames[code]);
+                // ******* CHECKVICTORY FUNCTION and it's following functions
+            }, 1000);
+        }
+        else {
+            io.to(socket.id).emit("error", (0, errors_1.createErrorMessage)(3));
+        }
+    });
+    // If one player clicks "play again", mark them as playAgain true and check if the other player is also true. If yes, prepare the game for restart. Emit new gamestate either way.
+    socket.on("play-again", (code) => {
+        (0, gameLogic_1.setPlayAgain)(activeGames[code], socket.id);
+        if ((0, gameLogic_1.checkIfBothWantToPlayAgain)(activeGames[code])) {
+            (0, gameLogic_1.prepareRestartGameWithSameConfig)(activeGames[code]);
+        }
+        io.in(code).emit("game-update", activeGames[code]);
     });
     socket.on("disconnect", () => {
         console.log("user disconnected: socket-id:", socket.id);
         // Delete the disconnecting socket from existing games & if there is still another player in that game, give back the Code of that game
         let leftOverPlayer = (0, gameLogic_1.deleteSocketfromActiveGames)(socket.id, activeGames);
         // If there was a player left, send appropriate error message to the room and update the game to be "closed"
-        if (leftOverPlayer) {
+        if (leftOverPlayer[0]) {
             io.in(leftOverPlayer[1]).emit("error", (0, errors_1.createErrorMessage)(2));
             io.in(leftOverPlayer[1]).emit("game-update", activeGames[leftOverPlayer[1]]);
         }
-        console.log('after leaving', activeGames);
+        console.log("after leaving", activeGames);
     });
 });
-server.listen(process.env.PORT || port, function () {
-    console.log("I'm listening.");
-});
-function testfunction(a, b) {
-    return a + b;
+if (process.env.NODE_ENV !== "test") {
+    server.listen(process.env.PORT || port, function () {
+        console.log("I'm listening.");
+    });
 }
-exports.testfunction = testfunction;
 //# sourceMappingURL=server.js.map

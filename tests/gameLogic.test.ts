@@ -12,7 +12,7 @@ import {
     deleteSocketfromActiveGames,
     isRandomStringUnique,
     newGameObject,
-    prepareRestartGameWithSameConfig,
+    prepareRestartGame,
     setPlayAgain,
     setWinningState,
     startGameIfReady,
@@ -502,6 +502,8 @@ describe("setPlayAgain", () => {
         setPlayAgain(gameObject, "sdfsdf");
         expect(gameObject.playAgain[0]).toBeTruthy();
         expect(gameObject.playAgain[1]).toBeTruthy();
+        setPlayAgain(gameObject, "hallo", [7, 8, 4]);
+        expect(gameObject.config[0]).toBe(7);
     });
 });
 
@@ -559,7 +561,7 @@ describe("prepareRestartGameWithSameConfig", () => {
             playAgain: [true, true],
             playerStartedLast: 1,
         };
-        prepareRestartGameWithSameConfig(gameObject);
+        prepareRestartGame(gameObject);
         expect(gameObject.playerTurn).toBe(2);
         expect(gameObject.winner).toBeNull();
         expect(gameObject.lastMove).toBeNull();

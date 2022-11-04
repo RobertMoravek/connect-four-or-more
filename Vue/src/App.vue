@@ -6,12 +6,12 @@ import ConfigMenu from "./components/ConfigMenu.vue";
 import GameScreen from "./components/GameScreen.vue";
 import ResultsView from "./components/ResultsView.vue";
 import type { Player, GameState, LeaveEventPayload, LastMove } from "../types";
-import { io } from "socket.io-client";
+// import { io } from "socket.io-client";
 import throttle from "lodash/throttle";
 
-//TO DO render startMenu conditionally based on gameObject = null
-
-const socket = io();
+// const socket = io();
+//variable for conditional rendering of startMenu
+const inGame = ref<boolean>(false);
 
 //get window size dynamically & with throttle
 let windowWidth = ref<number>(window.innerWidth);
@@ -40,21 +40,23 @@ const slotSize = computed<number>(() =>
     )
   )
 );
-
-const emit = (): void => {
-  socket.emit("new-game");
-};
 // const toggle = (): void => {
 //   newGame.value = !newGame.value;
 // };
+
+$socket.on("game-update", () => {});
+
+const emit = (): void => {
+  $socket.emit("new-game");
+};
 </script>
 
 <template>
   <div id="container">
     <!-- <button @click="emit">Emit to BE</button> -->
     <StartMenu
-      @update-player="(p:Player) => player = p"
-      v-if="player === null && gameState === 'config'"
+      @update-player="(p:Player) => {player = p; inGame=true}"
+      v-if="inGame === false"
     />
     <ConfigMenu
       v-if="player !== null && gameState === 'config'"

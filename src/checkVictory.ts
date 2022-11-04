@@ -134,23 +134,23 @@ export function checkForVictory(gameObject: GameObject): boolean {
     return victory;
 }
 
-let testGameObj: GameObject = {
-    gameBoard: [
-        [1, 2, 1, null, null, null],
-        [2, null, null, null, null, null],
-        [2, 1, null, null, null, null],
-        [1, 2, 1, 2, null, null],
-        [1, 2, 2, 1, null, null],
-        [1, 2, 2, 2, null, null],
-        [2, 1, 1, 2, 1, null],
-    ],
-    playerTurn: 2,
-    score: [0, 0],
-    gameState: "config",
-    winner: null,
-    config: [7, 6, 4],
-    sockets: ["test 1", "test 2"],
-    lastMove: [6, 4, 2],
-    winningSlots: null,
-};
-checkForVictory(testGameObj);
+// let testGameObj: GameObject = {
+//     gameBoard: [
+//         [1, 2, 1, null, null, null],
+//         [2, null, null, null, null, null],
+//         [2, 1, null, null, null, null],
+//         [1, 2, 1, 2, null, null],
+//         [1, 2, 2, 1, null, null],
+//         [1, 2, 2, 2, null, null],
+//         [2, 1, 1, 2, 2, null],
+//     ],
+//     playerTurn: 2,
+//     score: [0, 0],
+//     gameState: "config",
+//     winner: null,
+//     config: [7, 6, 4],
+//     sockets: ["test 1", "test 2"],
+//     lastMove: [6, 4, 2],
+//     winningSlots: null,
+// };
+// checkForVictory(testGameObj);

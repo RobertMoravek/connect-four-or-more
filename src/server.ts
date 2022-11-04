@@ -11,8 +11,13 @@ import {
     setPlayAgain,
     checkIfBothWantToPlayAgain,
     prepareRestartGameWithSameConfig,
+    setWinningState,
+    checkForDraw,
+    togglePlayerTurn,
+    setDrawState,
 } from "./gameLogic";
 import { createErrorMessage } from "./errors";
+import { checkForVictory } from "./checkVictory";
 
 const app = express();
 const path = require("path");
@@ -91,7 +96,16 @@ io.on("connection", (socket) => {
                 io.in(code).emit("game-update", activeGames[code], code);
                 setTimeout(() => {
                     addLastMoveToGameBoard(activeGames[code]);
-                    // ******* CHECKVICTORY FUNCTION and it's following functions
+                    if (checkForVictory(activeGames[code])) {
+                        setWinningState(activeGames[code])
+                    } else {
+                        if (checkForDraw(activeGames[code])) {
+                            setDrawState(activeGames[code])
+                        } else {
+                            togglePlayerTurn(activeGames[code])
+                        }
+                    }
+                    io.in(code).emit("game-update", activeGames[code], code)
                 }, 1000);
             } else {
                 io.to(socket.id).emit("error", createErrorMessage(3));

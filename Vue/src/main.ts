@@ -9,9 +9,11 @@ import "./assets/main.css";
 const app = createApp(App);
 const socket: Socket<ServerToClientEvents, ClientToServerEvents> = io();
 //make socketio available for all components
-app.config.globalProperties.$socket = socket;
+// app.provide($Socket<ServerToClientEvents, ClientToServerEvents>, io);
+// app.config.globalProperties.$socket = socket;
+app.provide("socket", socket);
 
 // app.use(router);
 
 app.mount("#app");
-app.use(socket);
+// app.use(socket);

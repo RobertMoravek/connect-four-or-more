@@ -1,7 +1,16 @@
 <script setup lang="ts">
-import type { Player } from "../../types";
+import { inject } from "vue";
+import type {
+  Player,
+  ServerToClientEvents,
+  ClientToServerEvents,
+} from "../../types";
 import GameBoard from "./GameBoard.vue";
 import ScoreBoard from "./ScoreBoard.vue";
+import type { Socket } from "socket.io-client";
+const socket: Socket<ServerToClientEvents, ClientToServerEvents> = inject(
+  "socket"
+) as Socket<ServerToClientEvents, ClientToServerEvents>;
 
 const props = defineProps<{
   colCount: number;
@@ -15,6 +24,9 @@ const renumber = (param: number): number[] => {
 };
 const updatedRowCount = renumber(props.rowCount).reverse();
 const updatedColCount = renumber(props.colCount);
+const emit = (): void => {
+  socket.emit("new-game");
+};
 </script>
 
 <template>
@@ -26,6 +38,7 @@ const updatedColCount = renumber(props.colCount);
       :player="player"
       :slot-size="slotSize"
     />
+    <button @click="emit">Emit to BE</button>
   </div>
 </template>
 

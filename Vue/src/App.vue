@@ -1,15 +1,26 @@
 <script setup lang="ts">
-import { onMounted, onUnmounted, ref, computed } from "vue";
+import { inject, onMounted, onUnmounted, ref, computed } from "vue";
 // import { RouterLink, RouterView } from "vue-router";
 import StartMenu from "./components/StartMenu.vue";
 import ConfigMenu from "./components/ConfigMenu.vue";
 import GameScreen from "./components/GameScreen.vue";
 import ResultsView from "./components/ResultsView.vue";
-import type { Player, GameState, LeaveEventPayload, LastMove } from "../types";
+import type {
+  Player,
+  GameState,
+  LeaveEventPayload,
+  LastMove,
+  ServerToClientEvents,
+  ClientToServerEvents,
+} from "../types";
 // import { io } from "socket.io-client";
 import throttle from "lodash/throttle";
+import type { Socket } from "socket.io-client";
 
 // const socket = io();
+const socket: Socket<ServerToClientEvents, ClientToServerEvents> = inject(
+  "socket"
+) as Socket<ServerToClientEvents, ClientToServerEvents>;
 //variable for conditional rendering of startMenu
 const inGame = ref<boolean>(false);
 
@@ -44,10 +55,10 @@ const slotSize = computed<number>(() =>
 //   newGame.value = !newGame.value;
 // };
 
-$socket.on("game-update", () => {});
+socket.on("game-update", () => {});
 
 const emit = (): void => {
-  $socket.emit("new-game");
+  socket.emit("new-game");
 };
 </script>
 

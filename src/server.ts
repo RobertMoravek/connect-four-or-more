@@ -11,8 +11,13 @@ import {
     setPlayAgain,
     checkIfBothWantToPlayAgain,
     prepareRestartGameWithSameConfig,
+    setWinningState,
+    checkForDraw,
+    togglePlayerTurn,
+    setDrawState,
 } from "./gameLogic";
 import { createErrorMessage } from "./errors";
+import { checkForVictory } from "./checkVictory";
 
 const app = express();
 const path = require("path");
@@ -57,7 +62,7 @@ io.on("connection", (socket) => {
     socket.on(
         "config-ready",
         (config: [number, number, number], code: string) => {
-            console.log("receiving config");
+            console.log("receiving config", config, code);
             validateUserConfig(config, activeGames[code]);
             startGameIfReady(activeGames[code]);
             io.in(code).emit("game-update", activeGames[code]);
@@ -66,7 +71,7 @@ io.on("connection", (socket) => {
 
     // Check code and join second player to game (if it exists)
     socket.on("join-game", (code: string) => {
-        console.log("receiving join request");
+        console.log("receiving join request", code);
         if (checkForExistingGame(activeGames, code)) {
             activeGames[code].sockets[1] = socket.id;
             startGameIfReady(activeGames[code]);
@@ -78,32 +83,42 @@ io.on("connection", (socket) => {
     });
 
     // Check code and join second player to game (if it exists)
+
     socket.on(
-        "column-cklick",
-        (coloumn: number, player: 1 | 2, code: string) => {
-            if (checkValidMove(activeGames[code], coloumn, player)) {
+        "column-click",
+        (column: number, player: 1 | 2, code: string) => {
+            if (checkValidMove(activeGames[code], column, player)) {
                 activeGames[code].lastMove = [
-                    coloumn,
-                    activeGames[code].gameBoard[coloumn].indexOf(null),
+                    column,
+                    activeGames[code].gameBoard[column].indexOf(null),
                     player,
                 ];
                 activeGames[code].playerTurn = null;
                 io.in(code).emit("game-update", activeGames[code], code);
                 setTimeout(() => {
                     addLastMoveToGameBoard(activeGames[code]);
-                    // ******* CHECKVICTORY FUNCTION and it's following functions
+                    if (checkForVictory(activeGames[code])) {
+                        setWinningState(activeGames[code])
+                    } else {
+                        if (checkForDraw(activeGames[code])) {
+                            setDrawState(activeGames[code])
+                        } else {
+                            togglePlayerTurn(activeGames[code])
+                        }
+                    }
+                    io.in(code).emit("game-update", activeGames[code], code)
                 }, 1000);
             } else {
                 io.to(socket.id).emit("error", createErrorMessage(3));
             }
         }
-    );
+    });
 
     // If one player clicks "play again", mark them as playAgain true and check if the other player is also true. If yes, prepare the game for restart. Emit new gamestate either way.
     socket.on("play-again", (code: string) => {
         setPlayAgain(activeGames[code], socket.id);
         if (checkIfBothWantToPlayAgain(activeGames[code])) {
-            prepareRestartGameWithSameConfig(activeGames[code])
+            prepareRestartGameWithSameConfig(activeGames[code]);
         }
         io.in(code).emit("game-update", activeGames[code]);
     });

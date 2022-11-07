@@ -1,13 +1,23 @@
 <script setup lang="ts">
-import type { Player } from "../../types";
+import { inject } from "vue";
+import type {
+  Player,
+  ServerToClientEvents,
+  ClientToServerEvents,
+} from "../../types";
 import GameBoard from "./GameBoard.vue";
 import ScoreBoard from "./ScoreBoard.vue";
+import type { Socket } from "socket.io-client";
+const socket: Socket<ServerToClientEvents, ClientToServerEvents> = inject(
+  "socket"
+) as Socket<ServerToClientEvents, ClientToServerEvents>;
 
 const props = defineProps<{
   colCount: number;
   rowCount: number;
   slotSize: number;
   player: Player;
+  code: string;
 }>();
 
 const renumber = (param: number): number[] => {
@@ -15,6 +25,9 @@ const renumber = (param: number): number[] => {
 };
 const updatedRowCount = renumber(props.rowCount).reverse();
 const updatedColCount = renumber(props.colCount);
+const handleLeaveGameClick = (): void => {
+  socket.emit("leave-game");
+};
 </script>
 
 <template>
@@ -25,7 +38,9 @@ const updatedColCount = renumber(props.colCount);
       :col-count="updatedColCount"
       :player="player"
       :slot-size="slotSize"
+      :code="code"
     />
+    <button @click="handleLeaveGameClick">Leave game</button>
   </div>
 </template>
 

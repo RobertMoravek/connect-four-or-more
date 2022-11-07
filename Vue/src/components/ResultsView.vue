@@ -1,18 +1,38 @@
 <script setup lang="ts">
-import type { LeaveEventPayload } from "../../types";
+import { inject } from "vue";
+import type { Socket } from "socket.io-client";
+import type {
+  LeaveEventPayload,
+  ClientToServerEvents,
+  ServerToClientEvents,
+} from "../../types";
 
-defineEmits<{
+const socket: Socket<ServerToClientEvents, ClientToServerEvents> = inject(
+  "socket"
+) as Socket<ServerToClientEvents, ClientToServerEvents>;
+
+const props = defineProps<{
+  code: string;
+}>();
+
+const emit = defineEmits<{
   (e: "leave-game", p: LeaveEventPayload): void;
 }>();
+
+const handlePlayAgainClick = (): void => {
+  socket.emit("play-again", props.code);
+};
+const handleLeaveGameClick = (): void => {
+  socket.emit("leave-game");
+  emit("leave-game", { player: null, gameState: "config" });
+};
 </script>
 
 <template>
   <h1>Aaand the loser is:</h1>
-  <button>Play again</button>
+  <button @click="handlePlayAgainClick">Play again</button>
   <button>Change board</button>
-  <button @click="$emit('leave-game', { player: null, gameState: 'config' })">
-    Leave
-  </button>
+  <button @click="handleLeaveGameClick">Leave</button>
 </template>
 
 <style scoped>

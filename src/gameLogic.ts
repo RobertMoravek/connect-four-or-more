@@ -184,6 +184,12 @@ export function setWinningState(gameObject: GameObject) {
     gameObject.score[gameObject.lastMove[2] - 1]++;
 }
 
+// Set gameObject to reflect draw-state
+export function setDrawState(gameObject: GameObject) {
+    gameObject.gameState = "end";
+    gameObject.winner = null;
+}
+
 // Toggle playerTurn to next player
 export function togglePlayerTurn(gameObject: GameObject) {
     if (gameObject.lastMove[2] === 1) {

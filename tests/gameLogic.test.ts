@@ -18,6 +18,7 @@ import {
     startGameIfReady,
     togglePlayerTurn,
 } from "../src/gameLogic";
+import { checkForVictory } from "../src/checkVictory";
 import { ActiveGames, GameObject } from "../src/types";
 
 // createNewGame
@@ -572,6 +573,153 @@ describe("prepareRestartGameWithSameConfig", () => {
         expect(gameObject.gameBoard).toEqual([
             [null, null, null],
             [null, null, null],
+        ]);
+    });
+});
+
+describe("checkForVictory", () => {
+    test("checkForVictory returns a boolean", () => {
+        let gameObject: GameObject = {
+            gameBoard: [
+                [null, null, null, null, null, null],
+                [2, 1, null, null, null, null],
+                [null, null, null, null, null, null],
+                [null, null, null, null, null, null],
+                [null, null, null, null, null, null],
+                [null, null, null, null, null, null],
+                [null, null, null, null, null, null],
+            ],
+            // playerName?: [string, string],
+            playerTurn: 2,
+            score: [0, 0],
+            gameState: "running",
+            winner: null,
+            config: [7, 6, 4],
+            sockets: ["hallo", "sdfsdf"],
+            lastMove: [1, 1, 2],
+            winningSlots: null,
+            playAgain: [false, false],
+            playerStartedLast: null,
+        };
+        let victory = checkForVictory(gameObject);
+        expect(typeof victory === "boolean").toBeTruthy;
+        expect(victory).toBeFalsy;
+    });
+});
+
+describe("checkForVictory", () => {
+    test("find diagonal forward victory which has more slots than the necessary condition", () => {
+        let gameObject: GameObject = {
+            gameBoard: [
+                [1, 2, 1, null, null, null],
+                [2, null, null, null, null, null],
+                [2, 1, null, null, null, null],
+                [1, 2, 1, 2, null, null],
+                [1, 2, 2, 1, null, null],
+                [1, 2, 2, 2, null, null],
+                [2, 1, 1, 2, 2, null],
+            ],
+            // playerName?: [string, string],
+            playerTurn: 2,
+            score: [0, 0],
+            gameState: "running",
+            winner: null,
+            config: [7, 6, 4],
+            sockets: ["hallo", "sdfsdf"],
+            lastMove: [6, 4, 2],
+            winningSlots: null,
+            playAgain: [false, false],
+            playerStartedLast: null,
+        };
+        expect(checkForVictory(gameObject)).toBeTruthy;
+        expect(gameObject.winningSlots).toEqual([
+            [2, 0],
+            [3, 1],
+            [4, 2],
+            [5, 3],
+            [6, 4],
+        ]);
+    });
+});
+
+describe("checkForVictory", () => {
+    test("find diagonal forward victory & horizontal victory", () => {
+        let gameObject: GameObject = {
+            gameBoard: [
+                [1, 2, 1, null, null, null],
+                [2, null, null, null, null, null],
+                [2, 1, null, null, null, null],
+                [1, 2, 1, 2, null, null],
+                [1, 2, 2, 2, null, null],
+                [1, 2, 2, 2, null, null],
+                [2, 1, 1, 2, 2, null],
+            ],
+            // playerName?: [string, string],
+            playerTurn: 2,
+            score: [0, 0],
+            gameState: "running",
+            winner: null,
+            config: [7, 6, 4],
+            sockets: ["hallo", "sdfsdf"],
+            lastMove: [5, 3, 2],
+            winningSlots: null,
+            playAgain: [false, false],
+            playerStartedLast: null,
+        };
+        expect(checkForVictory(gameObject)).toBeTruthy;
+        expect(gameObject.winningSlots).toEqual([
+            [3, 3],
+            [4, 3],
+            [5, 3],
+            [6, 3],
+            [2, 0],
+            [3, 1],
+            [4, 2],
+            [5, 3],
+            [6, 4],
+        ]);
+    });
+});
+
+describe("checkForVictory", () => {
+    test("find diagonal back victory & vertical victory on a board with winning slots condition 5", () => {
+        let gameObject: GameObject = {
+            gameBoard: [
+                [1, 2, 1, 2, 1, 2, null, null],
+                [2, 2, 2, 1, 2, null, null, null],
+                [1, 2, 1, 2, null, null, null, null],
+                [1, 2, 2, null, null, null, null, null],
+                [1, 2, null, null, null, null, null, null],
+                [2, 1, 2, null, null, null, null, null],
+                [1, 2, 2, 1, null, null, null, null],
+                [2, 1, null, null, null, null, null, null],
+                [2, 1, 2, null, null, null, null, null],
+            ],
+            // playerName?: [string, string],
+            playerTurn: 2,
+            score: [0, 0],
+            gameState: "running",
+            winner: null,
+            config: [9, 8, 5],
+            sockets: ["hallo", "sdfsdf"],
+            lastMove: [4, 1, 2],
+            winningSlots: null,
+            playAgain: [false, false],
+            playerStartedLast: null,
+        };
+        expect(checkForVictory(gameObject)).toBeTruthy;
+        expect(gameObject.winningSlots).toEqual([
+            [0, 1],
+            [1, 1],
+            [2, 1],
+            [3, 1],
+            [4, 1],
+            [0, 5],
+            [1, 4],
+            [2, 3],
+            [3, 2],
+            [4, 1],
+            [5, 0],
         ]);
     });
 });

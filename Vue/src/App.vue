@@ -1,15 +1,30 @@
 <script setup lang="ts">
-import { onMounted, onUnmounted, ref, computed } from "vue";
+import { inject, onMounted, onUnmounted, ref, computed } from "vue";
 // import { RouterLink, RouterView } from "vue-router";
 import StartMenu from "./components/StartMenu.vue";
 import ConfigMenu from "./components/ConfigMenu.vue";
 import GameScreen from "./components/GameScreen.vue";
 import ResultsView from "./components/ResultsView.vue";
-import type { Player, GameState, LeaveEventPayload, LastMove } from "../types";
-import { io } from "socket.io-client";
+import type {
+  Player,
+  GameState,
+  LeaveEventPayload,
+  LastMove,
+  ServerToClientEvents,
+  ClientToServerEvents,
+} from "../types";
 import throttle from "lodash/throttle";
+import type { Socket } from "socket.io-client";
 
-const socket = io();
+//TO DO: wait screen
+
+// import socket
+const socket: Socket<ServerToClientEvents, ClientToServerEvents> = inject(
+  "socket"
+) as Socket<ServerToClientEvents, ClientToServerEvents>;
+
+//variable for conditional rendering of startMenu
+const inGame = ref<boolean>(false);
 
 //get window size dynamically & with throttle
 let windowWidth = ref<number>(window.innerWidth);
@@ -29,6 +44,7 @@ const rowCount = ref<number>(6);
 const winningSlots = ref<number>(4);
 const player = ref<Player>(null);
 const gameState = ref<GameState>("config");
+const code = ref<string>("");
 
 const slotSize = computed<number>(() =>
   Math.floor(
@@ -38,29 +54,23 @@ const slotSize = computed<number>(() =>
     )
   )
 );
-
-const emit = (): void => {
-  socket.emit("new-game");
-};
 // const toggle = (): void => {
 //   newGame.value = !newGame.value;
 // };
 
+socket.on("game-update", () => {});
 </script>
 
 <template>
   <div id="container">
-    <!-- <button @click="emit">Emit to BE</button> -->
     <StartMenu
-      @update-player="(p:Player) => player = p"
-      v-if="player === null && gameState === 'config'"
+      @update-player="(p:Player) => {player = p; inGame=true}"
+      v-if="inGame === false"
     />
     <ConfigMenu
-      v-if="player !== null && gameState === 'config'"
+      v-if="player === 1 && gameState === 'config'"
       @update-gameState="(s:GameState) => gameState = s"
-      v-model:col-count="colCount"
-      v-model:row-count="rowCount"
-      v-model:winning-slots="winningSlots"
+      :code="code"
     />
     <GameScreen
       v-if="player !== null && gameState === 'ready'"
@@ -68,11 +78,13 @@ const emit = (): void => {
       :col-count="colCount"
       :player="player"
       :slot-size="slotSize"
+      :code="code"
     />
   </div>
   <div class="modal" v-if="player === null && gameState === 'end'">
     <ResultsView
       @leave-game="(p:LeaveEventPayload) => ({player, gameState} = p)"
+      :code="code"
     />
   </div>
   <!-- <nav>

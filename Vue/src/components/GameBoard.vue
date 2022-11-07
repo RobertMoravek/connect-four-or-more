@@ -12,16 +12,6 @@ import GameColumnFront from "./GameColumnFront.vue";
 import GameColumnBack from "./GameColumnBack.vue";
 import type { Socket } from "socket.io-client";
 
-// const gameBoard: GameBoard = [
-//   [1, 2, null, null, null, null],
-//   [2, 1, 1, null, null, null],
-//   [2, null, null, null, null, null],
-//   [null, null, null, null, null, null],
-//   [1, 2, 1, 2, 2, null],
-//   [null, null, null, null, null, null],
-//   [1, 2, 1, 2, 2, 2],
-// ];
-
 const socket: Socket<ServerToClientEvents, ClientToServerEvents> = inject(
   "socket"
 ) as Socket<ServerToClientEvents, ClientToServerEvents>;
@@ -39,8 +29,6 @@ const props = defineProps<{
 }>();
 
 socket.on("game-update", (gameObject: GameObject, gameCode?: string) => {
-  console.log("game update in game board component", gameObject);
-
   lastMove.value = gameObject.lastMove;
 });
 

@@ -48,7 +48,8 @@ const gameState = ref<GameState>("config");
 const code = ref<string>("");
 const playerTurn = ref<Player>(null);
 const gameBoard = ref<GameBoard>(null);
-// const lastMove = ref<LastMove>(null);
+const winner = ref<Player>(null);
+const playAgain = ref<boolean[]>([false, false]);
 
 const slotSize = computed<number>(() =>
   Math.floor(
@@ -73,6 +74,8 @@ socket.on("game-update", (gameObject: GameObject, gameCode?: string) => {
   gameState.value = gameObject.gameState;
   playerTurn.value = gameObject.playerTurn;
   gameBoard.value = gameObject.gameBoard;
+  winner.value = gameObject.winner;
+  playAgain.value = gameObject.playAgain;
 });
 </script>
 
@@ -82,12 +85,17 @@ socket.on("game-update", (gameObject: GameObject, gameCode?: string) => {
       @update-player="(p:Player) => {player = p; inGame=true}"
       v-if="inGame === false"
     />
-    <ConfigMenu v-if="player === 1 && gameState === 'config'" :code="code" />
+    <ConfigMenu
+      v-if="player === 1 && gameState === 'config'"
+      :code="code"
+      :game-state="gameState"
+      :play-again="playAgain"
+    />
     <WaitScreen
       v-if="gameState === 'ready' || (player === 2 && gameState === 'config')"
     />
     <GameScreen
-      v-if="player !== null && gameState === 'running'"
+      v-if="player !== null && (gameState === 'running' || gameState === 'end')"
       :row-count="rowCount"
       :col-count="colCount"
       :player="player"
@@ -97,12 +105,14 @@ socket.on("game-update", (gameObject: GameObject, gameCode?: string) => {
       :code="code"
     />
   </div>
-  <div class="modal" v-if="player === null && gameState === 'end'">
-    <ResultsView
-      @leave-game="(p:LeaveEventPayload) => ({player, gameState} = p)"
-      :code="code"
-    />
-  </div>
+  <ResultsView
+    v-if="gameState === 'end'"
+    :winner="winner"
+    :code="code"
+    :player="player"
+    :game-state="gameState"
+    :play-again="playAgain"
+  />
   <!-- <nav>
         <RouterLink to="/">Home</RouterLink>
         <RouterLink to="/about">About</RouterLink>
@@ -118,7 +128,7 @@ socket.on("game-update", (gameObject: GameObject, gameCode?: string) => {
   height: 100vh;
 }
 
-.modal {
+/* .modal {
   position: fixed;
   top: 0;
   left: 0;
@@ -131,5 +141,5 @@ socket.on("game-update", (gameObject: GameObject, gameCode?: string) => {
   align-items: center;
   gap: 10vh;
   /* transform: translateY(-100%); */
-}
+/* } */
 </style>

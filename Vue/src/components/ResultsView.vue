@@ -16,7 +16,7 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits<{
-  (e: "leave-game", p: LeaveEventPayload): void;
+  (e: "leave-game-component", p: LeaveEventPayload): void;
 }>();
 
 const handlePlayAgainClick = (): void => {
@@ -24,7 +24,7 @@ const handlePlayAgainClick = (): void => {
 };
 const handleLeaveGameClick = (): void => {
   socket.emit("leave-game");
-  emit("leave-game", { player: null, gameState: "config" });
+  emit("leave-game-component", { player: null, gameState: "config" });
 };
 </script>
 

@@ -83,7 +83,7 @@ socket.on("game-update", () => {});
   </div>
   <div class="modal" v-if="player === null && gameState === 'end'">
     <ResultsView
-      @leave-game="(p:LeaveEventPayload) => ({player, gameState} = p)"
+      @leave-game-component="(p:LeaveEventPayload) => ({player, gameState} = p)"
       :code="code"
     />
   </div>

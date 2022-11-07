@@ -109,7 +109,7 @@ io.on("connection", (socket) => {
         } else {
             io.to(socket.id).emit("error", createErrorMessage(3));
         }
-    });
+    );
 
     // If one player clicks "play again", mark them as playAgain true and check if the other player is also true. If yes, prepare the game for restart. Emit new gamestate either way.
     socket.on(
@@ -132,7 +132,7 @@ io.on("connection", (socket) => {
     //     io.in(code).emit("game-update", activeGames[code]);
     // });
 
-    socket.on("disconnect", "leave-game", () => {
+    socket.on("disconnect", () => {
         console.log("user disconnected: socket-id:", socket.id);
         // Delete the disconnecting socket from existing games & if there is still another player in that game, give back the Code of that game
         let leftOverPlayer: [boolean, string?] = deleteSocketfromActiveGames(

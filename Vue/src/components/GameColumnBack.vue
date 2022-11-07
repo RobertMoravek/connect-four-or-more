@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, inject, toRefs } from "vue";
+import { ref, computed, inject } from "vue";
 import type { Socket } from "socket.io-client";
 import GamePiece from "./GamePiece.vue";
 import GamePiecePreview from "./GamePiecePreview.vue";
@@ -27,9 +27,6 @@ const props = defineProps<{
   code: string;
 }>();
 
-// const emit = defineEmits<{ (e: "add-piece", p: LastMove): void }>();
-console.log("last move", props.lastMove);
-console.log("colIndex", props.colIndex);
 const hover = ref<boolean>(false);
 
 const pieceSize = computed<number>(
@@ -39,6 +36,7 @@ const existingSlots = computed<Player[]>(() =>
   props.slotConfig.filter((i) => i !== null)
 );
 const nbRows = computed<number>(() => props.rowCount.length + 1);
+
 const nextFreeSlot = computed<number | null>(() => {
   if (
     existingSlots.value.length > 0 &&
@@ -52,18 +50,6 @@ const nextFreeSlot = computed<number | null>(() => {
   }
 });
 
-// const finalMove: LastMove = toRefs(props.lastMove);
-// const showFallingPiece = computed<boolean>(
-//   () => lastMove.value !== null && props.colIndex == lastMove.value[0]
-// );
-// console.log("show falling piece", showFallingPiece.value);
-// const fallingPieceKey = computed<number>(() => lastMove.value![1]);
-// const fallingPieceRow = computed<number>(() => lastMove.value![1]);
-// const fallingPiecePlayer = computed<Player>(() => lastMove.value![2]);
-// :key="props.lastMove[1]"
-// :row="props.lastMove[1]"
-// :player="props.lastMove[2]"
-
 const handleColumnClick = (e: Event): void => {
   if (props.player !== props.playerTurn) {
     e.preventDefault();
@@ -72,7 +58,6 @@ const handleColumnClick = (e: Event): void => {
   if (nextFreeSlot.value == null) {
     e.preventDefault();
   } else {
-    // emit("add-piece", [props.colIndex, nextFreeSlot.value, props.player!]);
     socket.emit("column-click", props.colIndex, props.player!, props.code);
   }
 };

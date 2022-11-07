@@ -5,7 +5,6 @@ import type {
   GameBoard,
   ServerToClientEvents,
   ClientToServerEvents,
-  LastMove,
 } from "../../types";
 import GameBoardVue from "./GameBoard.vue";
 import ScoreBoard from "./ScoreBoard.vue";

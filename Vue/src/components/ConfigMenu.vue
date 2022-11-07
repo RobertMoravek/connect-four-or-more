@@ -15,20 +15,13 @@ const socket: Socket<ServerToClientEvents, ClientToServerEvents> = inject(
 
 const props = defineProps<{
   code: string;
-  //   rowCount: number;
-  //   winningSlots: number;
+  gameState: GameState;
+  playAgain: boolean[];
 }>();
 
 const colCount = ref<number>(7);
 const rowCount = ref<number>(6);
 const winningSlots = ref<number>(4);
-
-// const emit = defineEmits<{
-//   // (e: "update:colCount", n: number): void;
-//   // (e: "update:rowCount", n: number): void;
-//   // (e: "update:winningSlots", n: number): void;
-//   (e: "update-gameState", n: GameState): void;
-// }>();
 
 const handleStartGameClick = (): void => {
   socket.emit(
@@ -36,13 +29,16 @@ const handleStartGameClick = (): void => {
     [colCount.value, rowCount.value, winningSlots.value],
     props.code
   );
-  // emit("update-gameState", "ready");
+};
+
+const handlePlayAgainClick = (): void => {
+  socket.emit("play-again", props.code);
 };
 </script>
 
 <template>
   <div id="config-container">
-    {{ code }}
+    <p v-if="props.gameState === 'config'">{{ code }}</p>
     <h1>Configure your game</h1>
     <label for="columns"> Columns</label>
     <input
@@ -73,7 +69,12 @@ const handleStartGameClick = (): void => {
       step="1"
       v-model="winningSlots"
     />
-    <button @click="handleStartGameClick">Start game</button>
+    <button v-if="gameState === 'config'" @click="handleStartGameClick">
+      Start game
+    </button>
+    <button v-if="gameState === 'end'" @click="handlePlayAgainClick">
+      Play again
+    </button>
   </div>
 </template>
 
@@ -82,7 +83,7 @@ const handleStartGameClick = (): void => {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 3vh;
+  gap: 1vh;
 }
 
 input {

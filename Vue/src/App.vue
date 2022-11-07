@@ -52,9 +52,12 @@ const emit = (): void => {
 <template>
   <div id="container">
     <!-- <button @click="emit">Emit to BE</button> -->
+
     <StartMenu
       @update-player="(p:Player) => player = p"
       v-if="player === null && gameState === 'config'"
+      :window-height="windowHeight"
+      :key="1"
     />
     <ConfigMenu
       v-if="player !== null && gameState === 'config'"
@@ -62,6 +65,7 @@ const emit = (): void => {
       v-model:col-count="colCount"
       v-model:row-count="rowCount"
       v-model:winning-slots="winningSlots"
+      :key="2"
     />
     <GameScreen
       v-if="player !== null && gameState === 'ready'"
@@ -69,6 +73,7 @@ const emit = (): void => {
       :col-count="colCount"
       :player="player"
       :slot-size="slotSize"
+      :key="3"
     />
   </div>
   <div class="modal" v-if="player === null && gameState === 'end'">
@@ -104,5 +109,47 @@ const emit = (): void => {
   align-items: center;
   gap: 10vh;
   /* transform: translateY(-100%); */
+}
+
+.fall-enter-active {
+  animation: bounce 0.7s ease-in;
+}
+.fall-leave-active {
+  animation: bounce 0.7s ease-in reverse;
+}
+
+@keyframes bounce {
+  0% {
+    transform: translateY(v-bind(-windowHeight + "px"));
+  }
+  40% {
+    transform: translateY(v-bind(-windowHeight * 0.3 + "px"));
+  }
+  65% {
+    transform: translateY(v-bind(-windowHeight * 0.15 + "px"));
+  }
+  82% {
+    transform: translateY(v-bind(-windowHeight * 0.075 + "px"));
+  }
+  92% {
+    transform: translateY(v-bind(-windowHeight * 0.0335 + "px"));
+  }
+  55%,
+  75%,
+  87%,
+  97%,
+  100% {
+    transform: translateY(0px);
+  }
+}
+
+.list-enter-active,
+.list-leave-active {
+  transition: all 0.5s ease;
+}
+.list-enter-from,
+.list-leave-to {
+  opacity: 0;
+  transform: translateX(30px);
 }
 </style>

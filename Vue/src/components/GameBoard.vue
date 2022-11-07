@@ -4,24 +4,14 @@ import type { Player, GameBoard, LastMove } from "../../types";
 import GameColumnFront from "./GameColumnFront.vue";
 import GameColumnBack from "./GameColumnBack.vue";
 
-// const gameBoard: GameBoard = [
-//   [1, 2, null, null, null, null],
-//   [2, 1, 1, null, null, null],
-//   [2, null, null, null, null, null],
-//   [null, null, null, null, null, null],
-//   [1, 2, 1, 2, 2, null],
-//   [null, null, null, null, null, null],
-//   [1, 2, 1, 2, 2, 2],
-// ];
-
 const gameBoard: GameBoard = [
-  [1, 2, 1, null, null, null],
+  [1, 2, null, null, null, null],
+  [2, 1, 1, null, null, null],
   [2, null, null, null, null, null],
-  [2, 1, null, null, null, null],
-  [1, 2, 1, 2, null, null],
-  [1, 2, 2, 1, null, null],
-  [1, 2, 2, 2, null, null],
-  [2, 1, 1, 2, 2, null],
+  [null, null, null, null, null, null],
+  [1, 2, 1, 2, 2, null],
+  [null, null, null, null, null, null],
+  [1, 2, 1, 2, 2, 2],
 ];
 
 const lastMove = ref<LastMove>(null);
@@ -31,6 +21,7 @@ const props = defineProps<{
   rowCount: number[];
   slotSize: number;
   player: Player;
+  code: string;
 }>();
 
 const heightBack = computed<number>(
@@ -53,7 +44,7 @@ const heightBack = computed<number>(
         @add-piece="(p:LastMove) => lastMove = p"
         v-for="column in props.colCount"
         :key="column"
-        :index="column"
+        :col-index="column"
         :idx="column"
         :slot-config="gameBoard[column]"
         :col-count="props.colCount"
@@ -61,6 +52,7 @@ const heightBack = computed<number>(
         :player="props.player"
         :slot-size="slotSize"
         :last-move="lastMove"
+        :code="code"
       />
     </div>
   </div>

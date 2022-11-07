@@ -1,17 +1,43 @@
 <script setup lang="ts">
-import type { GameState } from "../../types";
-defineProps<{
-  colCount: number;
-  rowCount: number;
-  winningSlots: number;
+import { ref, inject } from "vue";
+import type {
+  GameState,
+  ServerToClientEvents,
+  ClientToServerEvents,
+} from "../../types";
+import type { Socket } from "socket.io-client";
+
+//TO DO: discuss final number of options columns, rows, winning slots
+
+const socket: Socket<ServerToClientEvents, ClientToServerEvents> = inject(
+  "socket"
+) as Socket<ServerToClientEvents, ClientToServerEvents>;
+
+const props = defineProps<{
+  code: string;
+  //   rowCount: number;
+  //   winningSlots: number;
 }>();
 
-defineEmits<{
-  (e: "update:colCount", n: number): void;
-  (e: "update:rowCount", n: number): void;
-  (e: "update:winningSlots", n: number): void;
+const colCount = ref<number>(7);
+const rowCount = ref<number>(6);
+const winningSlots = ref<number>(4);
+
+const emit = defineEmits<{
+  // (e: "update:colCount", n: number): void;
+  // (e: "update:rowCount", n: number): void;
+  // (e: "update:winningSlots", n: number): void;
   (e: "update-gameState", n: GameState): void;
 }>();
+
+const handleStartGameClick = (): void => {
+  socket.emit(
+    "config-ready",
+    [colCount.value, rowCount.value, winningSlots.value],
+    props.code
+  );
+  emit("update-gameState", "ready");
+};
 </script>
 
 <template>
@@ -24,38 +50,29 @@ defineEmits<{
       min="7"
       max="11"
       step="1"
-      value="7"
-      @input="
-        $emit('update:colCount', +($event.target as HTMLInputElement).value)
-      "
+      v-model="colCount"
     />
     <label for="rows"> Rows</label>
     <input
       type="number"
       id="rows"
-      value="6"
       placeholder="6"
       min="6"
       max="11"
       step="1"
-      @input="
-        $emit('update:rowCount', +($event.target as HTMLInputElement).value)
-      "
+      v-model="rowCount"
     />
     <label for="winning-slots"> Winning pieces</label>
     <input
       type="number"
       id="winning-slots"
-      value="4"
       placeholder="4"
       min="4"
       max="6"
       step="1"
-      @input="
-        $emit('update:winningSlots', +($event.target as HTMLInputElement).value)
-      "
+      v-model="winningSlots"
     />
-    <button @click="$emit('update-gameState', 'ready')">Start game</button>
+    <button @click="handleStartGameClick">Start game</button>
   </div>
 </template>
 

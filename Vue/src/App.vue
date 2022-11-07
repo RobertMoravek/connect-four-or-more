@@ -5,18 +5,19 @@ import StartMenu from "./components/StartMenu.vue";
 import ConfigMenu from "./components/ConfigMenu.vue";
 import GameScreen from "./components/GameScreen.vue";
 import ResultsView from "./components/ResultsView.vue";
+import WaitScreen from "./components/WaitScreen.vue";
 import type {
   Player,
   GameState,
   LeaveEventPayload,
   LastMove,
+  GameBoard,
+  GameObject,
   ServerToClientEvents,
   ClientToServerEvents,
 } from "../types";
 import throttle from "lodash/throttle";
 import type { Socket } from "socket.io-client";
-
-//TO DO: wait screen
 
 // import socket
 const socket: Socket<ServerToClientEvents, ClientToServerEvents> = inject(
@@ -39,12 +40,15 @@ const useWindowSizeThrottled = throttle(useWindowSize, 200);
 onMounted(() => window.addEventListener("resize", useWindowSizeThrottled));
 onUnmounted(() => window.removeEventListener("resize", useWindowSizeThrottled));
 
-const colCount = ref<number>(7);
-const rowCount = ref<number>(6);
-const winningSlots = ref<number>(4);
+const colCount = ref<number>(0);
+const rowCount = ref<number>(0);
+const winningSlots = ref<number>(0);
 const player = ref<Player>(null);
 const gameState = ref<GameState>("config");
 const code = ref<string>("");
+const playerTurn = ref<Player>(null);
+const gameBoard = ref<GameBoard>(null);
+// const lastMove = ref<LastMove>(null);
 
 const slotSize = computed<number>(() =>
   Math.floor(
@@ -58,7 +62,18 @@ const slotSize = computed<number>(() =>
 //   newGame.value = !newGame.value;
 // };
 
-socket.on("game-update", () => {});
+socket.on("game-update", (gameObject: GameObject, gameCode?: string) => {
+  console.log("game update event", gameObject);
+  if (gameCode !== undefined) {
+    code.value = gameCode;
+  }
+  colCount.value = gameObject.config[0];
+  rowCount.value = gameObject.config[1];
+  winningSlots.value = gameObject.config[2];
+  gameState.value = gameObject.gameState;
+  playerTurn.value = gameObject.playerTurn;
+  gameBoard.value = gameObject.gameBoard;
+});
 </script>
 
 <template>
@@ -67,17 +82,18 @@ socket.on("game-update", () => {});
       @update-player="(p:Player) => {player = p; inGame=true}"
       v-if="inGame === false"
     />
-    <ConfigMenu
-      v-if="player === 1 && gameState === 'config'"
-      @update-gameState="(s:GameState) => gameState = s"
-      :code="code"
+    <ConfigMenu v-if="player === 1 && gameState === 'config'" :code="code" />
+    <WaitScreen
+      v-if="gameState === 'ready' || (player === 2 && gameState === 'config')"
     />
     <GameScreen
-      v-if="player !== null && gameState === 'ready'"
+      v-if="player !== null && gameState === 'running'"
       :row-count="rowCount"
       :col-count="colCount"
       :player="player"
       :slot-size="slotSize"
+      :player-turn="playerTurn"
+      :game-board="gameBoard"
       :code="code"
     />
   </div>

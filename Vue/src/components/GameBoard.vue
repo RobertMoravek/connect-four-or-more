@@ -1,18 +1,30 @@
 <script setup lang="ts">
-import { ref, computed } from "vue";
-import type { Player, GameBoard, LastMove } from "../../types";
+import { ref, computed, inject } from "vue";
+import type {
+  Player,
+  GameBoard,
+  LastMove,
+  GameObject,
+  ServerToClientEvents,
+  ClientToServerEvents,
+} from "../../types";
 import GameColumnFront from "./GameColumnFront.vue";
 import GameColumnBack from "./GameColumnBack.vue";
+import type { Socket } from "socket.io-client";
 
-const gameBoard: GameBoard = [
-  [1, 2, null, null, null, null],
-  [2, 1, 1, null, null, null],
-  [2, null, null, null, null, null],
-  [null, null, null, null, null, null],
-  [1, 2, 1, 2, 2, null],
-  [null, null, null, null, null, null],
-  [1, 2, 1, 2, 2, 2],
-];
+// const gameBoard: GameBoard = [
+//   [1, 2, null, null, null, null],
+//   [2, 1, 1, null, null, null],
+//   [2, null, null, null, null, null],
+//   [null, null, null, null, null, null],
+//   [1, 2, 1, 2, 2, null],
+//   [null, null, null, null, null, null],
+//   [1, 2, 1, 2, 2, 2],
+// ];
+
+const socket: Socket<ServerToClientEvents, ClientToServerEvents> = inject(
+  "socket"
+) as Socket<ServerToClientEvents, ClientToServerEvents>;
 
 const lastMove = ref<LastMove>(null);
 
@@ -22,7 +34,15 @@ const props = defineProps<{
   slotSize: number;
   player: Player;
   code: string;
+  gameBoard: GameBoard;
+  playerTurn: Player;
 }>();
+
+socket.on("game-update", (gameObject: GameObject, gameCode?: string) => {
+  console.log("game update in game board component", gameObject);
+
+  lastMove.value = gameObject.lastMove;
+});
 
 const heightBack = computed<number>(
   () => props.slotSize * (props.rowCount.length + 1)
@@ -41,17 +61,17 @@ const heightBack = computed<number>(
     />
     <div id="game-back">
       <GameColumnBack
-        @add-piece="(p:LastMove) => lastMove = p"
         v-for="column in props.colCount"
         :key="column"
         :col-index="column"
         :idx="column"
-        :slot-config="gameBoard[column]"
+        :slot-config="props.gameBoard![column]"
         :col-count="props.colCount"
         :row-count="props.rowCount"
         :player="props.player"
         :slot-size="slotSize"
         :last-move="lastMove"
+        :player-turn="playerTurn"
         :code="code"
       />
     </div>

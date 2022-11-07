@@ -2,10 +2,12 @@
 import { inject } from "vue";
 import type {
   Player,
+  GameBoard,
   ServerToClientEvents,
   ClientToServerEvents,
+  LastMove,
 } from "../../types";
-import GameBoard from "./GameBoard.vue";
+import GameBoardVue from "./GameBoard.vue";
 import ScoreBoard from "./ScoreBoard.vue";
 import type { Socket } from "socket.io-client";
 const socket: Socket<ServerToClientEvents, ClientToServerEvents> = inject(
@@ -18,6 +20,8 @@ const props = defineProps<{
   slotSize: number;
   player: Player;
   code: string;
+  gameBoard: GameBoard;
+  playerTurn: Player;
 }>();
 
 const renumber = (param: number): number[] => {
@@ -33,12 +37,14 @@ const handleLeaveGameClick = (): void => {
 <template>
   <div id="game-screen-container">
     <ScoreBoard />
-    <GameBoard
+    <GameBoardVue
       :row-count="updatedRowCount"
       :col-count="updatedColCount"
       :player="player"
       :slot-size="slotSize"
+      :game-board="gameBoard"
       :code="code"
+      :player-turn="playerTurn"
     />
     <button @click="handleLeaveGameClick">Leave game</button>
   </div>

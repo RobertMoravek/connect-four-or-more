@@ -175,6 +175,7 @@ export function checkIfEmptySlotLeftInColoumn(
 export function addLastMoveToGameBoard(gameObject: GameObject): void {
     let lastMove: [number, number, Player] = gameObject.lastMove;
     gameObject.gameBoard[lastMove[0]][lastMove[1]] = lastMove[2];
+    // gameObject.lastMove = null;
 }
 
 // Set gameObject to reflect win-state

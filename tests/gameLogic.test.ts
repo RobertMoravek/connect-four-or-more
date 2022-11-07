@@ -723,3 +723,31 @@ describe("checkForVictory", () => {
         ]);
     });
 });
+
+describe("checkForVictory", () => {
+    test("find no victory", () => {
+        let gameObject: GameObject = {
+            gameBoard: [
+                [null, null, null, null, null, null],
+                [null, null, null, null, null, null],
+                [null, null, null, null, null, null],
+                [1, null, null, null, null, null],
+                [2, null, null, null, null, null],
+                [null, null, null, null, null, null],
+                [null, null, null, null, null, null],
+            ],
+            // playerName?: [string, string],
+            playerTurn: 2,
+            score: [0, 0],
+            gameState: "running",
+            winner: null,
+            config: [7, 6, 4],
+            sockets: ["hallo", "sdfsdf"],
+            lastMove: [4, 0, 2],
+            winningSlots: null,
+            playAgain: [false, false],
+            playerStartedLast: null,
+        };
+        expect(checkForVictory(gameObject)).toBeFalsy;
+    });
+});

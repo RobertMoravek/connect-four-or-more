@@ -23,12 +23,12 @@ const colCount = ref<number>(7);
 const rowCount = ref<number>(6);
 const winningSlots = ref<number>(4);
 
-const emit = defineEmits<{
-  // (e: "update:colCount", n: number): void;
-  // (e: "update:rowCount", n: number): void;
-  // (e: "update:winningSlots", n: number): void;
-  (e: "update-gameState", n: GameState): void;
-}>();
+// const emit = defineEmits<{
+//   // (e: "update:colCount", n: number): void;
+//   // (e: "update:rowCount", n: number): void;
+//   // (e: "update:winningSlots", n: number): void;
+//   (e: "update-gameState", n: GameState): void;
+// }>();
 
 const handleStartGameClick = (): void => {
   socket.emit(
@@ -36,12 +36,13 @@ const handleStartGameClick = (): void => {
     [colCount.value, rowCount.value, winningSlots.value],
     props.code
   );
-  emit("update-gameState", "ready");
+  // emit("update-gameState", "ready");
 };
 </script>
 
 <template>
   <div id="config-container">
+    {{ code }}
     <h1>Configure your game</h1>
     <label for="columns"> Columns</label>
     <input

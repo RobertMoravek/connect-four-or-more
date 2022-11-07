@@ -32,8 +32,8 @@ type LastMove = [number, number, 1 | 2] | null;
 
 //socket types
 interface ServerToClientEvents {
-  "game-update": (a: GameObject, b: string) => void;
-  error: (a: ErrorMessage) => void;
+  "game-update": (a: GameObject, b?: string) => void;
+  // error: (a: ErrorMessage) => void;
 }
 
 interface ClientToServerEvents {

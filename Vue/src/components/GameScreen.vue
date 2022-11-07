@@ -17,6 +17,7 @@ const props = defineProps<{
   rowCount: number;
   slotSize: number;
   player: Player;
+  code: string;
 }>();
 
 const renumber = (param: number): number[] => {
@@ -24,8 +25,8 @@ const renumber = (param: number): number[] => {
 };
 const updatedRowCount = renumber(props.rowCount).reverse();
 const updatedColCount = renumber(props.colCount);
-const emit = (): void => {
-  socket.emit("new-game");
+const handleLeaveGameClick = (): void => {
+  socket.emit("leave-game");
 };
 </script>
 
@@ -37,8 +38,9 @@ const emit = (): void => {
       :col-count="updatedColCount"
       :player="player"
       :slot-size="slotSize"
+      :code="code"
     />
-    <button @click="emit">Emit to BE</button>
+    <button @click="handleLeaveGameClick">Leave game</button>
   </div>
 </template>
 

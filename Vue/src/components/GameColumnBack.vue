@@ -1,9 +1,19 @@
 <script setup lang="ts">
-import { ref, computed } from "vue";
+import { ref, computed, inject } from "vue";
+import type { Socket } from "socket.io-client";
 import GamePiece from "./GamePiece.vue";
 import GamePiecePreview from "./GamePiecePreview.vue";
 import GamePieceFalling from "./GamePieceFalling.vue";
-import type { Player, LastMove } from "../../types";
+import type {
+  Player,
+  LastMove,
+  ServerToClientEvents,
+  ClientToServerEvents,
+} from "../../types";
+
+const socket: Socket<ServerToClientEvents, ClientToServerEvents> = inject(
+  "socket"
+) as Socket<ServerToClientEvents, ClientToServerEvents>;
 
 const props = defineProps<{
   colCount: number[];
@@ -12,7 +22,8 @@ const props = defineProps<{
   slotConfig: Player[];
   player: Player;
   lastMove: LastMove;
-  index: number;
+  colIndex: number;
+  code: string;
 }>();
 
 const emit = defineEmits<{ (e: "add-piece", p: LastMove): void }>();
@@ -39,11 +50,12 @@ const nextFreeSlot = computed<number | null>(() => {
   }
 });
 
-const addSlot = (e: Event): void => {
+const handleColumnClick = (e: Event): void => {
   if (nextFreeSlot.value == null) {
     e.preventDefault();
   } else {
-    emit("add-piece", [props.index, nextFreeSlot.value, props.player!]);
+    emit("add-piece", [props.colIndex, nextFreeSlot.value, props.player!]);
+    socket.emit("column-click", props.colIndex, props.player!, props.code);
   }
 };
 </script>
@@ -53,7 +65,7 @@ const addSlot = (e: Event): void => {
     class="column-back"
     @mouseover="hover = true"
     @mouseleave="hover = false"
-    @click="addSlot"
+    @click="handleColumnClick"
   >
     <div class="pieces-container">
       <GamePiece
@@ -66,7 +78,7 @@ const addSlot = (e: Event): void => {
       />
       <Transition name="fall">
         <GamePieceFalling
-          v-if="lastMove !== null && index == lastMove[0]"
+          v-if="lastMove !== null && colIndex == lastMove[0]"
           :key="lastMove[1]"
           :row="lastMove[1]"
           :player="lastMove[2]"

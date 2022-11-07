@@ -21,6 +21,7 @@ const props = defineProps<{
   rowCount: number[];
   slotSize: number;
   player: Player;
+  code: string;
 }>();
 
 const heightBack = computed<number>(
@@ -43,7 +44,7 @@ const heightBack = computed<number>(
         @add-piece="(p:LastMove) => lastMove = p"
         v-for="column in props.colCount"
         :key="column"
-        :index="column"
+        :col-index="column"
         :idx="column"
         :slot-config="gameBoard[column]"
         :col-count="props.colCount"
@@ -51,6 +52,7 @@ const heightBack = computed<number>(
         :player="props.player"
         :slot-size="slotSize"
         :last-move="lastMove"
+        :code="code"
       />
     </div>
   </div>

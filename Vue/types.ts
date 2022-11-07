@@ -38,10 +38,11 @@ interface ServerToClientEvents {
 
 interface ClientToServerEvents {
   "new-game": () => void;
-  "config-ready": (a: string, b: string) => void;
+  "config-ready": (a: number[], b: string) => void;
   "join-game": (a: string) => void;
   "column-click": (a: number, b: 1 | 2, c: string) => void;
   "play-again": (a: string) => void;
+  "leave-game": () => void;
 }
 
 export type {

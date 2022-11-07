@@ -64,7 +64,7 @@ export function validateUserConfig (config: [number, number, number ], gameObjec
     ) {
         gameObject.config = config;
     } else {
-        gameObject.config = [6, 7, 4];
+        gameObject.config = [7, 6, 4];
     }
     gameObject.gameState = "ready";
 }

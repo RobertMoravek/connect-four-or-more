@@ -123,7 +123,16 @@ io.on("connection", (socket) => {
         io.in(code).emit("game-update", activeGames[code]);
     });
 
-    socket.on("disconnect", () => {
+    // // If one player clicks "leave Game", change gameState accordingly
+    // socket.on("leave-game", (code: string) => {
+    //     let leftOverPlayer: [boolean, string?] = deleteSocketfromActiveGames(
+    //         socket.id,
+    //         activeGames
+    //     );
+    //     io.in(code).emit("game-update", activeGames[code]);
+    // });
+
+    socket.on("disconnect", "leave-game", () => {
         console.log("user disconnected: socket-id:", socket.id);
         // Delete the disconnecting socket from existing games & if there is still another player in that game, give back the Code of that game
         let leftOverPlayer: [boolean, string?] = deleteSocketfromActiveGames(

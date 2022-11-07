@@ -10,11 +10,12 @@ import {
     addLastMoveToGameBoard,
     setPlayAgain,
     checkIfBothWantToPlayAgain,
-    prepareRestartGameWithSameConfig,
+    prepareRestartGame,
     setWinningState,
     checkForDraw,
     togglePlayerTurn,
     setDrawState,
+
 } from "./gameLogic";
 import { createErrorMessage } from "./errors";
 import { checkForVictory } from "./checkVictory";
@@ -115,10 +116,10 @@ io.on("connection", (socket) => {
     });
 
     // If one player clicks "play again", mark them as playAgain true and check if the other player is also true. If yes, prepare the game for restart. Emit new gamestate either way.
-    socket.on("play-again", (code: string) => {
-        setPlayAgain(activeGames[code], socket.id);
+    socket.on("play-again", (code: string, config?: [number, number, number]) => {
+        setPlayAgain(activeGames[code], socket.id, config);
         if (checkIfBothWantToPlayAgain(activeGames[code])) {
-            prepareRestartGameWithSameConfig(activeGames[code]);
+            prepareRestartGame(activeGames[code])
         }
         io.in(code).emit("game-update", activeGames[code]);
     });

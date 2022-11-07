@@ -11,8 +11,13 @@ import {
     setPlayAgain,
     checkIfBothWantToPlayAgain,
     prepareRestartGameWithSameConfig,
+    setWinningState,
+    checkForDraw,
+    togglePlayerTurn,
+    setDrawState,
 } from "./gameLogic";
 import { createErrorMessage } from "./errors";
+import { checkForVictory } from "./checkVictory";
 
 const app = express();
 const path = require("path");
@@ -78,22 +83,34 @@ io.on("connection", (socket) => {
     });
 
     // Check code and join second player to game (if it exists)
-    socket.on("column-click", (column: number, player: 1 | 2, code: string) => {
-        console.log("socket column click", column, player, code);
-        if (checkValidMove(activeGames[code], column, player)) {
-            activeGames[code].lastMove = [
-                column,
-                activeGames[code].gameBoard[column].indexOf(null),
-                player,
-            ];
-            activeGames[code].playerTurn = null;
-            io.in(code).emit("game-update", activeGames[code], code);
-            setTimeout(() => {
-                addLastMoveToGameBoard(activeGames[code]);
-                // ******* CHECKVICTORY FUNCTION and it's following functions
-            }, 1000);
-        } else {
-            io.to(socket.id).emit("error", createErrorMessage(3));
+
+    socket.on(
+        "column-click",
+        (column: number, player: 1 | 2, code: string) => {
+            if (checkValidMove(activeGames[code], column, player)) {
+                activeGames[code].lastMove = [
+                    column,
+                    activeGames[code].gameBoard[column].indexOf(null),
+                    player,
+                ];
+                activeGames[code].playerTurn = null;
+                io.in(code).emit("game-update", activeGames[code], code);
+                setTimeout(() => {
+                    addLastMoveToGameBoard(activeGames[code]);
+                    if (checkForVictory(activeGames[code])) {
+                        setWinningState(activeGames[code])
+                    } else {
+                        if (checkForDraw(activeGames[code])) {
+                            setDrawState(activeGames[code])
+                        } else {
+                            togglePlayerTurn(activeGames[code])
+                        }
+                    }
+                    io.in(code).emit("game-update", activeGames[code], code)
+                }, 1000);
+            } else {
+                io.to(socket.id).emit("error", createErrorMessage(3));
+            }
         }
     });
 

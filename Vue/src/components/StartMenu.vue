@@ -1,5 +1,4 @@
 <script setup lang="ts">
-
 import { inject, ref } from "vue";
 import type {
   Player,
@@ -26,19 +25,25 @@ const handleJoinGameClick = (): void => {
   emit("update-player", 2);
   socket.emit("join-game", code.value);
 };
-
 </script>
 
 <template>
   <div id="start-container">
-
     <h1>Connect4/more</h1>
     <button @click="handleNewGameClick">New game</button>
     <div id="join-container">
-      <p>Or add a code below to join an existing game</p>
-      <label for="code"> Game code</label>
-      <input type="text" id="code" v-model="code" />
-      <button v-if="code" @click="handleJoinGameClick">Join game</button>
+      <h2>Or join a game</h2>
+      <label for="code"> Enter game code:</label>
+      <input
+        type="text"
+        id="code"
+        v-model="code"
+        maxlength="6"
+        style="text-transform: uppercase"
+      />
+      <button v-show="code.length == 6" @click="handleJoinGameClick">
+        Join game
+      </button>
     </div>
   </div>
 </template>
@@ -48,13 +53,19 @@ const handleJoinGameClick = (): void => {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 10vh;
+  gap: 2rem;
+  margin-top: 2rem;
 }
 
 #join-container {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
-  gap: 1vh;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+#code {
+  width: 10ch;
+  text-align: center;
 }
 </style>

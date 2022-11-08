@@ -38,7 +38,9 @@ const handlePlayAgainClick = (): void => {
 
 <template>
   <div id="config-container">
+
     <p v-if="props.gameState === 'config'" class="code">{{ code }}</p>
+
     <h1>Configure your game</h1>
     <label for="columns"> Columns</label>
     <input

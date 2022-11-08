@@ -135,8 +135,9 @@ socket.on("game-update", (gameObject: GameObject, gameCode?: string) => {
 #container {
   display: flex;
   justify-content: center;
-  align-items: center;
-  height: 100vh;
+  align-items: flex-start;
+  min-height: 100%;
+
 }
 
 /* .modal {

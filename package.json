@@ -9,6 +9,7 @@
         "start": "node ./dist/app.js",
         "dist": "tsc -p .",
         "dev": "npm run build --prefix Vue/ && nodemon ./src/server.ts --watch ./src/",
+        "devfe": "nodemon ./src/server.ts --watch ./src/*.* Vue/ && npm run dev ./Vue/",
         "devbe": "nodemon ./src/server.ts --watch ./src/*.*",
         "type": "module",
         "postinstall": "tsc",

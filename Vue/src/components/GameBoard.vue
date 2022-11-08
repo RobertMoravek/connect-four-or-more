@@ -35,8 +35,16 @@ socket.on("game-update", (gameObject: GameObject, gameCode?: string) => {
   winningSlots.value = gameObject.winningSlots;
 });
 
+const heightFront = computed<number>(
+  () => props.slotSize * props.rowCount.length
+);
+
 const heightBack = computed<number>(
   () => props.slotSize * (props.rowCount.length + 1)
+);
+
+const marginTopGameBoard = computed<number>(
+  () => heightBack.value / props.rowCount.length
 );
 </script>
 
@@ -73,17 +81,15 @@ const heightBack = computed<number>(
 <style scoped>
 #game {
   display: flex;
-  height: v-bind(heightBack + "px");
+  height: v-bind(heightFront + "px");
   align-items: flex-end;
   /* border: 2px solid transparent; */
   /* border-radius: 8px; */
   overflow: hidden;
   position: relative;
   border: 5px outset rgb(58, 96, 212);
-
   border-radius: 15px;
   box-shadow: 5px 5px 10px;
-
 }
 
 #game-back {

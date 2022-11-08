@@ -38,7 +38,7 @@ const existingSlots = computed<Player[]>(() =>
   props.slotConfig.filter((i) => i !== null)
 );
 
-const nbRows = computed<number>(() => props.rowCount.length + 1);
+const nbRows = computed<number>(() => props.rowCount.length);
 
 const nextFreeSlot = computed<number | null>(() => {
   if (
@@ -133,7 +133,7 @@ const handleColumnClick = (e: Event): void => {
   transform: rotate(180deg);
   transform-origin: center;
   grid-template-columns: v-bind(slotSize + "px");
-  grid-template-rows: repeat(v-bind(nbRows), v-bind(slotSize + "px"));
+  grid-template-rows: repeat(v-bind(nbRows + 1), v-bind(slotSize + "px"));
   align-items: center;
   justify-items: center;
   position: absolute;

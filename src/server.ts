@@ -119,6 +119,7 @@ io.on("connection", (socket) => {
     socket.on(
         "play-again",
         (code: string, config?: [number, number, number]) => {
+            console.log("play again", code, config);
             setPlayAgain(activeGames[code], socket.id, config);
             if (checkIfBothWantToPlayAgain(activeGames[code])) {
                 prepareRestartGame(activeGames[code]);
@@ -151,7 +152,6 @@ io.on("connection", (socket) => {
             );
         }
     });
-
 
     socket.on("disconnect", () => {
         console.log("user disconnected: socket-id:", socket.id);

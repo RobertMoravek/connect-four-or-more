@@ -99,6 +99,7 @@ socket.on("game-update", (gameObject: GameObject, gameCode?: string) => {
         v-if="
           player !== null && (gameState === 'running' || gameState === 'end')
         "
+        @leave-game="() => (inGame = false)"
         :row-count="rowCount"
         :col-count="colCount"
         :player="player"
@@ -115,7 +116,7 @@ socket.on("game-update", (gameObject: GameObject, gameCode?: string) => {
     :player="player"
   />
   <ResultsView
-    v-if="gameState === 'end'"
+    v-if="gameState === 'end' || (inGame == true && gameState === 'closed')"
     @leave-game="() => (inGame = false)"
     :winner="winner"
     :code="code"

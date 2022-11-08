@@ -1,4 +1,5 @@
 <script setup lang="ts">
+
 import { inject, ref } from "vue";
 import type {
   Player,
@@ -25,11 +26,13 @@ const handleJoinGameClick = (): void => {
   emit("update-player", 2);
   socket.emit("join-game", code.value);
 };
+
 </script>
 
 <template>
   <div id="start-container">
-    <h1>Welcome to Connect4/more</h1>
+
+    <h1>Connect4/more</h1>
     <button @click="handleNewGameClick">New game</button>
     <div id="join-container">
       <p>Or add a code below to join an existing game</p>

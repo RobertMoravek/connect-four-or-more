@@ -10,7 +10,7 @@ const props = defineProps<{
 }>();
 
 const pieceColor = computed<string>(() =>
-  props.player === 1 ? "tomato" : props.player === 2 ? "goldenrod" : ""
+  props.player === 1 ? "crimson" : props.player === 2 ? "gold" : ""
 );
 
 const startPosAnimation = computed<number>(
@@ -31,7 +31,7 @@ const startPosAnimation = computed<number>(
 }
 
 .fall-enter-active {
-  animation: bounce 1s ease-in;
+  animation: bounce 0.7s ease-in;
 }
 
 @keyframes bounce {
@@ -39,23 +39,23 @@ const startPosAnimation = computed<number>(
     transform: translateY(v-bind(startPosAnimation + "px"));
   }
   40% {
-    transform: translateY(v-bind(startPosAnimation * 0.5 + "px"));
+    transform: translateY(v-bind(startPosAnimation * 0.3 + "px"));
   }
   65% {
-    transform: translateY(v-bind(startPosAnimation * 0.25 + "px"));
+    transform: translateY(v-bind(startPosAnimation * 0.15 + "px"));
   }
   82% {
-    transform: translateY(v-bind(startPosAnimation * 0.125 + "px"));
+    transform: translateY(v-bind(startPosAnimation * 0.075 + "px"));
   }
   92% {
-    transform: translateY(v-bind(startPosAnimation * 0.06 + "px"));
+    transform: translateY(v-bind(startPosAnimation * 0.0335 + "px"));
   }
   55%,
   75%,
   87%,
   97%,
   100% {
-    transform: translate3d(0%, 0%, 0);
+    transform: translateY(0px);
   }
 }
 </style>

@@ -8,7 +8,7 @@ const props = defineProps<{
 }>();
 
 const previewColor = computed<string>(() =>
-  props.player === 1 ? "tomato" : props.player === 2 ? "goldenrod" : ""
+  props.player === 1 ? "crimson" : props.player === 2 ? "gold" : ""
 );
 </script>
 

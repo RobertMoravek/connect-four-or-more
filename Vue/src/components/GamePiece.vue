@@ -10,9 +10,9 @@ const props = defineProps<{
 
 const pieceColor = computed<string>(() =>
   props.pieceValue === 1
-    ? "tomato"
+    ? "crimson"
     : props.pieceValue === 2
-    ? "goldenrod"
+    ? "gold"
     : "transparent"
 );
 </script>
@@ -28,5 +28,6 @@ const pieceColor = computed<string>(() =>
   border-radius: 50%;
   background-color: v-bind(pieceColor);
   z-index: -5;
+
 }
 </style>

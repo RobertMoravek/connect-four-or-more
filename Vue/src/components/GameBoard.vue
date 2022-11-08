@@ -75,6 +75,12 @@ const heightBack = computed<number>(
   /* border-radius: 8px; */
   overflow: hidden;
   position: relative;
+  border: 5px outset rgb(58, 96, 212);
+
+  border-radius: 15px;
+  box-shadow: 5px 5px 10px;
+
+
 }
 
 #game-back {

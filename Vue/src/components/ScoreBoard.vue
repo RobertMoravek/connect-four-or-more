@@ -1,4 +1,7 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import GamePiece from './GamePiece.vue';
+
+</script>
 
 <template>
   <div id="score-container">

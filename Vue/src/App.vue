@@ -81,6 +81,8 @@ socket.on("game-update", (gameObject: GameObject, gameCode?: string) => {
 
 <template>
   <div id="container">
+
+<Transition name="fall" type="animation" appear tag="div" mode="out-in">
     <StartMenu
       @update-player="(p:Player) => {player = p; inGame=true}"
       v-if="inGame === false"
@@ -104,6 +106,8 @@ socket.on("game-update", (gameObject: GameObject, gameCode?: string) => {
       :game-board="gameBoard"
       :code="code"
     />
+        </Transition>
+
   </div>
   <ResultsView
     v-if="gameState === 'end'"
@@ -141,5 +145,51 @@ socket.on("game-update", (gameObject: GameObject, gameCode?: string) => {
   align-items: center;
   gap: 10vh;
   /* transform: translateY(-100%); */
-/* } */
+
+}
+
+.fall-enter-active {
+
+  animation: bounce-in 0.7s ease-in;
+}
+.fall-leave-active {
+
+  animation: fall-out 0.7s ease-in;
+}
+
+
+@keyframes bounce-in {
+  0% {
+    transform: translateY(v-bind(-windowHeight + "px"));
+  }
+  40% {
+    transform: translateY(v-bind(-windowHeight * 0.3 + "px"));
+  }
+  65% {
+    transform: translateY(v-bind(-windowHeight * 0.15 + "px"));
+  }
+  82% {
+    transform: translateY(v-bind(-windowHeight * 0.075 + "px"));
+  }
+  92% {
+    transform: translateY(v-bind(-windowHeight * 0.0335 + "px"));
+  }
+  55%,
+  75%,
+  87%,
+  97%,
+  100% {
+    transform: translateY(0px);
+  }
+}
+@keyframes fall-out {
+  0% {
+    transform: translateY(0px);
+  }
+  100% {
+    transform: translateY(v-bind(windowHeight + "px"));
+  }
+}
+
+
 </style>

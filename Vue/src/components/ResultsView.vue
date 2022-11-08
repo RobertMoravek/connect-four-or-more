@@ -46,11 +46,12 @@ const resultsMessage = computed<string>(() =>
 <template>
   <div class="modal">
     <div id="end-container">
-      <h1 v-if="gameState !== 'closed'">{{ resultsMessage }}</h1>
+      <h1 v-if="props.gameState !== 'closed'">{{ resultsMessage }}</h1>
       <p
         v-if="
-          (props.player === 1 && props.playAgain[1] === true) ||
-          (props.player === 2 && props.playAgain[0] === true)
+          props.gameState !== 'closed' &&
+          ((props.player === 1 && props.playAgain[1] === true) ||
+            (props.player === 2 && props.playAgain[0] === true))
         "
       >
         The other player invited you to a new game

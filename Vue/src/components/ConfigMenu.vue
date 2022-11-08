@@ -26,7 +26,7 @@ const winningSlots = ref<number>(4);
 const handleStartGameClick = (): void => {
   socket.emit(
     "config-ready",
-    [colCount.value, rowCount.value, winningSlots.value],
+    [+colCount.value, +rowCount.value, +winningSlots.value],
     props.code
   );
 };
@@ -38,39 +38,35 @@ const handlePlayAgainClick = (): void => {
 
 <template>
   <div id="config-container">
-
     <p v-if="props.gameState === 'config'" class="code">{{ code }}</p>
 
     <h1>Configure your game</h1>
     <label for="columns"> Columns</label>
-    <input
-      type="number"
-      id="columns"
-      min="7"
-      max="11"
-      step="1"
-      v-model="colCount"
-    />
+    <select name="columns" id="coloumns" v-model="colCount">
+      <option value="7">7</option>
+      <option value="8">8</option>
+      <option value="9">9</option>
+      <option value="10">10</option>
+      <option value="11">11</option>
+    </select>
+
     <label for="rows"> Rows</label>
-    <input
-      type="number"
-      id="rows"
-      placeholder="6"
-      min="6"
-      max="11"
-      step="1"
-      v-model="rowCount"
-    />
+    <select name="rows" id="rows" v-model="rowCount">
+      <option value="6">6</option>
+      <option value="7">7</option>
+      <option value="8">8</option>
+      <option value="9">9</option>
+      <option value="10">10</option>
+      <option value="11">11</option>
+    </select>
+
     <label for="winning-slots"> Winning pieces</label>
-    <input
-      type="number"
-      id="winning-slots"
-      placeholder="4"
-      min="4"
-      max="6"
-      step="1"
-      v-model="winningSlots"
-    />
+    <select name="winning-slots" id="winning-slots" v-model="winningSlots">
+      <option value="4">4</option>
+      <option value="5">5</option>
+      <option value="6">6</option>
+    </select>
+
     <button v-if="gameState === 'config'" @click="handleStartGameClick">
       Start game
     </button>

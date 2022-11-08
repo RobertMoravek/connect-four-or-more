@@ -99,6 +99,8 @@ html, body {
   background-repeat: no-repeat;
   background-size: cover;
   object-fit: cover;
+  position: relative;
+  z-index: -10;
 }
 
 /* body {
@@ -115,7 +117,7 @@ button{
   cursor: pointer;
 }
 
-input[type=text] {
+input[type=text], select {
   font-size: 1rem;
   padding: 0.75rem 1rem;
   border-radius: 255px 15px 225px 15px/15px 225px 15px 255px;

@@ -23,6 +23,10 @@ const props = defineProps<{
   playerTurn: Player;
 }>();
 
+const emit = defineEmits<{
+  (e: "leave-game"): void;
+}>();
+
 const renumber = (param: number): number[] => {
   return [...Array(param).keys()];
 };
@@ -30,6 +34,7 @@ const updatedRowCount = renumber(props.rowCount).reverse();
 const updatedColCount = renumber(props.colCount);
 const handleLeaveGameClick = (): void => {
   socket.emit("leave-game");
+  emit("leave-game");
 };
 </script>
 

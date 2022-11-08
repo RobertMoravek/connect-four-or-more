@@ -22,15 +22,16 @@ const props = defineProps<{
   playAgain: boolean[];
 }>();
 
-// const emit = defineEmits<{
-//   (e: "leave-game", p: LeaveEventPayload): void;
-// }>();
+const emit = defineEmits<{
+  (e: "leave-game"): void;
+}>();
 
 const handlePlayAgainClick = (): void => {
   socket.emit("play-again", props.code);
 };
 const handleLeaveGameClick = (): void => {
   socket.emit("leave-game");
+  emit("leave-game");
 };
 
 const resultsMessage = computed<string>(() =>
@@ -40,31 +41,32 @@ const resultsMessage = computed<string>(() =>
     ? "You win 🥳"
     : "You lose 😛"
 );
-
-// const showInviteMessage = computed<boolean>(
-//   () =>
-//     (props.player === 1 && props.playAgain[1] === true) ||
-//     (props.player === 2 && props.playAgain[0] === true)
-// );
 </script>
 
 <template>
   <div class="modal">
     <div id="end-container">
-      <h1>{{ resultsMessage }}</h1>
+      <h1 v-if="props.gameState !== 'closed'">{{ resultsMessage }}</h1>
       <p
         v-if="
-          (props.player === 1 && props.playAgain[1] === true) ||
-          (props.player === 2 && props.playAgain[0] === true)
+          props.gameState !== 'closed' &&
+          ((props.player === 1 && props.playAgain[1] === true) ||
+            (props.player === 2 && props.playAgain[0] === true))
         "
       >
         The other player invited you to a new game
       </p>
-      <button v-if="props.player === 2" @click="handlePlayAgainClick">
+      <p v-if="props.gameState === 'closed'">
+        The other player has left the game
+      </p>
+      <button
+        v-if="props.player === 2 && props.gameState !== 'closed'"
+        @click="handlePlayAgainClick"
+      >
         Play again
       </button>
       <ConfigMenu
-        v-if="props.player === 1"
+        v-if="props.player === 1 && props.gameState !== 'closed'"
         :code="code"
         :game-state="gameState"
         :play-again="playAgain"
@@ -86,7 +88,7 @@ const resultsMessage = computed<string>(() =>
   position: fixed;
   top: 0;
   left: 0;
-  background-color: rgba(255, 255, 255, 0.7);
+  background-color: rgba(255, 255, 255, 0.8);
   inset: 0;
   z-index: 101;
   display: flex;

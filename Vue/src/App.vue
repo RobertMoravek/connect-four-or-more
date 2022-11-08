@@ -59,9 +59,6 @@ const slotSize = computed<number>(() =>
     )
   )
 );
-// const toggle = (): void => {
-//   newGame.value = !newGame.value;
-// };
 
 socket.on("game-update", (gameObject: GameObject, gameCode?: string) => {
   console.log("game update event", gameObject);
@@ -90,21 +87,19 @@ socket.on("game-update", (gameObject: GameObject, gameCode?: string) => {
     <Transition name="fall" type="animation" appear tag="div" mode="out-in">
       <StartMenu
         @update-player="(p:Player) => {player = p; inGame=true}"
-        v-if="inGame === false"
+        v-if="inGame === false || (player == 2 && gameState === 'config')"
       />
       <ConfigMenu
-        v-if="player === 1 && gameState === 'config'"
+        v-if="(player === 1 && gameState === 'config') || gameState === 'ready'"
         :code="code"
         :game-state="gameState"
         :play-again="playAgain"
-      />
-      <WaitScreen
-        v-if="gameState === 'ready' || (player === 2 && gameState === 'config')"
       />
       <GameScreen
         v-if="
           player !== null && (gameState === 'running' || gameState === 'end')
         "
+        @leave-game="() => (inGame = false)"
         :row-count="rowCount"
         :col-count="colCount"
         :player="player"
@@ -115,8 +110,14 @@ socket.on("game-update", (gameObject: GameObject, gameCode?: string) => {
       />
     </Transition>
   </div>
+  <WaitScreen
+    v-if="gameState === 'ready' || (player === 2 && gameState === 'config')"
+    :code="code"
+    :player="player"
+  />
   <ResultsView
-    v-if="gameState === 'end'"
+    v-if="gameState === 'end' || (inGame == true && gameState === 'closed')"
+    @leave-game="() => (inGame = false)"
     :winner="winner"
     :code="code"
     :player="player"
@@ -152,6 +153,7 @@ socket.on("game-update", (gameObject: GameObject, gameCode?: string) => {
   align-items: center;
   gap: 10vh;
   /* transform: translateY(-100%); */
+/* } */
 
 .fall-enter-active {
   animation: bounce-in 0.7s ease-in;

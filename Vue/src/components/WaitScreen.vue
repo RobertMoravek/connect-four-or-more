@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { Player } from "../../types";
+import GameCode from "./GameCode.vue";
 const props = defineProps<{
   player: Player;
   code: string;
@@ -9,8 +10,8 @@ const props = defineProps<{
 <template>
   <div class="modal">
     <div id="config-container">
-      <p v-if="props.player === 1" class="code">Game code: {{ code }}</p>
-      <h1>Please wait for the other player</h1>
+      <GameCode v-if="props.player === 1" :code="code" />
+      <h3>Please wait for the other player</h3>
     </div>
   </div>
 </template>
@@ -21,12 +22,16 @@ const props = defineProps<{
   flex-direction: column;
   align-items: center;
   width: 50%;
-  gap: 3vh;
+  min-width: 300px;
+  max-width: 600px;
+  gap: 2rem;
   background-color: rgb(255, 255, 255);
   border: 2px solid #2c3e50;
   border-radius: 5px;
-  padding: 1vh 1vw;
+  padding: 1rem;
   text-align: center;
+  border-radius: 255px 15px 225px 15px/15px 225px 15px 255px;
+  border: 3px solid var(--color-text);
 }
 .modal {
   position: fixed;
@@ -39,11 +44,8 @@ const props = defineProps<{
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  gap: 10vh;
+  gap: 5vh;
   /* transform: translateY(-100%); */
 }
-.code {
-  -webkit-user-select: auto;
-  user-select: auto;
-}
+
 </style>

@@ -81,33 +81,33 @@ socket.on("game-update", (gameObject: GameObject, gameCode?: string) => {
 
 <template>
   <div id="container">
-
-<Transition name="fall" type="animation" appear tag="div" mode="out-in">
-    <StartMenu
-      @update-player="(p:Player) => {player = p; inGame=true}"
-      v-if="inGame === false"
-    />
-    <ConfigMenu
-      v-if="player === 1 && gameState === 'config'"
-      :code="code"
-      :game-state="gameState"
-      :play-again="playAgain"
-    />
-    <WaitScreen
-      v-if="gameState === 'ready' || (player === 2 && gameState === 'config')"
-    />
-    <GameScreen
-      v-if="player !== null && (gameState === 'running' || gameState === 'end')"
-      :row-count="rowCount"
-      :col-count="colCount"
-      :player="player"
-      :slot-size="slotSize"
-      :player-turn="playerTurn"
-      :game-board="gameBoard"
-      :code="code"
-    />
-        </Transition>
-
+    <Transition name="fall" type="animation" appear tag="div" mode="out-in">
+      <StartMenu
+        @update-player="(p:Player) => {player = p; inGame=true}"
+        v-if="inGame === false"
+      />
+      <ConfigMenu
+        v-if="player === 1 && gameState === 'config'"
+        :code="code"
+        :game-state="gameState"
+        :play-again="playAgain"
+      />
+      <WaitScreen
+        v-if="gameState === 'ready' || (player === 2 && gameState === 'config')"
+      />
+      <GameScreen
+        v-if="
+          player !== null && (gameState === 'running' || gameState === 'end')
+        "
+        :row-count="rowCount"
+        :col-count="colCount"
+        :player="player"
+        :slot-size="slotSize"
+        :player-turn="playerTurn"
+        :game-board="gameBoard"
+        :code="code"
+      />
+    </Transition>
   </div>
   <ResultsView
     v-if="gameState === 'end'"
@@ -146,17 +146,12 @@ socket.on("game-update", (gameObject: GameObject, gameCode?: string) => {
   gap: 10vh;
   /* transform: translateY(-100%); */
 
-}
-
 .fall-enter-active {
-
   animation: bounce-in 0.7s ease-in;
 }
 .fall-leave-active {
-
   animation: fall-out 0.7s ease-in;
 }
-
 
 @keyframes bounce-in {
   0% {
@@ -190,6 +185,4 @@ socket.on("game-update", (gameObject: GameObject, gameCode?: string) => {
     transform: translateY(v-bind(windowHeight + "px"));
   }
 }
-
-
 </style>

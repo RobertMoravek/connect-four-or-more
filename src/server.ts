@@ -136,6 +136,23 @@ io.on("connection", (socket) => {
     //     io.in(code).emit("game-update", activeGames[code]);
     // });
 
+    socket.on("leave-game", () => {
+        // Delete the disconnecting socket from existing games & if there is still another player in that game, give back the Code of that game
+        let leftOverPlayer: [boolean, string?] = deleteSocketfromActiveGames(
+            socket.id,
+            activeGames
+        );
+        // If there was a player left, send appropriate error message to the room and update the game to be "closed"
+        if (leftOverPlayer[0]) {
+            io.in(leftOverPlayer[1]).emit("error", createErrorMessage(2));
+            io.in(leftOverPlayer[1]).emit(
+                "game-update",
+                activeGames[leftOverPlayer[1]]
+            );
+        }
+    });
+
+
     socket.on("disconnect", () => {
         console.log("user disconnected: socket-id:", socket.id);
         // Delete the disconnecting socket from existing games & if there is still another player in that game, give back the Code of that game
@@ -151,7 +168,6 @@ io.on("connection", (socket) => {
                 activeGames[leftOverPlayer[1]]
             );
         }
-        console.log("after leaving", activeGames);
     });
 });
 

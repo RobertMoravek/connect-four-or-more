@@ -7,6 +7,7 @@ import GamePieceFalling from "./GamePieceFalling.vue";
 import type {
   Player,
   LastMove,
+  WinningSlots,
   ServerToClientEvents,
   ClientToServerEvents,
 } from "../../types";
@@ -25,6 +26,7 @@ const props = defineProps<{
   playerTurn: Player;
   colIndex: number;
   code: string;
+  winningSlots: WinningSlots;
 }>();
 
 const hover = ref<boolean>(false);
@@ -35,6 +37,7 @@ const pieceSize = computed<number>(
 const existingSlots = computed<Player[]>(() =>
   props.slotConfig.filter((i) => i !== null)
 );
+
 const nbRows = computed<number>(() => props.rowCount.length + 1);
 
 const nextFreeSlot = computed<number | null>(() => {
@@ -49,6 +52,16 @@ const nextFreeSlot = computed<number | null>(() => {
     return null;
   }
 });
+
+const winningSlotsinColumn = computed<number[]>(() =>
+  props.winningSlots !== null
+    ? props.winningSlots
+        .filter((i) => i[0] === props.colIndex)
+        .map((el) => el[1])
+    : []
+);
+
+// const isWinningSlot = computed<boolean>(() => existingSlots.filter((i, index) => index === winningSlotsinColumn. ? "true" : "false" ));
 
 const handleColumnClick = (e: Event): void => {
   if (props.player !== props.playerTurn) {
@@ -78,6 +91,7 @@ const handleColumnClick = (e: Event): void => {
         :player="props.player"
         :piece-size="pieceSize"
         :piece-value="slot"
+        :is-winning-slot="winningSlotsinColumn.includes(index)"
       />
       <Transition name="fall">
         <GamePieceFalling

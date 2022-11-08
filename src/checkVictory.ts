@@ -35,7 +35,6 @@ function getBackDiagonal(gameObject: GameObject): number[][] {
         rowIdx -= 1;
         diagBack.push([colIdx, rowIdx, gameObject.gameBoard[colIdx][rowIdx]]);
     }
-
     return diagBack;
 }
 
@@ -59,14 +58,12 @@ function getFwdDiagonal(gameObject: GameObject): number[][] {
         rowIdx += 1;
         diagFwd.push([colIdx, rowIdx, gameObject.gameBoard[colIdx][rowIdx]]);
     }
-
     return diagFwd;
 }
 
 function checkNbWinningSlots(set: number[][], gameObject: GameObject): boolean {
     let winningNumber: number = gameObject.config[2];
-    let playerTurn: Player = gameObject.playerTurn;
-
+    let playerTurn: Player = gameObject.lastMove[2];
     //avoid unnecessary checks for shorter sets
     if (set.length < winningNumber) {
         return false;
@@ -85,6 +82,10 @@ function checkNbWinningSlots(set: number[][], gameObject: GameObject): boolean {
                 gameObject.winningSlots = gameObject.winningSlots
                     ? [...gameObject.winningSlots, ...winningSlots]
                     : winningSlots;
+                console.log(
+                    "winning slots game object",
+                    gameObject.winningSlots
+                );
                 return true;
             } else {
                 count = 0;
@@ -107,14 +108,17 @@ export function checkForVictory(gameObject: GameObject): boolean {
         getVerticalSet(gameObject),
         gameObject
     );
+
     let horizontalVictory: boolean = checkNbWinningSlots(
         getHorizontalSet(gameObject),
         gameObject
     );
+
     let diagBackVictory: boolean = checkNbWinningSlots(
         getBackDiagonal(gameObject),
         gameObject
     );
+
     let diagFwdVictory: boolean = checkNbWinningSlots(
         getFwdDiagonal(gameObject),
         gameObject
@@ -127,30 +131,9 @@ export function checkForVictory(gameObject: GameObject): boolean {
         diagFwdVictory,
     ];
 
-    if (victoryArray.some((e: boolean) => e == true)) {
+    if (victoryArray.some((e: boolean) => e === true)) {
         victory = true;
     }
 
     return victory;
 }
-
-// let testGameObj: GameObject = {
-//     gameBoard: [
-//         [1, 2, 1, null, null, null],
-//         [2, null, null, null, null, null],
-//         [2, 1, null, null, null, null],
-//         [1, 2, 1, 2, null, null],
-//         [1, 2, 2, 1, null, null],
-//         [1, 2, 2, 2, null, null],
-//         [2, 1, 1, 2, 2, null],
-//     ],
-//     playerTurn: 2,
-//     score: [0, 0],
-//     gameState: "config",
-//     winner: null,
-//     config: [7, 6, 4],
-//     sockets: ["test 1", "test 2"],
-//     lastMove: [6, 4, 2],
-//     winningSlots: null,
-// };
-// checkForVictory(testGameObj);

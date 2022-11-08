@@ -12,7 +12,7 @@ import {
     deleteSocketfromActiveGames,
     isRandomStringUnique,
     newGameObject,
-    prepareRestartGameWithSameConfig,
+    prepareRestartGame,
     setPlayAgain,
     setWinningState,
     startGameIfReady,
@@ -503,6 +503,8 @@ describe("setPlayAgain", () => {
         setPlayAgain(gameObject, "sdfsdf");
         expect(gameObject.playAgain[0]).toBeTruthy();
         expect(gameObject.playAgain[1]).toBeTruthy();
+        setPlayAgain(gameObject, "hallo", [7, 8, 4]);
+        expect(gameObject.config[0]).toBe(7);
     });
 });
 
@@ -560,7 +562,7 @@ describe("prepareRestartGameWithSameConfig", () => {
             playAgain: [true, true],
             playerStartedLast: 1,
         };
-        prepareRestartGameWithSameConfig(gameObject);
+        prepareRestartGame(gameObject);
         expect(gameObject.playerTurn).toBe(2);
         expect(gameObject.winner).toBeNull();
         expect(gameObject.lastMove).toBeNull();
@@ -719,5 +721,33 @@ describe("checkForVictory", () => {
             [4, 1],
             [5, 0],
         ]);
+    });
+});
+
+describe("checkForVictory", () => {
+    test("find no victory", () => {
+        let gameObject: GameObject = {
+            gameBoard: [
+                [null, null, null, null, null, null],
+                [null, null, null, null, null, null],
+                [null, null, null, null, null, null],
+                [1, null, null, null, null, null],
+                [2, null, null, null, null, null],
+                [null, null, null, null, null, null],
+                [null, null, null, null, null, null],
+            ],
+            // playerName?: [string, string],
+            playerTurn: 2,
+            score: [0, 0],
+            gameState: "running",
+            winner: null,
+            config: [7, 6, 4],
+            sockets: ["hallo", "sdfsdf"],
+            lastMove: [4, 0, 2],
+            winningSlots: null,
+            playAgain: [false, false],
+            playerStartedLast: null,
+        };
+        expect(checkForVictory(gameObject)).toBeFalsy;
     });
 });

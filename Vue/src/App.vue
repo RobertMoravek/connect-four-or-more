@@ -1,17 +1,31 @@
 <script setup lang="ts">
-import { onMounted, onUnmounted, ref, computed } from "vue";
+import { inject, onMounted, onUnmounted, ref, computed } from "vue";
 // import { RouterLink, RouterView } from "vue-router";
 import StartMenu from "./components/StartMenu.vue";
 import ConfigMenu from "./components/ConfigMenu.vue";
 import GameScreen from "./components/GameScreen.vue";
 import ResultsView from "./components/ResultsView.vue";
-import type { Player, GameState, LeaveEventPayload, LastMove } from "../types";
-import { io } from "socket.io-client";
+import WaitScreen from "./components/WaitScreen.vue";
+import type {
+  Player,
+  GameState,
+  LeaveEventPayload,
+  LastMove,
+  GameBoard,
+  GameObject,
+  ServerToClientEvents,
+  ClientToServerEvents,
+} from "../types";
 import throttle from "lodash/throttle";
+import type { Socket } from "socket.io-client";
 
-//TO DO render startMenu conditionally based on gameObject = null
+// import socket
+const socket: Socket<ServerToClientEvents, ClientToServerEvents> = inject(
+  "socket"
+) as Socket<ServerToClientEvents, ClientToServerEvents>;
 
-const socket = io();
+//variable for conditional rendering of startMenu
+const inGame = ref<boolean>(false);
 
 //get window size dynamically & with throttle
 let windowWidth = ref<number>(window.innerWidth);
@@ -26,11 +40,16 @@ const useWindowSizeThrottled = throttle(useWindowSize, 200);
 onMounted(() => window.addEventListener("resize", useWindowSizeThrottled));
 onUnmounted(() => window.removeEventListener("resize", useWindowSizeThrottled));
 
-const colCount = ref<number>(7);
-const rowCount = ref<number>(6);
-const winningSlots = ref<number>(4);
+const colCount = ref<number>(0);
+const rowCount = ref<number>(0);
+const winningSlots = ref<number>(0);
 const player = ref<Player>(null);
 const gameState = ref<GameState>("config");
+const code = ref<string>("");
+const playerTurn = ref<Player>(null);
+const gameBoard = ref<GameBoard>(null);
+const winner = ref<Player>(null);
+const playAgain = ref<boolean[]>([false, false]);
 
 const slotSize = computed<number>(() =>
   Math.floor(
@@ -40,48 +59,64 @@ const slotSize = computed<number>(() =>
     )
   )
 );
-
-const emit = (): void => {
-  socket.emit("new-game");
-};
 // const toggle = (): void => {
 //   newGame.value = !newGame.value;
 // };
+
+socket.on("game-update", (gameObject: GameObject, gameCode?: string) => {
+  console.log("game update event", gameObject);
+  if (gameCode !== undefined) {
+    code.value = gameCode;
+  }
+  colCount.value = gameObject.config[0];
+  rowCount.value = gameObject.config[1];
+  winningSlots.value = gameObject.config[2];
+  gameState.value = gameObject.gameState;
+  playerTurn.value = gameObject.playerTurn;
+  gameBoard.value = gameObject.gameBoard;
+  winner.value = gameObject.winner;
+  playAgain.value = gameObject.playAgain;
+});
 </script>
 
 <template>
   <div id="container">
-    <!-- <button @click="emit">Emit to BE</button> -->
-    <Transition name="fall" type="animation" appear tag="div" mode="out-in">
-      <StartMenu
-        @update-player="(p:Player) => player = p"
-        v-if="player === null && gameState === 'config'"
-        :window-height="windowHeight"
-        :key="1"
-      />
-      <ConfigMenu
-        v-else-if="player !== null && gameState === 'config'"
-        @update-gameState="(s:GameState) => gameState = s"
-        v-model:col-count="colCount"
-        v-model:row-count="rowCount"
-        v-model:winning-slots="winningSlots"
-        :key="2"
-      />
-      <GameScreen
-        v-else-if="player !== null && gameState === 'ready'"
-        :row-count="rowCount"
-        :col-count="colCount"
-        :player="player"
-        :slot-size="slotSize"
-        :key="3"
-      />
-    </Transition>
-  </div>
-  <div class="modal" v-if="player === null && gameState === 'end'">
-    <ResultsView
-      @leave-game="(p:LeaveEventPayload) => ({player, gameState} = p)"
+
+<Transition name="fall" type="animation" appear tag="div" mode="out-in">
+    <StartMenu
+      @update-player="(p:Player) => {player = p; inGame=true}"
+      v-if="inGame === false"
     />
+    <ConfigMenu
+      v-if="player === 1 && gameState === 'config'"
+      :code="code"
+      :game-state="gameState"
+      :play-again="playAgain"
+    />
+    <WaitScreen
+      v-if="gameState === 'ready' || (player === 2 && gameState === 'config')"
+    />
+    <GameScreen
+      v-if="player !== null && (gameState === 'running' || gameState === 'end')"
+      :row-count="rowCount"
+      :col-count="colCount"
+      :player="player"
+      :slot-size="slotSize"
+      :player-turn="playerTurn"
+      :game-board="gameBoard"
+      :code="code"
+    />
+        </Transition>
+
   </div>
+  <ResultsView
+    v-if="gameState === 'end'"
+    :winner="winner"
+    :code="code"
+    :player="player"
+    :game-state="gameState"
+    :play-again="playAgain"
+  />
   <!-- <nav>
         <RouterLink to="/">Home</RouterLink>
         <RouterLink to="/about">About</RouterLink>
@@ -97,7 +132,7 @@ const emit = (): void => {
   height: 100vh;
 }
 
-.modal {
+/* .modal {
   position: fixed;
   top: 0;
   left: 0;
@@ -110,6 +145,7 @@ const emit = (): void => {
   align-items: center;
   gap: 10vh;
   /* transform: translateY(-100%); */
+
 }
 
 .fall-enter-active {
@@ -154,7 +190,6 @@ const emit = (): void => {
     transform: translateY(v-bind(windowHeight + "px"));
   }
 }
-
 
 
 </style>

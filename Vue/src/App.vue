@@ -52,29 +52,30 @@ const emit = (): void => {
 <template>
   <div id="container">
     <!-- <button @click="emit">Emit to BE</button> -->
-
-    <StartMenu
-      @update-player="(p:Player) => player = p"
-      v-if="player === null && gameState === 'config'"
-      :window-height="windowHeight"
-      :key="1"
-    />
-    <ConfigMenu
-      v-if="player !== null && gameState === 'config'"
-      @update-gameState="(s:GameState) => gameState = s"
-      v-model:col-count="colCount"
-      v-model:row-count="rowCount"
-      v-model:winning-slots="winningSlots"
-      :key="2"
-    />
-    <GameScreen
-      v-if="player !== null && gameState === 'ready'"
-      :row-count="rowCount"
-      :col-count="colCount"
-      :player="player"
-      :slot-size="slotSize"
-      :key="3"
-    />
+    <Transition name="fall" type="animation" appear tag="div" mode="out-in">
+      <StartMenu
+        @update-player="(p:Player) => player = p"
+        v-if="player === null && gameState === 'config'"
+        :window-height="windowHeight"
+        :key="1"
+      />
+      <ConfigMenu
+        v-else-if="player !== null && gameState === 'config'"
+        @update-gameState="(s:GameState) => gameState = s"
+        v-model:col-count="colCount"
+        v-model:row-count="rowCount"
+        v-model:winning-slots="winningSlots"
+        :key="2"
+      />
+      <GameScreen
+        v-else-if="player !== null && gameState === 'ready'"
+        :row-count="rowCount"
+        :col-count="colCount"
+        :player="player"
+        :slot-size="slotSize"
+        :key="3"
+      />
+    </Transition>
   </div>
   <div class="modal" v-if="player === null && gameState === 'end'">
     <ResultsView
@@ -112,13 +113,16 @@ const emit = (): void => {
 }
 
 .fall-enter-active {
-  animation: bounce 0.7s ease-in;
+
+  animation: bounce-in 0.7s ease-in;
 }
 .fall-leave-active {
-  animation: bounce 0.7s ease-in reverse;
+
+  animation: fall-out 0.7s ease-in;
 }
 
-@keyframes bounce {
+
+@keyframes bounce-in {
   0% {
     transform: translateY(v-bind(-windowHeight + "px"));
   }
@@ -142,14 +146,15 @@ const emit = (): void => {
     transform: translateY(0px);
   }
 }
+@keyframes fall-out {
+  0% {
+    transform: translateY(0px);
+  }
+  100% {
+    transform: translateY(v-bind(windowHeight + "px"));
+  }
+}
 
-.list-enter-active,
-.list-leave-active {
-  transition: all 0.5s ease;
-}
-.list-enter-from,
-.list-leave-to {
-  opacity: 0;
-  transform: translateX(30px);
-}
+
+
 </style>

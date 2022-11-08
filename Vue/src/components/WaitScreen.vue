@@ -37,9 +37,8 @@ const props = defineProps<{
   z-index: 101;
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
-  gap: 10vh;
+  justify-content: center;
   /* transform: translateY(-100%); */
 }
 .code {

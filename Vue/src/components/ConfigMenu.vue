@@ -7,8 +7,6 @@ import type {
 } from "../../types";
 import type { Socket } from "socket.io-client";
 
-//TO DO: discuss final number of options columns, rows, winning slots
-
 const socket: Socket<ServerToClientEvents, ClientToServerEvents> = inject(
   "socket"
 ) as Socket<ServerToClientEvents, ClientToServerEvents>;
@@ -32,7 +30,11 @@ const handleStartGameClick = (): void => {
 };
 
 const handlePlayAgainClick = (): void => {
-  socket.emit("play-again", props.code);
+  socket.emit("play-again", props.code, [
+    +colCount.value,
+    +rowCount.value,
+    +winningSlots.value,
+  ]);
 };
 </script>
 
@@ -40,7 +42,7 @@ const handlePlayAgainClick = (): void => {
   <div id="config-container">
     <p v-if="props.gameState === 'config'" class="code">{{ code }}</p>
 
-    <h1>Configure your game</h1>
+    <h1 v-if="gameState === 'config'">Configure your game</h1>
     <label for="columns"> Columns</label>
     <select name="columns" id="coloumns" v-model="colCount">
       <option value="7">7</option>

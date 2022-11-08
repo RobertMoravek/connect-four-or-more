@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { inject, computed } from "vue";
+import { inject, computed, ref } from "vue";
 import type { Socket } from "socket.io-client";
 import type {
   Player,
@@ -9,6 +9,7 @@ import type {
   ServerToClientEvents,
 } from "../../types";
 import ConfigMenu from "./ConfigMenu.vue";
+import PlayAgainInvitationMessage from "./PlayAgainInvitationMessage.vue";
 
 const socket: Socket<ServerToClientEvents, ClientToServerEvents> = inject(
   "socket"
@@ -26,12 +27,17 @@ const emit = defineEmits<{
   (e: "leave-game"): void;
 }>();
 
+const isConfigVisible = ref<boolean>(false);
 const handlePlayAgainClick = (): void => {
   socket.emit("play-again", props.code);
 };
 const handleLeaveGameClick = (): void => {
   socket.emit("leave-game");
   emit("leave-game");
+};
+
+const handleChangeSettingsClick = (): void => {
+  isConfigVisible.value = true;
 };
 
 const resultsMessage = computed<string>(() =>
@@ -46,16 +52,14 @@ const resultsMessage = computed<string>(() =>
 <template>
   <div class="modal">
     <div id="end-container">
-      <h1 v-if="props.gameState !== 'closed'">{{ resultsMessage }}</h1>
-      <p
-        v-if="
-          props.gameState !== 'closed' &&
-          ((props.player === 1 && props.playAgain[1] === true) ||
-            (props.player === 2 && props.playAgain[0] === true))
-        "
-      >
-        The other player invited you to a new game
-      </p>
+      <h1 v-if="props.gameState !== 'closed' && isConfigVisible === false">
+        {{ resultsMessage }}
+      </h1>
+      <PlayAgainInvitationMessage
+        :game-state="gameState"
+        :player="player"
+        :play-again="playAgain"
+      />
       <p v-if="props.gameState === 'closed'">
         The other player has left the game
       </p>
@@ -65,8 +69,28 @@ const resultsMessage = computed<string>(() =>
       >
         Play again
       </button>
+      <button
+        v-if="
+          props.player === 1 &&
+          props.gameState !== 'closed' &&
+          isConfigVisible === false
+        "
+        @click="handlePlayAgainClick"
+      >
+        Play again
+      </button>
+      <button
+        v-if="
+          props.player === 1 &&
+          props.gameState !== 'closed' &&
+          isConfigVisible === false
+        "
+        @click="handleChangeSettingsClick"
+      >
+        Change settings
+      </button>
       <ConfigMenu
-        v-if="props.player === 1 && props.gameState !== 'closed'"
+        v-if="isConfigVisible"
         :code="code"
         :game-state="gameState"
         :play-again="playAgain"
@@ -81,21 +105,26 @@ const resultsMessage = computed<string>(() =>
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 10vh;
+  gap: 3vh;
+  width: 50%;
+  background-color: rgb(255, 255, 255);
+  border: 2px solid #2c3e50;
+  border-radius: 5px;
+  padding: 1vh 1vw;
+  text-align: center;
 }
 
 .modal {
   position: fixed;
   top: 0;
   left: 0;
-  background-color: rgba(255, 255, 255, 0.8);
+  background-color: rgba(255, 255, 255, 0.7);
   inset: 0;
   z-index: 101;
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
-  gap: 10vh;
+  justify-content: center;
   /* transform: translateY(-100%); */
 }
 </style>

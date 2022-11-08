@@ -43,7 +43,7 @@ interface ClientToServerEvents {
   "config-ready": (a: number[], b: string) => void;
   "join-game": (a: string) => void;
   "column-click": (a: number, b: 1 | 2, c: string) => void;
-  "play-again": (a: string) => void;
+  "play-again": (a: string, b?: number[]) => void;
   "leave-game": () => void;
 }
 

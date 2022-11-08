@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { inject } from "vue";
+import { inject, computed } from "vue";
 import type {
   Player,
   GameBoard,
@@ -30,8 +30,10 @@ const emit = defineEmits<{
 const renumber = (param: number): number[] => {
   return [...Array(param).keys()];
 };
-const updatedRowCount = renumber(props.rowCount).reverse();
-const updatedColCount = renumber(props.colCount);
+const updatedRowCount = computed<number[]>(() =>
+  renumber(props.rowCount).reverse()
+);
+const updatedColCount = computed<number[]>(() => renumber(props.colCount));
 const handleLeaveGameClick = (): void => {
   socket.emit("leave-game");
   emit("leave-game");

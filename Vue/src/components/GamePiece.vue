@@ -6,6 +6,7 @@ const props = defineProps<{
   player: Player;
   idx: number;
   pieceValue: Player;
+  isWinningSlot: boolean;
 }>();
 
 const pieceColor = computed<string>(() =>
@@ -18,7 +19,7 @@ const pieceColor = computed<string>(() =>
 </script>
 
 <template>
-  <div class="piece" :idx="idx"></div>
+  <div :class="isWinningSlot ? 'piece win' : 'piece'" :idx="idx"></div>
 </template>
 
 <style scoped>
@@ -29,5 +30,16 @@ const pieceColor = computed<string>(() =>
   background-color: v-bind(pieceColor);
   z-index: -5;
 
+}
+.win {
+  animation: rotate 3s ease-out;
+}
+@keyframes rotate {
+  0% {
+    transform: rotateY(0deg);
+  }
+  100% {
+    transform: rotateY(1800deg);
+  }
 }
 </style>

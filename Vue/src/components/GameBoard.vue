@@ -5,6 +5,7 @@ import type {
   GameBoard,
   LastMove,
   GameObject,
+  WinningSlots,
   ServerToClientEvents,
   ClientToServerEvents,
 } from "../../types";
@@ -17,6 +18,7 @@ const socket: Socket<ServerToClientEvents, ClientToServerEvents> = inject(
 ) as Socket<ServerToClientEvents, ClientToServerEvents>;
 
 const lastMove = ref<LastMove>(null);
+const winningSlots = ref<WinningSlots>(null);
 
 const props = defineProps<{
   colCount: number[];
@@ -30,6 +32,7 @@ const props = defineProps<{
 
 socket.on("game-update", (gameObject: GameObject, gameCode?: string) => {
   lastMove.value = gameObject.lastMove;
+  winningSlots.value = gameObject.winningSlots;
 });
 
 const heightBack = computed<number>(
@@ -61,6 +64,7 @@ const heightBack = computed<number>(
         :last-move="lastMove"
         :player-turn="playerTurn"
         :code="code"
+        :winning-slots="winningSlots"
       />
     </div>
   </div>

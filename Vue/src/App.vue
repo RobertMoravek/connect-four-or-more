@@ -71,7 +71,13 @@ socket.on("game-update", (gameObject: GameObject, gameCode?: string) => {
   colCount.value = gameObject.config[0];
   rowCount.value = gameObject.config[1];
   winningSlots.value = gameObject.config[2];
-  gameState.value = gameObject.gameState;
+  if (gameObject.gameState === "end" && gameObject.winner !== null) {
+    setTimeout(() => {
+      gameState.value = gameObject.gameState;
+    }, 1500);
+  } else {
+    gameState.value = gameObject.gameState;
+  }
   playerTurn.value = gameObject.playerTurn;
   gameBoard.value = gameObject.gameBoard;
   winner.value = gameObject.winner;

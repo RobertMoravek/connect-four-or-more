@@ -16,6 +16,8 @@ type GameObject = {
 type Player = 1 | 2 | null;
 type GameState = "config" | "ready" | "running" | "end" | "closed";
 
+type WinningSlots = number[][] | null;
+
 interface LeaveEventPayload {
   player: Player;
   gameState: GameState;
@@ -52,6 +54,7 @@ export type {
   LeaveEventPayload,
   GameBoard,
   LastMove,
+  WinningSlots,
   ClientToServerEvents,
   ServerToClientEvents,
 };

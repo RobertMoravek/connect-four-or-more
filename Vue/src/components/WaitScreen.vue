@@ -26,7 +26,8 @@ const props = defineProps<{
   max-width: 600px;
   gap: 2rem;
   background-color: rgb(255, 255, 255);
-  border: 2px solid #2c3e50;
+  background-image: url("../assets/bluefog.jpg");
+  background-size: cover;
   border-radius: 5px;
   padding: 1rem;
   text-align: center;
@@ -43,7 +44,7 @@ const props = defineProps<{
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 5vh;
+  justify-content: center;
 
   /* transform: translateY(-100%); */
 }

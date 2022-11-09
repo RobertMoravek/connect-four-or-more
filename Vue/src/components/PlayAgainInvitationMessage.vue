@@ -34,15 +34,14 @@ const props = defineProps<{
 <style scoped>
 #new-game-invite {
   position: fixed;
-  top: 10px;
+  top: 20px;
   text-align: center;
   background-color: gold;
   animation: bounce 0.7s ease-in;
   padding: 0 1vw;
-  border: 2px solid #2c3e50;
-  border-radius: 5px;
+  border: 3px solid var(--color-text);
+  border-radius: 255px 15px 225px 15px/15px 225px 15px 255px;
 }
-
 @keyframes bounce {
   0% {
     transform: translateY(-8px);

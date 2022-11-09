@@ -35,21 +35,31 @@ socket.on("game-update", (gameObject: GameObject, gameCode?: string) => {
   winningSlots.value = gameObject.winningSlots;
 });
 
+const heightFront = computed<number>(
+  () => props.slotSize * props.rowCount.length
+);
+
 const heightBack = computed<number>(
   () => props.slotSize * (props.rowCount.length + 1)
+);
+
+const containerWidth = computed<number>(
+  () => props.slotSize * props.colCount.length
 );
 </script>
 
 <template>
   <div id="game">
-    <GameColumnFront
-      v-for="column in props.colCount"
-      :key="column"
-      :idx="column"
-      :row-count="props.rowCount"
-      :player="props.player"
-      :slot-size="slotSize"
-    />
+    <div id="game-front">
+      <GameColumnFront
+        v-for="column in props.colCount"
+        :key="column"
+        :idx="column"
+        :row-count="props.rowCount"
+        :player="props.player"
+        :slot-size="slotSize"
+      />
+    </div>
     <div id="game-back">
       <GameColumnBack
         v-for="column in props.colCount"
@@ -72,18 +82,27 @@ const heightBack = computed<number>(
 
 <style scoped>
 #game {
-  display: flex;
   height: v-bind(heightBack + "px");
+  width: v-bind(containerWidth + "px");
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  border: 5px outset transparent;
+}
+
+#game-front {
+  display: flex;
+  height: v-bind(heightFront + "px");
   align-items: flex-end;
   /* border: 2px solid transparent; */
   /* border-radius: 8px; */
   overflow: hidden;
-  position: relative;
+  position: absolute;
+  bottom: 0;
   border: 5px outset rgb(58, 96, 212);
-
   border-radius: 15px;
   box-shadow: 5px 5px 10px;
-
 }
 
 #game-back {
@@ -93,6 +112,7 @@ const heightBack = computed<number>(
   /* border-radius: 4%; */
   overflow: hidden;
   position: absolute;
+  border: 5px outset transparent;
   bottom: 0;
   /* top: 0;
   right: 0; */

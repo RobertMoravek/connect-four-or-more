@@ -27,9 +27,11 @@ const emit = defineEmits<{
   (e: "leave-game"): void;
 }>();
 
-const isConfigVisible = ref<boolean>(false);
+const isConfigMenuVisible = ref<boolean>(false);
+const isPlayAgainClicked = ref<boolean>(false);
 const handlePlayAgainClick = (): void => {
   socket.emit("play-again", props.code);
+  isPlayAgainClicked.value = true;
 };
 const handleLeaveGameClick = (): void => {
   socket.emit("leave-game");
@@ -37,7 +39,7 @@ const handleLeaveGameClick = (): void => {
 };
 
 const handleChangeSettingsClick = (): void => {
-  isConfigVisible.value = true;
+  isConfigMenuVisible.value = true;
 };
 
 const resultsMessage = computed<string>(() =>
@@ -52,7 +54,7 @@ const resultsMessage = computed<string>(() =>
 <template>
   <div class="modal">
     <div id="end-container">
-      <h1 v-if="props.gameState !== 'closed' && isConfigVisible === false">
+      <h1 v-if="props.gameState !== 'closed' && isConfigMenuVisible === false">
         {{ resultsMessage }}
       </h1>
       <PlayAgainInvitationMessage
@@ -64,16 +66,10 @@ const resultsMessage = computed<string>(() =>
         The other player has left the game
       </p>
       <button
-        v-if="props.player === 2 && props.gameState !== 'closed'"
-        @click="handlePlayAgainClick"
-      >
-        Play again
-      </button>
-      <button
         v-if="
-          props.player === 1 &&
+          props.player === 2 &&
           props.gameState !== 'closed' &&
-          isConfigVisible === false
+          !isPlayAgainClicked
         "
         @click="handlePlayAgainClick"
       >
@@ -83,14 +79,27 @@ const resultsMessage = computed<string>(() =>
         v-if="
           props.player === 1 &&
           props.gameState !== 'closed' &&
-          isConfigVisible === false
+          isConfigMenuVisible === false &&
+          !isPlayAgainClicked
+        "
+        @click="handlePlayAgainClick"
+      >
+        Play again
+      </button>
+      <button
+        v-if="
+          props.player === 1 &&
+          props.gameState !== 'closed' &&
+          isConfigMenuVisible === false &&
+          !isPlayAgainClicked
         "
         @click="handleChangeSettingsClick"
       >
         Change settings
       </button>
       <ConfigMenu
-        v-if="isConfigVisible"
+        v-if="isConfigMenuVisible && !isPlayAgainClicked"
+        @play-again-config="() => (isPlayAgainClicked = true)"
         :code="code"
         :game-state="gameState"
         :play-again="playAgain"

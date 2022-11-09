@@ -23,6 +23,8 @@ const props = defineProps<{
   playerTurn: Player;
 }>();
 
+const halfSlotSize = computed<number>(() => -(props.slotSize / 2));
+
 const emit = defineEmits<{
   (e: "leave-game"): void;
 }>();
@@ -42,7 +44,7 @@ const handleLeaveGameClick = (): void => {
 
 <template>
   <div id="game-screen-container">
-    <ScoreBoard />
+    <ScoreBoard class="scoreboard" />
     <GameBoardVue
       :row-count="updatedRowCount"
       :col-count="updatedColCount"
@@ -51,6 +53,7 @@ const handleLeaveGameClick = (): void => {
       :game-board="gameBoard"
       :code="code"
       :player-turn="playerTurn"
+      class="gameboard"
     />
     <button @click="handleLeaveGameClick">Leave game</button>
   </div>
@@ -62,8 +65,12 @@ const handleLeaveGameClick = (): void => {
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
-  gap: 2vh;
+  gap: 1vh;
   max-width: 100%;
   max-height: 100%;
+}
+
+.scoreboard {
+  margin-bottom: v-bind(halfSlotSize + "px");
 }
 </style>

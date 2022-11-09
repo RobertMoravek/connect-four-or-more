@@ -35,6 +35,7 @@ socket.on("game-update", (gameObject: GameObject, gameCode?: string) => {
   winningSlots.value = gameObject.winningSlots;
 });
 
+
 const heightFront = computed<number>(
   () => props.slotSize * props.rowCount.length
 );

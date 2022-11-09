@@ -50,35 +50,44 @@ const handlePlayAgainClick = (): void => {
 
 <template>
   <div id="config-container">
-    <GameCode v-if="props.gameState === 'config'" :code="code"/>
+    <GameCode v-if="props.gameState === 'config'" :code="code" />
     <div class="config">
       <h3>Configure your game</h3>
-      <label for="columns"> Columns</label>
-      <select name="columns" id="coloumns" v-model="colCount">
-        <option value="7">7</option>
-        <option value="8">8</option>
-        <option value="9">9</option>
-        <option value="10">10</option>
-        <option value="11">11</option>
-      </select>
-  
-      <label for="rows"> Rows</label>
-      <select name="rows" id="rows" v-model="rowCount">
-        <option value="6">6</option>
-        <option value="7">7</option>
-        <option value="8">8</option>
-        <option value="9">9</option>
-        <option value="10">10</option>
-        <option value="11">11</option>
-      </select>
-  
-      <label for="winning-slots"> Winning pieces</label>
-      <select name="winning-slots" id="winning-slots" v-model="winningSlots">
-        <option value="4">4</option>
-        <option value="5">5</option>
-        <option value="6">6</option>
-      </select>
-  
+      <div class="selectors">
+        <div class="single-option">
+          <label for="columns"> Columns</label>
+          <select name="columns" id="coloumns" v-model="colCount">
+            <option value="7">7</option>
+            <option value="8">8</option>
+            <option value="9">9</option>
+            <option value="10">10</option>
+            <option value="11">11</option>
+          </select>
+        </div>
+        <div class="single-option">
+          <label for="rows"> Rows</label>
+          <select name="rows" id="rows" v-model="rowCount">
+            <option value="6">6</option>
+            <option value="7">7</option>
+            <option value="8">8</option>
+            <option value="9">9</option>
+            <option value="10">10</option>
+            <option value="11">11</option>
+          </select>
+        </div>
+        <div class="single-option">
+          <label for="winning-slots"> Winning pieces</label>
+          <select
+            name="winning-slots"
+            id="winning-slots"
+            v-model="winningSlots"
+          >
+            <option value="4">4</option>
+            <option value="5">5</option>
+            <option value="6">6</option>
+          </select>
+        </div>
+      </div>
       <button v-if="gameState === 'config'" @click="handleStartGameClick">
         Start game
       </button>
@@ -86,9 +95,7 @@ const handlePlayAgainClick = (): void => {
         Play again
       </button>
     </div>
-
-
-    </div>
+  </div>
 </template>
 
 <style scoped>
@@ -106,6 +113,12 @@ const handlePlayAgainClick = (): void => {
   gap: 0.5rem;
 }
 
+.selectors {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
 input {
   padding: 3px;
   margin: 10px;
@@ -116,8 +129,22 @@ input {
   text-align: center;
 }
 
+.single-option {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 162px;
+  gap: 0.25rem;
+}
+
 ::placeholder {
   color: white;
 }
 
+@media screen and (max-height: 600px) {
+  .selectors {
+    flex-direction: row;
+  }
+}
 </style>

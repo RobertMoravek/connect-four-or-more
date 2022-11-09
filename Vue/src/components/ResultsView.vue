@@ -118,9 +118,7 @@ const resultsMessage = computed<string>(() =>
   min-width: 300px;
   max-width: 600px;
   gap: 0rem;
-  background-color: rgb(255, 255, 255);
-  background-image: url("../assets/bluefog.jpg");
-  background-size: cover;
+  background-color: #ececec;
   padding: 1rem;
   text-align: center;
   border-radius: 255px 15px 225px 15px/15px 225px 15px 255px;
@@ -138,6 +136,14 @@ const resultsMessage = computed<string>(() =>
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  overflow-y: scroll;
   /* transform: translateY(-100%); */
 }
+
+@media screen and (max-height: 600px) {
+  #end-container {
+    min-width: 500px;
+  }
+}
+
 </style>

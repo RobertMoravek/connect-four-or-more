@@ -16,6 +16,10 @@ const pieceColor = computed<string>(() =>
 const startPosAnimation = computed<number>(
   () => (props.rowCount[0] - props.row + 1) * props.slotSize
 );
+
+const durationAnimation = computed<number>(
+  () => (props.rowCount[0] - props.row + 1) * 0.07
+);
 </script>
 
 <template>
@@ -28,13 +32,60 @@ const startPosAnimation = computed<number>(
   aspect-ratio: 1/1;
   border-radius: 50%;
   background-color: v-bind(pieceColor);
+  box-shadow: 0 2px 8px #aaa, inset 0 1px 3px #fff;
 }
 
 .fall-enter-active {
-  animation: bounce 0.7s ease-in;
+  animation-name: fall, bounce;
+  animation-duration: v-bind(durationAnimation + "s"), 0.4s;
+  animation-delay: 0s, v-bind(durationAnimation + "s");
+  animation-timing-function: ease-in;
+}
+
+@keyframes fall {
+  0% {
+    transform: translateY(v-bind(startPosAnimation + "px"));
+  }
+  /* 55% {
+    transform: translateY(v-bind(startPosAnimation * 0.3 + "px"));
+  } */
+  100% {
+    transform: translateY(0px);
+  }
 }
 
 @keyframes bounce {
+  /* 0% {
+    transform: translateY(v-bind(startPosAnimation + "px"));
+  } */
+  /* 40% {
+    transform: translateY(v-bind(startPosAnimation * 0.3 + "px"));
+  } */
+  /* 30% {
+    transform: translateY(v-bind(startPosAnimation * 0.075 + "px"));
+  } */
+  30% {
+    transform: translateY(v-bind(startPosAnimation * 0.15 + "px"));
+  }
+  65% {
+    transform: translateY(v-bind(startPosAnimation * 0.075 + "px"));
+  }
+  85% {
+    transform: translateY(v-bind(startPosAnimation * 0.0335 + "px"));
+  }
+  91% {
+    transform: translateY(v-bind(startPosAnimation * 0.0015 + "px"));
+  }
+  0%,
+  50%,
+  77%,
+  96%,
+  100% {
+    transform: translateY(0px);
+  }
+}
+
+/* @keyframes bounce {
   0% {
     transform: translateY(v-bind(startPosAnimation + "px"));
   }
@@ -57,5 +108,5 @@ const startPosAnimation = computed<number>(
   100% {
     transform: translateY(0px);
   }
-}
+} */
 </style>

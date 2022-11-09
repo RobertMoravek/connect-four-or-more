@@ -18,6 +18,10 @@ const props = defineProps<{
   playAgain: boolean[];
 }>();
 
+const emit = defineEmits<{
+  (e: "play-again-config"): void;
+}>();
+
 const colCount = ref<number>(7);
 const rowCount = ref<number>(6);
 const winningSlots = ref<number>(4);
@@ -40,6 +44,7 @@ function copyToClipboard(): void {
 }
 
 const handlePlayAgainClick = (): void => {
+  emit("play-again-config");
   socket.emit("play-again", props.code, [
     +colCount.value,
     +rowCount.value,
@@ -53,6 +58,7 @@ const handlePlayAgainClick = (): void => {
     <GameCode v-if="props.gameState === 'config'" :code="code" />
     <div class="config">
       <h3>Configure your game</h3>
+
       <div class="selectors">
         <div class="single-option">
           <label for="columns"> Columns</label>
@@ -88,6 +94,7 @@ const handlePlayAgainClick = (): void => {
           </select>
         </div>
       </div>
+
       <button v-if="gameState === 'config'" @click="handleStartGameClick">
         Start game
       </button>
@@ -147,4 +154,5 @@ input {
     flex-direction: row;
   }
 }
+
 </style>

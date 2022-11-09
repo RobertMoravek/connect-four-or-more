@@ -42,9 +42,9 @@ const props = defineProps<{
   z-index: 101;
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
   gap: 5vh;
+
   /* transform: translateY(-100%); */
 }
 

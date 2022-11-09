@@ -218,7 +218,7 @@ export function setPlayAgain(
     config: [number, number, number] = null
 ) {
     let player: number = gameObject.sockets.indexOf(socketId);
-    console.log(config);
+    console.log("config in set play again", config);
     if (player === 0 && config) {
         if (
             checkUserConfigForInteger(config) &&

@@ -8,8 +8,6 @@ import type {
 import type { Socket } from "socket.io-client";
 import GameCode from "./GameCode.vue";
 
-//TO DO: discuss final number of options columns, rows, winning slots
-
 const socket: Socket<ServerToClientEvents, ClientToServerEvents> = inject(
   "socket"
 ) as Socket<ServerToClientEvents, ClientToServerEvents>;
@@ -42,7 +40,11 @@ function copyToClipboard(): void {
 }
 
 const handlePlayAgainClick = (): void => {
-  socket.emit("play-again", props.code);
+  socket.emit("play-again", props.code, [
+    +colCount.value,
+    +rowCount.value,
+    +winningSlots.value,
+  ]);
 };
 </script>
 
@@ -84,6 +86,7 @@ const handlePlayAgainClick = (): void => {
         Play again
       </button>
     </div>
+
 
     </div>
 </template>

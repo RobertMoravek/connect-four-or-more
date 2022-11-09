@@ -105,13 +105,17 @@ const resultsMessage = computed<string>(() =>
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 3vh;
   width: 50%;
+  min-width: 300px;
+  max-width: 600px;
+  gap: 0rem;
   background-color: rgb(255, 255, 255);
-  border: 2px solid #2c3e50;
-  border-radius: 5px;
-  padding: 1vh 1vw;
+  background-image: url("../assets/bluefog.jpg");
+  background-size: cover;
+  padding: 1rem;
   text-align: center;
+  border-radius: 255px 15px 225px 15px/15px 225px 15px 255px;
+  border: 3px solid var(--color-text);
 }
 
 .modal {

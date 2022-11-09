@@ -102,7 +102,7 @@ body {
   background-image: url("./bluefog.jpg");
   background-position: center;
   background-repeat: no-repeat;
-  object-fit: cover;
+  background-size: cover;
   position: relative;
   z-index: -10;
   overflow: hidden;

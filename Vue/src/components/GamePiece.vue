@@ -16,6 +16,8 @@ const pieceColor = computed<string>(() =>
     ? "gold"
     : "transparent"
 );
+
+const piecePosition = computed<number>(() => props.idx + 1);
 </script>
 
 <template>
@@ -29,7 +31,10 @@ const pieceColor = computed<string>(() =>
   border-radius: 50%;
   background-color: v-bind(pieceColor);
   z-index: -5;
+  /* grid-row: v-bind(piecePosition); */
   box-shadow: 0 2px 8px #aaa, inset 0 1px 3px #fff;
+  /* justify-self: center;
+  align-self: center; */
 }
 .win {
   animation: rotate 3s ease-out;

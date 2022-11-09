@@ -17,7 +17,7 @@ const socket: Socket<ServerToClientEvents, ClientToServerEvents> = inject(
   "socket"
 ) as Socket<ServerToClientEvents, ClientToServerEvents>;
 
-const lastMove = ref<LastMove>(null);
+// const lastMove = ref<LastMove>(null);
 const winningSlots = ref<WinningSlots>(null);
 
 const props = defineProps<{
@@ -28,10 +28,11 @@ const props = defineProps<{
   code: string;
   gameBoard: GameBoard;
   playerTurn: Player;
+  lastMove: LastMove;
 }>();
 
 socket.on("game-update", (gameObject: GameObject, gameCode?: string) => {
-  lastMove.value = gameObject.lastMove;
+  // lastMove.value = gameObject.lastMove;
   winningSlots.value = gameObject.winningSlots;
 });
 

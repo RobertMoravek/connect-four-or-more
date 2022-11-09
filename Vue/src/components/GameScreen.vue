@@ -3,6 +3,7 @@ import { inject, computed } from "vue";
 import type {
   Player,
   GameBoard,
+  LastMove,
   ServerToClientEvents,
   ClientToServerEvents,
 } from "../../types";
@@ -21,6 +22,7 @@ const props = defineProps<{
   code: string;
   gameBoard: GameBoard;
   playerTurn: Player;
+  lastMove: LastMove;
 }>();
 
 const emit = defineEmits<{
@@ -51,6 +53,7 @@ const handleLeaveGameClick = (): void => {
       :game-board="gameBoard"
       :code="code"
       :player-turn="playerTurn"
+      :last-move="lastMove"
     />
     <button @click="handleLeaveGameClick">Leave game</button>
   </div>

@@ -62,5 +62,6 @@ const handleLeaveGameClick = (): void => {
   flex-direction: column;
   align-items: center;
   gap: 2vh;
+  width: 100%;
 }
 </style>

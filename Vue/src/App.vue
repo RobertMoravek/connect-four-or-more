@@ -137,23 +137,7 @@ socket.on("game-update", (gameObject: GameObject, gameCode?: string) => {
   justify-content: center;
   align-items: flex-start;
   min-height: 100%;
-
 }
-
-/* .modal {
-  position: fixed;
-  top: 0;
-  left: 0;
-  background-color: rgba(255, 255, 255, 0.7);
-  inset: 0;
-  z-index: 101;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  gap: 10vh;
-  /* transform: translateY(-100%); */
-/* } */
 
 .fall-enter-active {
   animation: bounce-in 0.7s ease-in;

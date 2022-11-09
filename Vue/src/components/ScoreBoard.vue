@@ -13,7 +13,7 @@ import GamePiece from './GamePiece.vue';
 <style scoped>
 #score-container {
   display: grid;
-  width: 60%;
+  width: 100%;
   grid-template-columns: 1fr 1fr;
   justify-items: center;
 }

@@ -54,8 +54,8 @@ const playAgain = ref<boolean[]>([false, false]);
 const slotSize = computed<number>(() =>
   Math.floor(
     Math.min(
-      (windowHeight.value * 0.7) / rowCount.value,
-      (windowWidth.value * 0.8) / colCount.value
+      (windowHeight.value * 0.6) / rowCount.value,
+      (windowWidth.value * 0.85) / colCount.value
     )
   )
 );

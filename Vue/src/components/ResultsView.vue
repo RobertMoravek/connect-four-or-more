@@ -62,7 +62,7 @@ const inviteFromOtherPlayer = computed<boolean>(
 
 const backgroundColorEndContainer = computed<string>(() => {
   if (props.playAgain.includes(true) && props.gameState !== "closed") {
-    return "gold";
+    return "rgba(255,215,0, 0.75)";
   } else {
     return "#ececec";
   }
@@ -159,7 +159,6 @@ const backgroundColorEndContainer = computed<string>(() => {
   text-align: center;
   border-radius: 255px 15px 225px 15px/15px 225px 15px 255px;
   border: 3px solid var(--color-text);
-  background-blend-mode: luminosity;
 }
 
 .modal {
@@ -182,5 +181,4 @@ const backgroundColorEndContainer = computed<string>(() => {
     min-width: 500px;
   }
 }
-
 </style>

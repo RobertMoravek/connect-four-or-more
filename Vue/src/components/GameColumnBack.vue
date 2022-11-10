@@ -32,7 +32,7 @@ const props = defineProps<{
 const hover = ref<boolean>(false);
 
 const pieceSize = computed<number>(
-  () => Math.ceil((props.slotSize * 5) / 7) + 1
+  () => Math.ceil((props.slotSize * 5) / 7) - 9
 );
 const existingSlots = computed<Player[]>(() =>
   props.slotConfig.filter((i) => i !== null)

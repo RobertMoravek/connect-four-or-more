@@ -49,7 +49,7 @@ const holeSize = computed<number>(() => Math.ceil((props.slotSize * 5) / 7));
   /* z-index: 100;
     position: absolute;
     background: transparent; */
-  filter: drop-shadow(5px 5px 5px rgb(53, 53, 53));
+  filter: drop-shadow(3px 3px 3px #212121);
 }
 
 

@@ -21,6 +21,7 @@ const props = defineProps<{
   code: string;
   gameBoard: GameBoard;
   playerTurn: Player;
+  score: [number, number];
 }>();
 
 const halfSlotSize = computed<number>(() => -(props.slotSize / 2));
@@ -44,7 +45,12 @@ const handleLeaveGameClick = (): void => {
 
 <template>
   <div id="game-screen-container">
-    <ScoreBoard class="scoreboard" />
+    <ScoreBoard
+      class="scoreboard"
+      :player="player"
+      :score="score"
+      :player-turn="playerTurn"
+    />
     <GameBoardVue
       :row-count="updatedRowCount"
       :col-count="updatedColCount"

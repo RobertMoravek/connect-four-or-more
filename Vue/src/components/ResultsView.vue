@@ -136,7 +136,7 @@ const resultsMessage = computed<string>(() =>
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  overflow-y: scroll;
+  overflow-y: auto;
   /* transform: translateY(-100%); */
 }
 

@@ -50,6 +50,7 @@ const playerTurn = ref<Player>(null);
 const gameBoard = ref<GameBoard>(null);
 const winner = ref<Player>(null);
 const playAgain = ref<boolean[]>([false, false]);
+const score = ref<[number, number]>([0, 0]);
 
 const slotSize = computed<number>(() =>
   Math.floor(
@@ -79,6 +80,7 @@ socket.on("game-update", (gameObject: GameObject, gameCode?: string) => {
   gameBoard.value = gameObject.gameBoard;
   winner.value = gameObject.winner;
   playAgain.value = gameObject.playAgain;
+  score.value = gameObject.score;
 });
 </script>
 
@@ -107,6 +109,7 @@ socket.on("game-update", (gameObject: GameObject, gameCode?: string) => {
         :player-turn="playerTurn"
         :game-board="gameBoard"
         :code="code"
+        :score="score"
       />
     </Transition>
   </div>

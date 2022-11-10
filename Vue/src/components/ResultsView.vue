@@ -21,6 +21,9 @@ const props = defineProps<{
   winner: Player;
   gameState: GameState;
   playAgain: boolean[];
+  colCount: number;
+  rowCount: number;
+  winningComb: number;
 }>();
 
 const emit = defineEmits<{
@@ -103,6 +106,9 @@ const resultsMessage = computed<string>(() =>
         :code="code"
         :game-state="gameState"
         :play-again="playAgain"
+        :row-count="rowCount"
+        :col-count="colCount"
+        :winning-comb="winningComb"
       />
       <button @click="handleLeaveGameClick">Leave</button>
     </div>

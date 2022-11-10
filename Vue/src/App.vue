@@ -78,6 +78,7 @@ const code = ref<string>("");
 const config = toRef(game, "config");
 const colCount = computed<number>(() => config.value[0]);
 const rowCount = computed<number>(() => config.value[1]);
+const winningComb = computed<number>(() => config.value[2]);
 // const winningSlots = config.value[2];
 // const winningSlots = toRef(game, "winningSlots");
 // const winningSlots = ref<WinningSlots>(null);
@@ -144,6 +145,9 @@ socket.on("game-update", (gameObject: GameObject, gameCode?: string) => {
         :code="code"
         :game-state="game.gameState"
         :play-again="game.playAgain"
+        :row-count="rowCount"
+        :col-count="colCount"
+        :winning-comb="winningComb"
       />
       <GameScreen
         v-if="
@@ -182,6 +186,9 @@ socket.on("game-update", (gameObject: GameObject, gameCode?: string) => {
     :player="player"
     :game-state="game.gameState"
     :play-again="game.playAgain"
+    :row-count="rowCount"
+    :col-count="colCount"
+    :winning-comb="winningComb"
   />
   <!-- <nav>
         <RouterLink to="/">Home</RouterLink>

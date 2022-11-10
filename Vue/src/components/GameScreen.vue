@@ -23,9 +23,12 @@ const props = defineProps<{
   code: string;
   gameBoard: GameBoard;
   playerTurn: Player;
+  score: [number, number];
   lastMove: LastMove;
   winningSlots: WinningSlots;
 }>();
+
+const halfSlotSize = computed<number>(() => -(props.slotSize / 2));
 
 const emit = defineEmits<{
   (e: "leave-game"): void;
@@ -46,7 +49,12 @@ const handleLeaveGameClick = (): void => {
 
 <template>
   <div id="game-screen-container">
-    <ScoreBoard />
+    <ScoreBoard
+      class="scoreboard"
+      :player="player"
+      :score="score"
+      :player-turn="playerTurn"
+    />
     <GameBoardVue
       :row-count="updatedRowCount"
       :col-count="updatedColCount"
@@ -55,6 +63,7 @@ const handleLeaveGameClick = (): void => {
       :game-board="gameBoard"
       :code="code"
       :player-turn="playerTurn"
+      class="gameboard"
       :last-move="lastMove"
       :winning-slots="winningSlots"
     />
@@ -68,8 +77,12 @@ const handleLeaveGameClick = (): void => {
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
-  gap: 2vh;
+  gap: 1vh;
   max-width: 100%;
   max-height: 100%;
+}
+
+.scoreboard {
+  margin-bottom: v-bind(halfSlotSize + "px");
 }
 </style>

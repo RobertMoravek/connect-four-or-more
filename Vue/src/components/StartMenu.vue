@@ -53,8 +53,9 @@ const handleJoinGameClick = (): void => {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 2rem;
+  gap: 1rem;
   margin-top: 2rem;
+  height: 100%;
 }
 
 #join-container {
@@ -67,5 +68,16 @@ const handleJoinGameClick = (): void => {
 #code {
   width: 10ch;
   text-align: center;
+}
+
+@media screen and (max-height: 600px) {
+  #start-container {
+    margin-top: 0;
+    gap: 0.75rem;
+  }
+
+  #join-container {
+    gap: 0;
+  }
 }
 </style>

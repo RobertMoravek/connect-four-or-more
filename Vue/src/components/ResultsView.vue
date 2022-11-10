@@ -64,7 +64,7 @@ const backgroundColorEndContainer = computed<string>(() => {
   if (props.playAgain.includes(true) && props.gameState !== "closed") {
     return "gold";
   } else {
-    return "none";
+    return "#ececec";
   }
 });
 
@@ -155,8 +155,6 @@ const backgroundColorEndContainer = computed<string>(() => {
   max-width: 600px;
   gap: 0rem;
   background-color: v-bind(backgroundColorEndContainer);
-  background-image: url("../assets/bluefog.jpg");
-  background-size: cover;
   padding: 1rem;
   text-align: center;
   border-radius: 255px 15px 225px 15px/15px 225px 15px 255px;
@@ -175,6 +173,14 @@ const backgroundColorEndContainer = computed<string>(() => {
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  overflow-y: auto;
   /* transform: translateY(-100%); */
 }
+
+@media screen and (max-height: 600px) {
+  #end-container {
+    min-width: 500px;
+  }
+}
+
 </style>

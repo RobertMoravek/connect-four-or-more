@@ -24,5 +24,7 @@ const previewColor = computed<string>(() =>
   background-color: v-bind(previewColor);
   z-index: -1;
   opacity: 0.5;
+  box-shadow: inset -3px -3px 6px #212121;
+  border: 5px solid v-bind(previewColor);
 }
 </style>

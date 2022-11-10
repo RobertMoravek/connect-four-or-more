@@ -52,7 +52,7 @@ export function newGameObject(socketId: string): GameObject {
         lastMove: null,
         winningSlots: null,
         playAgain: [false, false],
-        playerStartedLast: null,
+        playerStartedLast: null, 
     };
 }
 

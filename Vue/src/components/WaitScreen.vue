@@ -46,9 +46,7 @@ const handleLeaveGameClick = (): void => {
   min-width: 300px;
   max-width: 600px;
   gap: 2rem;
-  background-color: rgb(255, 255, 255);
-  background-image: url("../assets/bluefog.jpg");
-  background-size: cover;
+  background-color: #ececec;
   border-radius: 5px;
   padding: 1rem;
   text-align: center;

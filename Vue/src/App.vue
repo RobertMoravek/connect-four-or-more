@@ -128,6 +128,7 @@ socket.on("game-update", (gameObject: GameObject, gameCode?: string) => {
         :code="code"
         :last-move="game.lastMove"
         :winning-slots="game.winningSlots"
+        :score="game.score"
       />
     </Transition>
   </div>

@@ -3,6 +3,8 @@ import { inject, computed } from "vue";
 import type {
   Player,
   GameBoard,
+  LastMove,
+  WinningSlots,
   ServerToClientEvents,
   ClientToServerEvents,
 } from "../../types";
@@ -22,6 +24,8 @@ const props = defineProps<{
   gameBoard: GameBoard;
   playerTurn: Player;
   score: [number, number];
+  lastMove: LastMove;
+  winningSlots: WinningSlots;
 }>();
 
 const halfSlotSize = computed<number>(() => -(props.slotSize / 2));
@@ -60,6 +64,8 @@ const handleLeaveGameClick = (): void => {
       :code="code"
       :player-turn="playerTurn"
       class="gameboard"
+      :last-move="lastMove"
+      :winning-slots="winningSlots"
     />
     <button @click="handleLeaveGameClick">Leave game</button>
   </div>

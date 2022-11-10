@@ -17,6 +17,8 @@ const startPosAnimation = computed<number>(
   () => (props.rowCount[0] - props.row + 1) * props.slotSize
 );
 
+// const piecePosition = computed<number>(() => props.row + 1);
+
 const durationAnimation = computed<number>(
   () => (props.rowCount[0] - props.row + 1) * 0.07
 );
@@ -31,8 +33,10 @@ const durationAnimation = computed<number>(
   width: v-bind(pieceSize + "px");
   aspect-ratio: 1/1;
   border-radius: 50%;
+  /* grid-row: v-bind(piecePosition); */
   background-color: v-bind(pieceColor);
-  box-shadow: 0 2px 8px #aaa, inset 0 1px 3px #fff;
+  z-index: -8;
+  /* box-shadow: 0 2px 8px #aaa, inset 0 1px 3px #fff; */
   box-shadow: inset -3px -3px 6px #212121;
   border: 5px solid v-bind(pieceColor);
 }
@@ -57,15 +61,6 @@ const durationAnimation = computed<number>(
 }
 
 @keyframes bounce {
-  /* 0% {
-    transform: translateY(v-bind(startPosAnimation + "px"));
-  } */
-  /* 40% {
-    transform: translateY(v-bind(startPosAnimation * 0.3 + "px"));
-  } */
-  /* 30% {
-    transform: translateY(v-bind(startPosAnimation * 0.075 + "px"));
-  } */
   30% {
     transform: translateY(v-bind(startPosAnimation * 0.15 + "px"));
   }
@@ -86,29 +81,4 @@ const durationAnimation = computed<number>(
     transform: translateY(0px);
   }
 }
-
-/* @keyframes bounce {
-  0% {
-    transform: translateY(v-bind(startPosAnimation + "px"));
-  }
-  40% {
-    transform: translateY(v-bind(startPosAnimation * 0.3 + "px"));
-  }
-  65% {
-    transform: translateY(v-bind(startPosAnimation * 0.15 + "px"));
-  }
-  82% {
-    transform: translateY(v-bind(startPosAnimation * 0.075 + "px"));
-  }
-  92% {
-    transform: translateY(v-bind(startPosAnimation * 0.0335 + "px"));
-  }
-  55%,
-  75%,
-  87%,
-  97%,
-  100% {
-    transform: translateY(0px);
-  }
-} */
 </style>

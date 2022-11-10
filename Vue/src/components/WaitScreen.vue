@@ -1,10 +1,30 @@
 <script setup lang="ts">
-import type { Player } from "../../types";
+import { inject } from "vue";
+import type {
+  Player,
+  ServerToClientEvents,
+  ClientToServerEvents,
+} from "../../types";
 import GameCode from "./GameCode.vue";
+import type { Socket } from "socket.io-client";
+
+const socket: Socket<ServerToClientEvents, ClientToServerEvents> = inject(
+  "socket"
+) as Socket<ServerToClientEvents, ClientToServerEvents>;
+
 const props = defineProps<{
   player: Player;
   code: string;
 }>();
+
+const emit = defineEmits<{
+  (e: "leave-game"): void;
+}>();
+
+const handleLeaveGameClick = (): void => {
+  socket.emit("leave-game");
+  emit("leave-game");
+};
 </script>
 
 <template>
@@ -12,6 +32,7 @@ const props = defineProps<{
     <div id="config-container">
       <GameCode v-if="props.player === 1" :code="code" />
       <h3>Please wait for the other player</h3>
+      <button @click="handleLeaveGameClick">Leave game</button>
     </div>
   </div>
 </template>
@@ -46,5 +67,4 @@ const props = defineProps<{
 
   /* transform: translateY(-100%); */
 }
-
 </style>

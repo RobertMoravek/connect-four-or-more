@@ -16,6 +16,16 @@ const pieceColor = computed<string>(() =>
     ? "gold"
     : "transparent"
 );
+
+const pieceEdgeColor = computed<string>(() =>
+  props.pieceValue === 1
+    ? "#8d0d26"
+    : props.pieceValue === 2
+    ? "#a38a00"
+    : "transparent"
+);
+
+// const piecePosition = computed<number>(() => props.idx + 1);
 </script>
 
 <template>
@@ -32,8 +42,13 @@ const pieceColor = computed<string>(() =>
   box-shadow: inset -3px -3px 6px #212121;
   border: 5px solid v-bind(pieceColor);
 }
+
 .win {
+  background: radial-gradient(v-bind(pieceColor), v-bind(pieceEdgeColor));
   animation: rotate 3s ease-out;
+  border: 4px solid v-bind(pieceEdgeColor);
+  transform-style: preserve-3d;
+  box-shadow: none;
 }
 @keyframes rotate {
   0% {

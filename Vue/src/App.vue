@@ -16,11 +16,6 @@ import ResultsView from "./components/ResultsView.vue";
 import WaitScreen from "./components/WaitScreen.vue";
 import type {
   Player,
-  GameState,
-  LeaveEventPayload,
-  LastMove,
-  GameBoard,
-  WinningSlots,
   GameObject,
   ServerToClientEvents,
   ClientToServerEvents,
@@ -63,26 +58,12 @@ const game: GameObject = reactive({
   playerStartedLast: null,
 });
 
-// const colCount = ref<number>(0);
-// const rowCount = ref<number>(0);
-// const winningSlots = ref<number>(0);
 const player = ref<Player>(null);
-// const gameState = ref<GameState>("config");
 const code = ref<string>("");
-// const playerTurn = ref<Player>(null);
-// const gameBoard = ref<GameBoard>(null);
-// const winner = ref<Player>(null);
-// const playAgain = ref<boolean[]>([false, false]);
-// const lastMove = ref<LastMove>(null);
-
 const config = toRef(game, "config");
 const colCount = computed<number>(() => config.value[0]);
 const rowCount = computed<number>(() => config.value[1]);
 const winningComb = computed<number>(() => config.value[2]);
-// const winningSlots = config.value[2];
-// const winningSlots = toRef(game, "winningSlots");
-// const winningSlots = ref<WinningSlots>(null);
-// const gameBoard = toRef(game, "gameBoard");
 const slotSize = computed<number>(() =>
   Math.floor(
     Math.min(
@@ -110,23 +91,6 @@ socket.on("game-update", (gameObject: GameObject, gameCode?: string) => {
   } else {
     Object.assign(game, gameObject);
   }
-
-  // Object.assign(game, gameObject);
-  // colCount.value = gameObject.config[0];
-  // rowCount.value = gameObject.config[1];
-  // winningSlots.value = gameObject.config[2];
-  // if (gameObject.gameState === "end" && gameObject.winner !== null) {
-  //   setTimeout(() => {
-  //     gameState.value = gameObject.gameState;
-  //   }, 1500);
-  // } else {
-  //   gameState.value = gameObject.gameState;
-  // }
-  // playerTurn.value = gameObject.playerTurn;
-  // gameBoard.value = gameObject.gameBoard;
-  // lastMove.value = gameObject.lastMove;
-  // winner.value = gameObject.winner;
-  // playAgain.value = gameObject.playAgain;
 });
 </script>
 
@@ -168,9 +132,10 @@ socket.on("game-update", (gameObject: GameObject, gameCode?: string) => {
     </Transition>
   </div>
   <WaitScreen
+    @leave-game="() => (inGame = false)"
     v-if="
-      game.gameState === 'ready' ||
-      (player === 2 && game.gameState === 'config')
+      (game.gameState === 'ready' && inGame === true) ||
+      (player === 2 && game.gameState === 'config' && inGame === true)
     "
     :code="code"
     :player="player"

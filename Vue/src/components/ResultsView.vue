@@ -4,7 +4,6 @@ import type { Socket } from "socket.io-client";
 import type {
   Player,
   GameState,
-  LeaveEventPayload,
   ClientToServerEvents,
   ServerToClientEvents,
 } from "../../types";

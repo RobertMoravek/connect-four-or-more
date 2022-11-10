@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, inject, computed } from "vue";
+import { ref, inject } from "vue";
 import type {
   GameState,
   ServerToClientEvents,
@@ -25,15 +25,10 @@ const emit = defineEmits<{
   (e: "play-again-config"): void;
 }>();
 
-// const colCountinComponent = computed<number>(() =>
-//   props.colCount !== 0 ? props.colCount : 7
-// );
 const colCountinComponent = ref<number>(
   props.colCount && props.colCount !== 0 ? props.colCount : 7
 );
-// const rowCountinComponent = computed<number>(() =>
-//   props.rowCount !== 0 ? props.rowCount : 6
-// );
+
 const rowCountinComponent = ref<number>(
   props.rowCount && props.rowCount !== 0 ? props.rowCount : 6
 );

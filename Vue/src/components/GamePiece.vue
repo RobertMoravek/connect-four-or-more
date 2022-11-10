@@ -17,7 +17,7 @@ const pieceColor = computed<string>(() =>
     : "transparent"
 );
 
-const piecePosition = computed<number>(() => props.idx + 1);
+// const piecePosition = computed<number>(() => props.idx + 1);
 </script>
 
 <template>

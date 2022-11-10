@@ -83,7 +83,7 @@ const props = defineProps<{
   flex-direction: row;
   justify-content: flex-end;
   gap: 1rem;
-  width: 166px;
+  width: 170px;
 }
 
 .player2{

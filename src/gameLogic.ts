@@ -56,6 +56,11 @@ export function newGameObject(socketId: string): GameObject {
     };
 }
 
+// Check if requested game exists
+export function doesGameExist(activeGames: ActiveGames, gameCode: string): boolean {
+    return Object.keys(activeGames).includes(gameCode);
+}
+
 // Validate user Config and change if neccessary, set gameState to ready
 export function validateUserConfig(
     config: [number, number, number],
@@ -92,19 +97,6 @@ export function checkUserConfigValues(
     return false;
 }
 
-// Check if requested game exists
-export function checkForExistingGame(
-    activeGames: ActiveGames,
-    code: string
-): boolean {
-    let temp: boolean = false;
-    Object.keys(activeGames).some((item) => {
-        if (item === code) {
-            temp = true;
-        }
-    });
-    return temp;
-}
 
 // Check if all criteria are met for the game to start and then do it by changing gameState to running
 export function startGameIfReady(gameObject: GameObject): void {

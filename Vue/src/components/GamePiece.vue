@@ -25,6 +25,8 @@ const pieceEdgeColor = computed<string>(() =>
     : "transparent"
 );
 
+const borderSize = computed<number>(() => props.pieceSize / 8);
+
 // const piecePosition = computed<number>(() => props.idx + 1);
 </script>
 
@@ -40,15 +42,11 @@ const pieceEdgeColor = computed<string>(() =>
   background-color: v-bind(pieceColor);
   z-index: -5;
   box-shadow: inset -3px -3px 6px #212121;
-  border: 5px solid v-bind(pieceColor);
+  border: v-bind(borderSize + "px") solid v-bind(pieceColor);
 }
 
 .win {
-  background: radial-gradient(v-bind(pieceColor), v-bind(pieceEdgeColor));
   animation: rotate 3s ease-out;
-  border: 4px solid v-bind(pieceEdgeColor);
-  transform-style: preserve-3d;
-  box-shadow: none;
 }
 @keyframes rotate {
   0% {

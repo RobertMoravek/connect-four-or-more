@@ -60,8 +60,7 @@ const winningSlotsinColumn = computed<number[]>(() =>
         .map((el) => el[1])
     : []
 );
-
-// const isWinningSlot = computed<boolean>(() => existingSlots.filter((i, index) => index === winningSlotsinColumn. ? "true" : "false" ));
+console.log("winning slots in column", winningSlotsinColumn);
 
 const handleColumnClick = (e: Event): void => {
   if (props.player !== props.playerTurn) {
@@ -104,14 +103,6 @@ const handleColumnClick = (e: Event): void => {
           :slot-size="slotSize"
         />
       </Transition>
-      <!-- <GamePieceFalling
-        :key="0"
-        :row="0"
-        :player="1"
-        :piece-size="pieceSize"
-        :row-count="rowCount"
-        :slot-size="slotSize"
-      /> -->
       <GamePiecePreview
         v-if="
           hover &&
@@ -147,8 +138,4 @@ const handleColumnClick = (e: Event): void => {
   position: absolute;
   z-index: -1;
 }
-/* .active {
-  background-color: v-bind(previewColor);
-  opacity: 0.5;
-} */
 </style>

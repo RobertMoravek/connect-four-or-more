@@ -4,6 +4,7 @@ import type {
   Player,
   GameBoard,
   LastMove,
+  WinningSlots,
   ServerToClientEvents,
   ClientToServerEvents,
 } from "../../types";
@@ -23,6 +24,7 @@ const props = defineProps<{
   gameBoard: GameBoard;
   playerTurn: Player;
   lastMove: LastMove;
+  winningSlots: WinningSlots;
 }>();
 
 const emit = defineEmits<{
@@ -54,6 +56,7 @@ const handleLeaveGameClick = (): void => {
       :code="code"
       :player-turn="playerTurn"
       :last-move="lastMove"
+      :winning-slots="winningSlots"
     />
     <button @click="handleLeaveGameClick">Leave game</button>
   </div>

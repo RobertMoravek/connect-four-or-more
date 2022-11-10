@@ -13,12 +13,12 @@ import GameColumnFront from "./GameColumnFront.vue";
 import GameColumnBack from "./GameColumnBack.vue";
 import type { Socket } from "socket.io-client";
 
-const socket: Socket<ServerToClientEvents, ClientToServerEvents> = inject(
-  "socket"
-) as Socket<ServerToClientEvents, ClientToServerEvents>;
+// const socket: Socket<ServerToClientEvents, ClientToServerEvents> = inject(
+//   "socket"
+// ) as Socket<ServerToClientEvents, ClientToServerEvents>;
 
 // const lastMove = ref<LastMove>(null);
-const winningSlots = ref<WinningSlots>(null);
+// const winningSlots = ref<WinningSlots>(null);
 
 const props = defineProps<{
   colCount: number[];
@@ -29,12 +29,13 @@ const props = defineProps<{
   gameBoard: GameBoard;
   playerTurn: Player;
   lastMove: LastMove;
+  winningSlots: WinningSlots;
 }>();
 
-socket.on("game-update", (gameObject: GameObject, gameCode?: string) => {
-  // lastMove.value = gameObject.lastMove;
-  winningSlots.value = gameObject.winningSlots;
-});
+// socket.on("game-update", (gameObject: GameObject, gameCode?: string) => {
+//   // lastMove.value = gameObject.lastMove;
+//   winningSlots.value = gameObject.winningSlots;
+// });
 
 const heightFront = computed<number>(
   () => props.slotSize * props.rowCount.length

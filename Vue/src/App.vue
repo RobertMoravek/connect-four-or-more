@@ -1,5 +1,13 @@
 <script setup lang="ts">
-import { inject, onMounted, onUnmounted, ref, computed } from "vue";
+import {
+  inject,
+  onMounted,
+  onUnmounted,
+  ref,
+  computed,
+  reactive,
+  toRef,
+} from "vue";
 // import { RouterLink, RouterView } from "vue-router";
 import StartMenu from "./components/StartMenu.vue";
 import ConfigMenu from "./components/ConfigMenu.vue";
@@ -12,6 +20,7 @@ import type {
   LeaveEventPayload,
   LastMove,
   GameBoard,
+  WinningSlots,
   GameObject,
   ServerToClientEvents,
   ClientToServerEvents,
@@ -40,18 +49,39 @@ const useWindowSizeThrottled = throttle(useWindowSize, 200);
 onMounted(() => window.addEventListener("resize", useWindowSizeThrottled));
 onUnmounted(() => window.removeEventListener("resize", useWindowSizeThrottled));
 
-const colCount = ref<number>(0);
-const rowCount = ref<number>(0);
-const winningSlots = ref<number>(0);
-const player = ref<Player>(null);
-const gameState = ref<GameState>("config");
-const code = ref<string>("");
-const playerTurn = ref<Player>(null);
-const gameBoard = ref<GameBoard>(null);
-const winner = ref<Player>(null);
-const playAgain = ref<boolean[]>([false, false]);
-const lastMove = ref<LastMove>(null);
+const game: GameObject = reactive({
+  gameBoard: null,
+  playerTurn: null,
+  score: [0, 0],
+  gameState: "config",
+  winner: null,
+  config: [0, 0, 0],
+  sockets: [null, null],
+  lastMove: null,
+  winningSlots: null,
+  playAgain: [false, false],
+  playerStartedLast: null,
+});
 
+// const colCount = ref<number>(0);
+// const rowCount = ref<number>(0);
+// const winningSlots = ref<number>(0);
+const player = ref<Player>(null);
+// const gameState = ref<GameState>("config");
+const code = ref<string>("");
+// const playerTurn = ref<Player>(null);
+// const gameBoard = ref<GameBoard>(null);
+// const winner = ref<Player>(null);
+// const playAgain = ref<boolean[]>([false, false]);
+// const lastMove = ref<LastMove>(null);
+
+const config = toRef(game, "config");
+const colCount = computed<number>(() => config.value[0]);
+const rowCount = computed<number>(() => config.value[1]);
+// const winningSlots = config.value[2];
+// const winningSlots = toRef(game, "winningSlots");
+// const winningSlots = ref<WinningSlots>(null);
+// const gameBoard = toRef(game, "gameBoard");
 const slotSize = computed<number>(() =>
   Math.floor(
     Math.min(
@@ -66,21 +96,36 @@ socket.on("game-update", (gameObject: GameObject, gameCode?: string) => {
   if (gameCode !== undefined) {
     code.value = gameCode;
   }
-  colCount.value = gameObject.config[0];
-  rowCount.value = gameObject.config[1];
-  winningSlots.value = gameObject.config[2];
-  if (gameObject.gameState === "end" && gameObject.winner !== null) {
+
+  if (
+    gameObject.gameState === "end" &&
+    gameObject.winner !== null &&
+    !gameObject.playAgain.includes(true)
+  ) {
+    Object.assign(game, gameObject, { gameState: "running" });
     setTimeout(() => {
-      gameState.value = gameObject.gameState;
+      Object.assign(game, gameObject);
     }, 1500);
   } else {
-    gameState.value = gameObject.gameState;
+    Object.assign(game, gameObject);
   }
-  playerTurn.value = gameObject.playerTurn;
-  gameBoard.value = gameObject.gameBoard;
-  lastMove.value = gameObject.lastMove;
-  winner.value = gameObject.winner;
-  playAgain.value = gameObject.playAgain;
+
+  // Object.assign(game, gameObject);
+  // colCount.value = gameObject.config[0];
+  // rowCount.value = gameObject.config[1];
+  // winningSlots.value = gameObject.config[2];
+  // if (gameObject.gameState === "end" && gameObject.winner !== null) {
+  //   setTimeout(() => {
+  //     gameState.value = gameObject.gameState;
+  //   }, 1500);
+  // } else {
+  //   gameState.value = gameObject.gameState;
+  // }
+  // playerTurn.value = gameObject.playerTurn;
+  // gameBoard.value = gameObject.gameBoard;
+  // lastMove.value = gameObject.lastMove;
+  // winner.value = gameObject.winner;
+  // playAgain.value = gameObject.playAgain;
 });
 </script>
 
@@ -89,43 +134,54 @@ socket.on("game-update", (gameObject: GameObject, gameCode?: string) => {
     <Transition name="fall" type="animation" appear tag="div" mode="out-in">
       <StartMenu
         @update-player="(p:Player) => {player = p; inGame=true}"
-        v-if="inGame === false || (player == 2 && gameState === 'config')"
+        v-if="inGame === false || (player == 2 && game.gameState === 'config')"
       />
       <ConfigMenu
-        v-if="(player === 1 && gameState === 'config') || gameState === 'ready'"
+        v-if="
+          (player === 1 && game.gameState === 'config') ||
+          game.gameState === 'ready'
+        "
         :code="code"
-        :game-state="gameState"
-        :play-again="playAgain"
+        :game-state="game.gameState"
+        :play-again="game.playAgain"
       />
       <GameScreen
         v-if="
-          player !== null && (gameState === 'running' || gameState === 'end')
+          player !== null &&
+          (game.gameState === 'running' || game.gameState === 'end')
         "
         @leave-game="() => (inGame = false)"
         :row-count="rowCount"
         :col-count="colCount"
         :player="player"
         :slot-size="slotSize"
-        :player-turn="playerTurn"
-        :game-board="gameBoard"
+        :player-turn="game.playerTurn"
+        :game-board="game.gameBoard"
         :code="code"
-        :last-move="lastMove"
+        :last-move="game.lastMove"
+        :winning-slots="game.winningSlots"
       />
     </Transition>
   </div>
   <WaitScreen
-    v-if="gameState === 'ready' || (player === 2 && gameState === 'config')"
+    v-if="
+      game.gameState === 'ready' ||
+      (player === 2 && game.gameState === 'config')
+    "
     :code="code"
     :player="player"
   />
   <ResultsView
-    v-if="gameState === 'end' || (inGame == true && gameState === 'closed')"
+    v-if="
+      game.gameState === 'end' ||
+      (inGame == true && game.gameState === 'closed')
+    "
     @leave-game="() => (inGame = false)"
-    :winner="winner"
+    :winner="game.winner"
     :code="code"
     :player="player"
-    :game-state="gameState"
-    :play-again="playAgain"
+    :game-state="game.gameState"
+    :play-again="game.playAgain"
   />
   <!-- <nav>
         <RouterLink to="/">Home</RouterLink>

@@ -104,6 +104,14 @@ const handleColumnClick = (e: Event): void => {
           :slot-size="slotSize"
         />
       </Transition>
+      <!-- <GamePieceFalling
+        :key="0"
+        :row="0"
+        :player="1"
+        :piece-size="pieceSize"
+        :row-count="rowCount"
+        :slot-size="slotSize"
+      /> -->
       <GamePiecePreview
         v-if="
           hover &&

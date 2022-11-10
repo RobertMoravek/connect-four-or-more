@@ -36,8 +36,8 @@ const durationAnimation = computed<number>(
   /* grid-row: v-bind(piecePosition); */
   background-color: v-bind(pieceColor);
   /* z-index: -8; */
-  z-index: -5;
   box-shadow: 0 2px 8px #aaa, inset 0 1px 3px #fff;
+  /* position: absolute; */
 }
 
 .fall-enter-active {

@@ -21,15 +21,20 @@ const props = defineProps<{
   winner: Player;
   gameState: GameState;
   playAgain: boolean[];
+  colCount: number;
+  rowCount: number;
+  winningComb: number;
 }>();
 
 const emit = defineEmits<{
   (e: "leave-game"): void;
 }>();
 
-const isConfigVisible = ref<boolean>(false);
+const isConfigMenuVisible = ref<boolean>(false);
+const isPlayAgainClicked = ref<boolean>(false);
 const handlePlayAgainClick = (): void => {
   socket.emit("play-again", props.code);
+  isPlayAgainClicked.value = true;
 };
 const handleLeaveGameClick = (): void => {
   socket.emit("leave-game");
@@ -37,7 +42,7 @@ const handleLeaveGameClick = (): void => {
 };
 
 const handleChangeSettingsClick = (): void => {
-  isConfigVisible.value = true;
+  isConfigMenuVisible.value = true;
 };
 
 const resultsMessage = computed<string>(() =>
@@ -52,7 +57,7 @@ const resultsMessage = computed<string>(() =>
 <template>
   <div class="modal">
     <div id="end-container">
-      <h1 v-if="props.gameState !== 'closed' && isConfigVisible === false">
+      <h1 v-if="props.gameState !== 'closed' && isConfigMenuVisible === false">
         {{ resultsMessage }}
       </h1>
       <PlayAgainInvitationMessage
@@ -64,16 +69,10 @@ const resultsMessage = computed<string>(() =>
         The other player has left the game
       </p>
       <button
-        v-if="props.player === 2 && props.gameState !== 'closed'"
-        @click="handlePlayAgainClick"
-      >
-        Play again
-      </button>
-      <button
         v-if="
-          props.player === 1 &&
+          props.player === 2 &&
           props.gameState !== 'closed' &&
-          isConfigVisible === false
+          !isPlayAgainClicked
         "
         @click="handlePlayAgainClick"
       >
@@ -83,17 +82,33 @@ const resultsMessage = computed<string>(() =>
         v-if="
           props.player === 1 &&
           props.gameState !== 'closed' &&
-          isConfigVisible === false
+          isConfigMenuVisible === false &&
+          !isPlayAgainClicked
+        "
+        @click="handlePlayAgainClick"
+      >
+        Play again
+      </button>
+      <button
+        v-if="
+          props.player === 1 &&
+          props.gameState !== 'closed' &&
+          isConfigMenuVisible === false &&
+          !isPlayAgainClicked
         "
         @click="handleChangeSettingsClick"
       >
         Change settings
       </button>
       <ConfigMenu
-        v-if="isConfigVisible"
+        v-if="isConfigMenuVisible && !isPlayAgainClicked"
+        @play-again-config="() => (isPlayAgainClicked = true)"
         :code="code"
         :game-state="gameState"
         :play-again="playAgain"
+        :row-count="rowCount"
+        :col-count="colCount"
+        :winning-comb="winningComb"
       />
       <button @click="handleLeaveGameClick">Leave</button>
     </div>
@@ -105,13 +120,17 @@ const resultsMessage = computed<string>(() =>
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 3vh;
   width: 50%;
+  min-width: 300px;
+  max-width: 600px;
+  gap: 0rem;
   background-color: rgb(255, 255, 255);
-  border: 2px solid #2c3e50;
-  border-radius: 5px;
-  padding: 1vh 1vw;
+  background-image: url("../assets/bluefog.jpg");
+  background-size: cover;
+  padding: 1rem;
   text-align: center;
+  border-radius: 255px 15px 225px 15px/15px 225px 15px 255px;
+  border: 3px solid var(--color-text);
 }
 
 .modal {

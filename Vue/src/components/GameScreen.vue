@@ -3,6 +3,8 @@ import { inject, computed } from "vue";
 import type {
   Player,
   GameBoard,
+  LastMove,
+  WinningSlots,
   ServerToClientEvents,
   ClientToServerEvents,
 } from "../../types";
@@ -21,6 +23,8 @@ const props = defineProps<{
   code: string;
   gameBoard: GameBoard;
   playerTurn: Player;
+  lastMove: LastMove;
+  winningSlots: WinningSlots;
 }>();
 
 const emit = defineEmits<{
@@ -51,6 +55,8 @@ const handleLeaveGameClick = (): void => {
       :game-board="gameBoard"
       :code="code"
       :player-turn="playerTurn"
+      :last-move="lastMove"
+      :winning-slots="winningSlots"
     />
     <button @click="handleLeaveGameClick">Leave game</button>
   </div>
@@ -61,6 +67,9 @@ const handleLeaveGameClick = (): void => {
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: flex-start;
   gap: 2vh;
+  max-width: 100%;
+  max-height: 100%;
 }
 </style>

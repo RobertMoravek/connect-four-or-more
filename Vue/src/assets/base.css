@@ -126,6 +126,15 @@ button {
   cursor: pointer;
 }
 
+button:hover {
+  background-color: rgba(255, 215, 0, 0.75);
+}
+
+button:active {
+  background-color: rgb(255, 215, 0);
+  transform: translateY(2px);
+}
+
 input[type="text"],
 select {
   font-size: 1rem;
@@ -169,5 +178,4 @@ select {
   body {
     overflow-y: auto;
   }
-
 }

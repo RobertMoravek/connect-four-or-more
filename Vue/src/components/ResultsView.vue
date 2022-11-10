@@ -67,12 +67,6 @@ const backgroundColorEndContainer = computed<string>(() => {
     return "#ececec";
   }
 });
-
-// const backgroundImageEndContainer = computed<string>(() =>
-//   isPlayAgainClicked.value || inviteFromOtherPlayer
-//     ? "none"
-//     : 'url("../assets/bluefog.jpg")'
-// );
 </script>
 
 <template>

@@ -1,24 +1,8 @@
 <script setup lang="ts">
-import { ref, computed, inject } from "vue";
-import type {
-  Player,
-  GameBoard,
-  LastMove,
-  GameObject,
-  WinningSlots,
-  ServerToClientEvents,
-  ClientToServerEvents,
-} from "../../types";
+import { computed } from "vue";
+import type { Player, GameBoard, LastMove, WinningSlots } from "../../types";
 import GameColumnFront from "./GameColumnFront.vue";
 import GameColumnBack from "./GameColumnBack.vue";
-import type { Socket } from "socket.io-client";
-
-// const socket: Socket<ServerToClientEvents, ClientToServerEvents> = inject(
-//   "socket"
-// ) as Socket<ServerToClientEvents, ClientToServerEvents>;
-
-// const lastMove = ref<LastMove>(null);
-// const winningSlots = ref<WinningSlots>(null);
 
 const props = defineProps<{
   colCount: number[];
@@ -31,11 +15,6 @@ const props = defineProps<{
   lastMove: LastMove;
   winningSlots: WinningSlots;
 }>();
-
-// socket.on("game-update", (gameObject: GameObject, gameCode?: string) => {
-//   // lastMove.value = gameObject.lastMove;
-//   winningSlots.value = gameObject.winningSlots;
-// });
 
 const heightFront = computed<number>(
   () => props.slotSize * props.rowCount.length

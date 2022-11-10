@@ -3,7 +3,6 @@ import { GameObject, ActiveGames, Player } from "./types";
 import {
     deleteSocketfromActiveGames,
     createNewGame,
-    checkForExistingGame,
     validateUserConfig,
     startGameIfReady,
     checkValidMove,
@@ -16,6 +15,7 @@ import {
     togglePlayerTurn,
     setDrawState,
     newGameObject,
+    doesGameExist,
 } from "./gameLogic";
 import { createErrorMessage } from "./errors";
 import { checkForVictory } from "./checkVictory";
@@ -63,17 +63,21 @@ io.on("connection", (socket) => {
     socket.on(
         "config-ready",
         (config: [number, number, number], code: string) => {
-            console.log("receiving config", config, code);
-            validateUserConfig(config, activeGames[code]);
-            startGameIfReady(activeGames[code]);
-            io.in(code).emit("game-update", activeGames[code]);
+            if (doesGameExist(activeGames, code)) {
+                console.log("receiving config", config, code);
+                validateUserConfig(config, activeGames[code]);
+                startGameIfReady(activeGames[code]);
+                io.in(code).emit("game-update", activeGames[code]);
+            } else {
+                io.to(socket.id).emit("error", createErrorMessage(2));
+            }
         }
     );
 
     // Check code and join second player to game (if it exists)
     socket.on("join-game", (code: string) => {
         console.log("receiving join request", code);
-        if (checkForExistingGame(activeGames, code)) {
+        if (doesGameExist(activeGames, code)) {
             activeGames[code].sockets[1] = socket.id;
             socket.join(code);
             startGameIfReady(activeGames[code]);
@@ -87,31 +91,35 @@ io.on("connection", (socket) => {
     // Check code and join second player to game (if it exists)
 
     socket.on("column-click", (column: number, player: 1 | 2, code: string) => {
-        console.log("click on column", column, player, code);
-        if (checkValidMove(activeGames[code], column, player)) {
-            activeGames[code].lastMove = [
-                column,
-                activeGames[code].gameBoard[column].indexOf(null),
-                player,
-            ];
-            activeGames[code].playerTurn = null;
-            io.in(code).emit("game-update", activeGames[code], code);
-            setTimeout(() => {
-                addLastMoveToGameBoard(activeGames[code]);
-                if (checkForVictory(activeGames[code])) {
-                    setWinningState(activeGames[code]);
-                } else {
-                    if (checkForDraw(activeGames[code])) {
-                        setDrawState(activeGames[code]);
-                    } else {
-                        togglePlayerTurn(activeGames[code]);
-                    }
-                }
-                activeGames[code].lastMove = null;
+        if (doesGameExist(activeGames, code)) {
+            console.log("click on column", column, player, code);
+            if (checkValidMove(activeGames[code], column, player)) {
+                activeGames[code].lastMove = [
+                    column,
+                    activeGames[code].gameBoard[column].indexOf(null),
+                    player,
+                ];
+                activeGames[code].playerTurn = null;
                 io.in(code).emit("game-update", activeGames[code], code);
-            }, 1500);
+                setTimeout(() => {
+                    addLastMoveToGameBoard(activeGames[code]);
+                    if (checkForVictory(activeGames[code])) {
+                        setWinningState(activeGames[code]);
+                    } else {
+                        if (checkForDraw(activeGames[code])) {
+                            setDrawState(activeGames[code]);
+                        } else {
+                            togglePlayerTurn(activeGames[code]);
+                        }
+                    }
+                    activeGames[code].lastMove = null;
+                    io.in(code).emit("game-update", activeGames[code], code);
+                }, 1500);
+            } else {
+                io.to(socket.id).emit("error", createErrorMessage(3));
+            }
         } else {
-            io.to(socket.id).emit("error", createErrorMessage(3));
+            io.to(socket.id).emit("error", createErrorMessage(2));
         }
     });
 
@@ -119,23 +127,18 @@ io.on("connection", (socket) => {
     socket.on(
         "play-again",
         (code: string, config?: [number, number, number]) => {
-            console.log("play again", code, config);
-            setPlayAgain(activeGames[code], socket.id, config);
-            if (checkIfBothWantToPlayAgain(activeGames[code])) {
-                prepareRestartGame(activeGames[code]);
+            if (doesGameExist(activeGames, code)){
+                console.log("play again", code, config);
+                setPlayAgain(activeGames[code], socket.id, config);
+                if (checkIfBothWantToPlayAgain(activeGames[code])) {
+                    prepareRestartGame(activeGames[code]);
+                }
+                io.in(code).emit("game-update", activeGames[code]);
+            } else {
+                io.to(socket.id).emit("error", createErrorMessage(2));
             }
-            io.in(code).emit("game-update", activeGames[code]);
         }
     );
-
-    // // If one player clicks "leave Game", change gameState accordingly
-    // socket.on("leave-game", (code: string) => {
-    //     let leftOverPlayer: [boolean, string?] = deleteSocketfromActiveGames(
-    //         socket.id,
-    //         activeGames
-    //     );
-    //     io.in(code).emit("game-update", activeGames[code]);
-    // });
 
     socket.on("leave-game", () => {
         // Delete the disconnecting socket from existing games & if there is still another player in that game, give back the Code of that game

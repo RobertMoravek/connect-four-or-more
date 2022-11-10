@@ -2,7 +2,6 @@ import { describe, expect, test } from "@jest/globals";
 import {
     addLastMoveToGameBoard,
     checkForDraw,
-    checkForExistingGame,
     checkIfBothWantToPlayAgain,
     checkIfCorrectPlayer,
     checkIfEmptySlotLeftInColoumn,
@@ -10,6 +9,7 @@ import {
     checkUserConfigValues,
     createNewGame,
     deleteSocketfromActiveGames,
+    doesGameExist,
     isRandomStringUnique,
     newGameObject,
     prepareRestartGame,
@@ -105,10 +105,10 @@ describe("checkUserConfigValue", () => {
     });
 });
 
-describe("checkForExistingGame", () => {
+describe("doesGameExist", () => {
     test("if requested game exists, returns true", () => {
         expect(
-            checkForExistingGame(
+            doesGameExist(
                 {
                     ABCDEF: {
                         gameBoard: null,
@@ -143,7 +143,7 @@ describe("checkForExistingGame", () => {
             )
         ).toBeTruthy();
         expect(
-            checkForExistingGame(
+            doesGameExist(
                 {
                     ABCDEF: {
                         gameBoard: null,

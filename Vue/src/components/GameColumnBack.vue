@@ -92,17 +92,6 @@ const handleColumnClick = (e: Event): void => {
         :piece-value="slot"
         :is-winning-slot="winningSlotsinColumn.includes(index)"
       />
-      <!-- <Transition name="fall">
-        <GamePieceFalling
-          v-if="lastMove !== null && colIndex == lastMove[0]"
-          :key="lastMove[1]"
-          :row="lastMove[1]"
-          :player="lastMove[2]"
-          :piece-size="pieceSize"
-          :row-count="rowCount"
-          :slot-size="slotSize"
-        />
-      </Transition> -->
       <GamePiecePreview
         v-if="
           hover &&

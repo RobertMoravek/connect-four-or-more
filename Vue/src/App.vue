@@ -131,6 +131,13 @@ socket.on("game-update", (gameObject: GameObject, gameCode?: string) => {
         :score="game.score"
       />
     </Transition>
+    <p
+      id="credits"
+      v-if="inGame === false || (player == 2 && game.gameState === 'config')"
+    >
+      Built in Vue3 & Typescript | Photo: Unsplash | © 2022 Robert Morávek &
+      Irina Stelea
+    </p>
   </div>
   <WaitScreen
     @leave-game="() => (inGame = false)"
@@ -209,5 +216,13 @@ socket.on("game-update", (gameObject: GameObject, gameCode?: string) => {
   100% {
     transform: translateY(v-bind(windowHeight + "px"));
   }
+}
+
+#credits {
+  position: fixed;
+  bottom: 0;
+  font-family: sans-serif;
+  font-size: 0.5em;
+  opacity: 0.8;
 }
 </style>

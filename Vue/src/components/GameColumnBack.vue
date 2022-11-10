@@ -92,6 +92,29 @@ const handleColumnClick = (e: Event): void => {
         :piece-value="slot"
         :is-winning-slot="winningSlotsinColumn.includes(index)"
       />
+      <!-- <Transition name="fall">
+        <GamePieceFalling
+          v-if="lastMove !== null && colIndex == lastMove[0]"
+          :key="lastMove[1]"
+          :row="lastMove[1]"
+          :player="lastMove[2]"
+          :piece-size="pieceSize"
+          :row-count="rowCount"
+          :slot-size="slotSize"
+        />
+      </Transition> -->
+      <GamePiecePreview
+        v-if="
+          hover &&
+          existingSlots.length < rowCount.length &&
+          props.player === props.playerTurn
+        "
+        :player="props.player"
+        :piece-size="pieceSize"
+        :hover="hover"
+      />
+    </div>
+    <div class="falling-pieces-container">
       <Transition name="fall">
         <GamePieceFalling
           v-if="lastMove !== null && colIndex == lastMove[0]"
@@ -103,16 +126,6 @@ const handleColumnClick = (e: Event): void => {
           :slot-size="slotSize"
         />
       </Transition>
-      <GamePiecePreview
-        v-if="
-          hover &&
-          existingSlots.length < rowCount.length &&
-          props.player === props.playerTurn
-        "
-        :player="props.player"
-        :piece-size="pieceSize"
-        :hover="hover"
-      />
     </div>
   </div>
 </template>
@@ -137,5 +150,17 @@ const handleColumnClick = (e: Event): void => {
   justify-items: center;
   position: absolute;
   z-index: -1;
+}
+
+.falling-pieces-container {
+  display: grid;
+  transform: rotate(180deg);
+  transform-origin: center;
+  grid-template-columns: v-bind(slotSize + "px");
+  grid-template-rows: repeat(v-bind(nbRows + 1), v-bind(slotSize + "px"));
+  align-items: center;
+  justify-items: center;
+  position: absolute;
+  z-index: -2;
 }
 </style>

@@ -18,7 +18,7 @@ const startPosAnimation = computed<number>(
 );
 
 const borderSize = computed<number>(() => props.pieceSize / 8);
-// const piecePosition = computed<number>(() => props.row + 1);
+const piecePosition = computed<number>(() => props.row + 1);
 
 const durationAnimation = computed<number>(
   () => (props.rowCount[0] - props.row + 1) * 0.07
@@ -34,7 +34,7 @@ const durationAnimation = computed<number>(
   width: v-bind(pieceSize + "px");
   aspect-ratio: 1/1;
   border-radius: 50%;
-  /* grid-row: v-bind(piecePosition); */
+  grid-row: v-bind(piecePosition);
   background-color: v-bind(pieceColor);
   z-index: -8;
   /* box-shadow: 0 2px 8px #aaa, inset 0 1px 3px #fff; */

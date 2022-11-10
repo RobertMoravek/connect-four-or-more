@@ -17,6 +17,14 @@ const pieceColor = computed<string>(() =>
     : "transparent"
 );
 
+const pieceEdgeColor = computed<string>(() =>
+  props.pieceValue === 1
+    ? "#8d0d26"
+    : props.pieceValue === 2
+    ? "#a38a00"
+    : "transparent"
+);
+
 // const piecePosition = computed<number>(() => props.idx + 1);
 </script>
 
@@ -36,8 +44,13 @@ const pieceColor = computed<string>(() =>
   /* justify-self: center;
   align-self: center; */
 }
+
 .win {
+  background: radial-gradient(v-bind(pieceColor), v-bind(pieceEdgeColor));
   animation: rotate 3s ease-out;
+  border: 4px solid v-bind(pieceEdgeColor);
+  transform-style: preserve-3d;
+  box-shadow: none;
 }
 @keyframes rotate {
   0% {

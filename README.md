@@ -62,28 +62,28 @@ The first user who manages to connect horizontally, vertically or diagonally fou
 
 ### Game start & configuration
 
-<img src="Vue/scr/assets/game_start.gif">
+<img src="Vue/src/assets/game_start.gif">
 
 <br>
 
 ### Realtime game experience: playing
 
-<img src="Vue/scr/assets/playing.gif">
+<img src="Vue/src/assets/playing.gif">
 
 <br>
 
 ### Realtime game experience: results
 
-<img src="Vue/scr/assets/results.gif">
+<img src="Vue/src/assets/results.gif">
 
 <br>
 
 ### Multiple games
 
-<img src="Vue/scr/assets/play_again.gif">
+<img src="Vue/src/assets/play_again.gif">
 
 ### User leave/disconnect
 
-<img src="Vue/scr/assets/leave_disconnect.gif">
+<img src="Vue/src/assets/leave_disconnect.gif">
 
 <br>

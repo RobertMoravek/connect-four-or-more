@@ -12,7 +12,7 @@ The first user who manages to connect horizontally, vertically or diagonally fou
 
 📱 🖥 Optimized for both mobile & desktop.
 
-👨‍💻👩‍💻 Made by @RobertMoravek and @IrinaStelea
+👨‍💻👩‍💻 Made by [@RobertMoravek](https://www.github.com/RobertMoravek) and [@IrinaStelea](https://www.github.com/IrinaStelea)
 
 ## Features
 

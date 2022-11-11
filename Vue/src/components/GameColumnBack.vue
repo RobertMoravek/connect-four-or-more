@@ -32,8 +32,9 @@ const props = defineProps<{
 const hover = ref<boolean>(false);
 
 const pieceSize = computed<number>(
-  () => Math.ceil((props.slotSize * 5) / 7) - 9
+  () => 1 + (((props.slotSize * 5) / 7) * 6) / 8
 );
+
 const existingSlots = computed<Player[]>(() =>
   props.slotConfig.filter((i) => i !== null)
 );
@@ -71,6 +72,7 @@ const handleColumnClick = (e: Event): void => {
     e.preventDefault();
   } else {
     socket.emit("column-click", props.colIndex, props.player!, props.code);
+    hover.value = false;
   }
 };
 </script>

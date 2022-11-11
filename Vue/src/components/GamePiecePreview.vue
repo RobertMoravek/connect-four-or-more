@@ -10,6 +10,7 @@ const props = defineProps<{
 const previewColor = computed<string>(() =>
   props.player === 1 ? "crimson" : props.player === 2 ? "gold" : ""
 );
+const borderSize = computed<number>(() => props.pieceSize / 6);
 </script>
 
 <template>
@@ -25,6 +26,6 @@ const previewColor = computed<string>(() =>
   z-index: -1;
   opacity: 0.5;
   box-shadow: inset -3px -3px 6px #212121;
-  border: 5px solid v-bind(previewColor);
+  border: v-bind(borderSize + "px") solid v-bind(previewColor);
 }
 </style>

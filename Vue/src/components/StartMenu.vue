@@ -65,6 +65,7 @@ const handleJoinGameClick = (): void => {
         v-model="code"
         maxlength="6"
         style="text-transform: uppercase"
+        @keyup.enter="handleJoinGameClick"
       />
       <button v-show="code.length == 6" @click="handleJoinGameClick">
         Join game

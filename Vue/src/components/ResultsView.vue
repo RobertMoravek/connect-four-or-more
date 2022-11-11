@@ -88,7 +88,7 @@ const backgroundColorEndContainer = computed<string>(() => {
         :play-again="playAgain"
       />
       <p v-if="props.gameState === 'closed'">
-        The other player has left the game
+        The other player has left the game or lost their connection.
       </p>
       <button
         v-if="

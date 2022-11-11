@@ -19,31 +19,26 @@ import type {
   GameObject,
   ServerToClientEvents,
   ClientToServerEvents,
+  ErrorMessage,
 } from "../types";
 import throttle from "lodash/throttle";
 import type { Socket } from "socket.io-client";
 
-// import socket
 const socket: Socket<ServerToClientEvents, ClientToServerEvents> = inject(
   "socket"
 ) as Socket<ServerToClientEvents, ClientToServerEvents>;
 
-//variable for conditional rendering of startMenu
-const inGame = ref<boolean>(false);
-
-//get window size dynamically & with throttle
 let windowWidth = ref<number>(window.innerWidth);
 let windowHeight = ref<number>(window.innerHeight);
 const useWindowSize = (): void => {
   windowHeight.value = window.innerHeight;
   windowWidth.value = window.innerWidth;
 };
-
 const useWindowSizeThrottled = throttle(useWindowSize, 200);
-
 onMounted(() => window.addEventListener("resize", useWindowSizeThrottled));
 onUnmounted(() => window.removeEventListener("resize", useWindowSizeThrottled));
 
+const inGame = ref<boolean>(false);
 const game: GameObject = reactive({
   gameBoard: null,
   playerTurn: null,
@@ -57,6 +52,20 @@ const game: GameObject = reactive({
   playAgain: [false, false],
   playerStartedLast: null,
 });
+
+const resetGame: GameObject = {
+  gameBoard: null,
+  playerTurn: null,
+  score: [0, 0],
+  gameState: "config",
+  winner: null,
+  config: [0, 0, 0],
+  sockets: [null, null],
+  lastMove: null,
+  winningSlots: null,
+  playAgain: [false, false],
+  playerStartedLast: null,
+};
 
 const player = ref<Player>(null);
 const code = ref<string>("");
@@ -72,6 +81,7 @@ const slotSize = computed<number>(() =>
     )
   )
 );
+const error = ref<string>("");
 
 socket.on("game-update", (gameObject: GameObject, gameCode?: string) => {
   console.log("game update event", gameObject);
@@ -92,6 +102,16 @@ socket.on("game-update", (gameObject: GameObject, gameCode?: string) => {
     Object.assign(game, gameObject);
   }
 });
+
+socket.on("error", (errorMessage: ErrorMessage) => {
+  console.log("error socket", errorMessage);
+  if (errorMessage.errorCode === 4) {
+    inGame.value = false;
+    error.value =
+      "Oops! Something went wrong.\n Please start or join a new game.";
+    Object.assign(game, resetGame);
+  }
+});
 </script>
 
 <template>
@@ -99,7 +119,10 @@ socket.on("game-update", (gameObject: GameObject, gameCode?: string) => {
     <Transition name="fall" type="animation" appear tag="div" mode="out-in">
       <StartMenu
         @update-player="(p:Player) => {player = p; inGame=true}"
+        @update-error="(e:string) => error = e"
+        @reset-error="() => (error = '')"
         v-if="inGame === false || (player == 2 && game.gameState === 'config')"
+        :error="error"
       />
       <ConfigMenu
         v-if="
@@ -116,9 +139,15 @@ socket.on("game-update", (gameObject: GameObject, gameCode?: string) => {
       <GameScreen
         v-if="
           player !== null &&
-          (game.gameState === 'running' || game.gameState === 'end')
+          (game.gameState === 'running' || game.gameState === 'end') &&
+          inGame === true
         "
-        @leave-game="() => (inGame = false)"
+        @leave-game="
+          () => {
+            inGame = false;
+            Object.assign(game, resetGame);
+          }
+        "
         :row-count="rowCount"
         :col-count="colCount"
         :player="player"
@@ -135,12 +164,17 @@ socket.on("game-update", (gameObject: GameObject, gameCode?: string) => {
       id="credits"
       v-if="inGame === false || (player == 2 && game.gameState === 'config')"
     >
-      Built in Vue3 & Typescript | Photo: Unsplash | © 2022 Robert Morávek &
-      Irina Stelea
+      Built in Vue3, Node.js & Typescript | Photo: Unsplash | © 2022 Robert
+      Morávek & Irina Stelea
     </p>
   </div>
   <WaitScreen
-    @leave-game="() => (inGame = false)"
+    @leave-game="
+      () => {
+        inGame = false;
+        Object.assign(game, resetGame);
+      }
+    "
     v-if="
       (game.gameState === 'ready' && inGame === true) ||
       (player === 2 && game.gameState === 'config' && inGame === true)
@@ -153,7 +187,12 @@ socket.on("game-update", (gameObject: GameObject, gameCode?: string) => {
       game.gameState === 'end' ||
       (inGame == true && game.gameState === 'closed')
     "
-    @leave-game="() => (inGame = false)"
+    @leave-game="
+      () => {
+        inGame = false;
+        Object.assign(game, resetGame);
+      }
+    "
     :winner="game.winner"
     :code="code"
     :player="player"

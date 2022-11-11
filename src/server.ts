@@ -69,7 +69,7 @@ io.on("connection", (socket) => {
                 startGameIfReady(activeGames[code]);
                 io.in(code).emit("game-update", activeGames[code]);
             } else {
-                io.to(socket.id).emit("error", createErrorMessage(2));
+                io.to(socket.id).emit("error", createErrorMessage(4));
             }
         }
     );
@@ -119,7 +119,7 @@ io.on("connection", (socket) => {
                 io.to(socket.id).emit("error", createErrorMessage(3));
             }
         } else {
-            io.to(socket.id).emit("error", createErrorMessage(2));
+            io.to(socket.id).emit("error", createErrorMessage(4));
         }
     });
 
@@ -127,7 +127,7 @@ io.on("connection", (socket) => {
     socket.on(
         "play-again",
         (code: string, config?: [number, number, number]) => {
-            if (doesGameExist(activeGames, code)){
+            if (doesGameExist(activeGames, code)) {
                 console.log("play again", code, config);
                 setPlayAgain(activeGames[code], socket.id, config);
                 if (checkIfBothWantToPlayAgain(activeGames[code])) {
@@ -135,7 +135,7 @@ io.on("connection", (socket) => {
                 }
                 io.in(code).emit("game-update", activeGames[code]);
             } else {
-                io.to(socket.id).emit("error", createErrorMessage(2));
+                io.to(socket.id).emit("error", createErrorMessage(4));
             }
         }
     );
@@ -148,7 +148,7 @@ io.on("connection", (socket) => {
         );
         // If there was a player left, send appropriate error message to the room and update the game to be "closed"
         if (leftOverPlayer[0]) {
-            io.in(leftOverPlayer[1]).emit("error", createErrorMessage(2));
+            // io.in(leftOverPlayer[1]).emit("error", createErrorMessage(2));
             io.in(leftOverPlayer[1]).emit(
                 "game-update",
                 activeGames[leftOverPlayer[1]]
@@ -165,7 +165,7 @@ io.on("connection", (socket) => {
         );
         // If there was a player left, send appropriate error message to the room and update the game to be "closed"
         if (leftOverPlayer[0]) {
-            io.in(leftOverPlayer[1]).emit("error", createErrorMessage(2));
+            // io.in(leftOverPlayer[1]).emit("error", createErrorMessage(2));
             io.in(leftOverPlayer[1]).emit(
                 "game-update",
                 activeGames[leftOverPlayer[1]]

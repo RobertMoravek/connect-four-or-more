@@ -25,7 +25,7 @@ const pieceEdgeColor = computed<string>(() =>
     : "transparent"
 );
 
-const borderSize = computed<number>(() => props.pieceSize / 8);
+const borderSize = computed<number>(() => props.pieceSize / 6);
 
 // const piecePosition = computed<number>(() => props.idx + 1);
 </script>

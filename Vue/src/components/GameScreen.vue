@@ -26,6 +26,7 @@ const props = defineProps<{
   score: [number, number];
   lastMove: LastMove;
   winningSlots: WinningSlots;
+  winningComb: number;
 }>();
 
 const halfSlotSize = computed<number>(() => -(props.slotSize / 2));
@@ -67,7 +68,12 @@ const handleLeaveGameClick = (): void => {
       :last-move="lastMove"
       :winning-slots="winningSlots"
     />
-    <button @click="handleLeaveGameClick">Leave game</button>
+    <div id="game-bottom-container">
+      <h5>Connect {{ winningComb }} to win</h5>
+      <button id="in-game-leave-button" @click="handleLeaveGameClick">
+        Leave game
+      </button>
+    </div>
   </div>
 </template>
 
@@ -82,7 +88,27 @@ const handleLeaveGameClick = (): void => {
   max-height: 100%;
 }
 
+#game-bottom-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  width: 100%;
+}
+
+#in-game-leave-button {
+  font-size: 0.83em;
+  margin-right: 0;
+  padding: 0.5rem 0.75rem;
+}
+
 .scoreboard {
   margin-bottom: v-bind(halfSlotSize + "px");
+}
+
+@media screen and (max-width: 500px) {
+  #game-bottom-container {
+    flex-direction: column;
+    margin-top: 2vh;
+  }
 }
 </style>

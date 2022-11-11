@@ -17,7 +17,7 @@ const startPosAnimation = computed<number>(
   () => (props.rowCount[0] - props.row + 1) * props.slotSize
 );
 
-const borderSize = computed<number>(() => props.pieceSize / 8);
+const borderSize = computed<number>(() => props.pieceSize / 6);
 const piecePosition = computed<number>(() => props.row + 1);
 
 const durationAnimation = computed<number>(

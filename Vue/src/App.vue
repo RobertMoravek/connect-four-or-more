@@ -158,6 +158,7 @@ socket.on("error", (errorMessage: ErrorMessage) => {
         :last-move="game.lastMove"
         :winning-slots="game.winningSlots"
         :score="game.score"
+        :winning-comb="winningComb"
       />
     </Transition>
     <p

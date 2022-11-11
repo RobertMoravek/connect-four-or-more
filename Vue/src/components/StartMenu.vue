@@ -39,7 +39,7 @@ const handleNewGameClick = (): void => {
 };
 
 const handleJoinGameClick = (): void => {
-  socket.emit("join-game", code.value);
+  socket.emit("join-game", code.value.toUpperCase());
   if (props.error) {
     emit("reset-error");
   }
@@ -48,6 +48,7 @@ const handleJoinGameClick = (): void => {
       emit("update-player", 2);
     }
   }, 500);
+  code.value = "";
 };
 </script>
 

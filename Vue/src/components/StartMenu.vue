@@ -4,32 +4,57 @@ import type {
   Player,
   ServerToClientEvents,
   ClientToServerEvents,
+  ErrorMessage,
 } from "../../types";
 import type { Socket } from "socket.io-client";
 
 const code = ref<string>("");
+const props = defineProps<{
+  error: string;
+}>();
+
 const emit = defineEmits<{
   (e: "update-player", player: Player): void;
+  (e: "reset-error"): void;
+  (e: "update-error", error: string): void;
 }>();
 
 const socket: Socket<ServerToClientEvents, ClientToServerEvents> = inject(
   "socket"
 ) as Socket<ServerToClientEvents, ClientToServerEvents>;
 
+socket.on("error", (errorMessage: ErrorMessage) => {
+  if (errorMessage.errorCode === 1) {
+    emit(
+      "update-error",
+      "Oops! A game with that code does not exist. \n Please enter a valid code."
+    );
+  }
+});
+
 const handleNewGameClick = (): void => {
   emit("update-player", 1);
+  emit("reset-error");
   socket.emit("new-game");
 };
 
 const handleJoinGameClick = (): void => {
-  emit("update-player", 2);
   socket.emit("join-game", code.value);
+  if (props.error) {
+    emit("reset-error");
+  }
+  setTimeout(() => {
+    if (!props.error) {
+      emit("update-player", 2);
+    }
+  }, 500);
 };
 </script>
 
 <template>
   <div id="start-container">
     <h1>Connect4/more</h1>
+    <p v-if="props.error" id="error-message">{{ error }}</p>
     <button @click="handleNewGameClick">New game</button>
     <div id="join-container">
       <h2>Or join a game</h2>
@@ -68,6 +93,13 @@ const handleJoinGameClick = (): void => {
 
 #code {
   width: 10ch;
+  text-align: center;
+}
+
+#error-message {
+  color: crimson;
+  font-size: 0.8em;
+  white-space: pre-wrap;
   text-align: center;
 }
 

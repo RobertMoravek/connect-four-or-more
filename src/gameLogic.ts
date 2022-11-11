@@ -52,12 +52,15 @@ export function newGameObject(socketId: string): GameObject {
         lastMove: null,
         winningSlots: null,
         playAgain: [false, false],
-        playerStartedLast: null, 
+        playerStartedLast: null,
     };
 }
 
 // Check if requested game exists
-export function doesGameExist(activeGames: ActiveGames, gameCode: string): boolean {
+export function doesGameExist(
+    activeGames: ActiveGames,
+    gameCode: string
+): boolean {
     return Object.keys(activeGames).includes(gameCode);
 }
 
@@ -96,7 +99,6 @@ export function checkUserConfigValues(
     }
     return false;
 }
-
 
 // Check if all criteria are met for the game to start and then do it by changing gameState to running
 export function startGameIfReady(gameObject: GameObject): void {

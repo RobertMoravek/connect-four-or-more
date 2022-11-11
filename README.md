@@ -32,7 +32,7 @@ The first user who manages to connect horizontally, vertically or diagonally fou
 
 -   Multiple games
 
-    -   each of the two player can choose to invite the opponent to a new game
+    -   each of the two players can choose to invite the opponent to a new game
     -   the admin player can re-configure the board in-between games
     -   score updates accordingly
 

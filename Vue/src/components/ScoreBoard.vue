@@ -82,6 +82,7 @@ const props = defineProps<{
   display: flex;
   flex-direction: row;
   justify-content: flex-end;
+  align-items: center;
   gap: 1rem;
   width: 170px;
 }
@@ -101,6 +102,7 @@ const props = defineProps<{
   .player {
     font-size: 1rem;
     justify-content: flex-start;
+    align-items: center;
   }
   .playerColorIndicator {
     width: 1rem;

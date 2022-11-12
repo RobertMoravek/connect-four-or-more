@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import { inject } from "vue";
+import type { Socket } from "socket.io-client";
+import GameCode from "./GameCode.vue";
 import type {
   Player,
   ServerToClientEvents,
   ClientToServerEvents,
 } from "../../types";
-import GameCode from "./GameCode.vue";
-import type { Socket } from "socket.io-client";
 
 const socket: Socket<ServerToClientEvents, ClientToServerEvents> = inject(
   "socket"
@@ -64,7 +64,5 @@ const handleLeaveGameClick = (): void => {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-
-  /* transform: translateY(-100%); */
 }
 </style>

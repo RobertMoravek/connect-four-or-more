@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import GamePiece from "./GamePiece.vue";
 import type { Player } from "../../types";
+
 const props = defineProps<{
   player: Player;
   score: [number, number];
@@ -87,7 +87,7 @@ const props = defineProps<{
   width: 170px;
 }
 
-.player2{
+.player2 {
   justify-content: flex-start;
 }
 

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed } from "vue";
 import type { Player } from "../../types";
+
 const props = defineProps<{
   pieceSize: number;
   player: Player;
@@ -12,14 +13,11 @@ const props = defineProps<{
 const pieceColor = computed<string>(() =>
   props.player === 1 ? "crimson" : props.player === 2 ? "gold" : ""
 );
-
 const startPosAnimation = computed<number>(
   () => (props.rowCount[0] - props.row + 1) * props.slotSize
 );
-
 const borderSize = computed<number>(() => props.pieceSize / 6);
 const piecePosition = computed<number>(() => props.row + 1);
-
 const durationAnimation = computed<number>(
   () => (props.rowCount[0] - props.row + 1) * 0.07
 );
@@ -37,7 +35,6 @@ const durationAnimation = computed<number>(
   grid-row: v-bind(piecePosition);
   background-color: v-bind(pieceColor);
   z-index: -8;
-  /* box-shadow: 0 2px 8px #aaa, inset 0 1px 3px #fff; */
   box-shadow: inset -3px -3px 6px #212121;
   border: v-bind(borderSize + "px") solid v-bind(pieceColor);
 }
@@ -53,9 +50,6 @@ const durationAnimation = computed<number>(
   0% {
     transform: translateY(v-bind(startPosAnimation + "px"));
   }
-  /* 55% {
-    transform: translateY(v-bind(startPosAnimation * 0.3 + "px"));
-  } */
   100% {
     transform: translateY(0px);
   }

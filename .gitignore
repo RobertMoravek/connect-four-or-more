@@ -2,4 +2,5 @@ notes.txt
 node_modules/
 Vue/src/assets/favicon.psd
 Vue/src/assets/favicon.png
+Vue/README.md
 tests/

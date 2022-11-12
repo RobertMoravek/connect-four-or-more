@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { computed } from "vue";
-import type { Player, GameBoard, LastMove, WinningSlots } from "../../types";
 import GameColumnFront from "./GameColumnFront.vue";
 import GameColumnBack from "./GameColumnBack.vue";
+import type { Player, GameBoard, LastMove, WinningSlots } from "../../types";
 
 const props = defineProps<{
   colCount: number[];
@@ -76,8 +76,6 @@ const containerWidth = computed<number>(
   display: flex;
   height: v-bind(heightFront + "px");
   align-items: flex-end;
-  /* border: 2px solid transparent; */
-  /* border-radius: 8px; */
   overflow: hidden;
   position: absolute;
   bottom: 0;
@@ -89,13 +87,9 @@ const containerWidth = computed<number>(
 #game-back {
   display: flex;
   height: v-bind(heightBack + "px");
-  /* border: 2px solid transparent; */
-  /* border-radius: 4%; */
   overflow: hidden;
   position: absolute;
   border: 5px outset transparent;
   bottom: 0;
-  /* top: 0;
-  right: 0; */
 }
 </style>

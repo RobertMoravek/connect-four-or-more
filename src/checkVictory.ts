@@ -64,7 +64,7 @@ function getFwdDiagonal(gameObject: GameObject): number[][] {
 function checkNbWinningSlots(set: number[][], gameObject: GameObject): boolean {
     let winningNumber: number = gameObject.config[2];
     let playerTurn: Player = gameObject.lastMove[2];
-    //avoid unnecessary checks for shorter sets
+
     if (set.length < winningNumber) {
         return false;
     }
@@ -82,10 +82,6 @@ function checkNbWinningSlots(set: number[][], gameObject: GameObject): boolean {
                 gameObject.winningSlots = gameObject.winningSlots
                     ? [...gameObject.winningSlots, ...winningSlots]
                     : winningSlots;
-                console.log(
-                    "winning slots game object",
-                    gameObject.winningSlots
-                );
                 return true;
             } else {
                 count = 0;

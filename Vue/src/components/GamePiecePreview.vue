@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed } from "vue";
 import type { Player } from "../../types";
+
 const props = defineProps<{
   pieceSize: number;
   player: Player;

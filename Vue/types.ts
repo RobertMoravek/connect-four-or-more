@@ -15,8 +15,9 @@ type GameObject = {
 
 type Player = 1 | 2 | null;
 type GameState = "config" | "ready" | "running" | "end" | "closed";
-
 type WinningSlots = number[][] | null;
+type GameBoard = Player[][] | null;
+type LastMove = [number, number, 1 | 2] | null;
 
 interface LeaveEventPayload {
   player: Player;
@@ -27,10 +28,6 @@ interface ErrorMessage {
   errorCode: number;
   errorMessage: string;
 }
-
-type GameBoard = Player[][] | null;
-
-type LastMove = [number, number, 1 | 2] | null;
 
 //socket types
 interface ServerToClientEvents {

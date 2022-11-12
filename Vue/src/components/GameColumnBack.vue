@@ -61,7 +61,6 @@ const winningSlotsinColumn = computed<number[]>(() =>
         .map((el) => el[1])
     : []
 );
-console.log("winning slots in column", winningSlotsinColumn);
 
 const handleColumnClick = (e: Event): void => {
   if (props.player !== props.playerTurn) {

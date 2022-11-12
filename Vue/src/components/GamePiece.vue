@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed } from "vue";
 import type { Player } from "../../types";
+
 const props = defineProps<{
   pieceSize: number;
   player: Player;
@@ -17,17 +18,7 @@ const pieceColor = computed<string>(() =>
     : "transparent"
 );
 
-const pieceEdgeColor = computed<string>(() =>
-  props.pieceValue === 1
-    ? "#8d0d26"
-    : props.pieceValue === 2
-    ? "#a38a00"
-    : "transparent"
-);
-
 const borderSize = computed<number>(() => props.pieceSize / 6);
-
-// const piecePosition = computed<number>(() => props.idx + 1);
 </script>
 
 <template>

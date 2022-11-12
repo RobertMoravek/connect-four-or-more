@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import { ref, inject } from "vue";
+import type { Socket } from "socket.io-client";
+import GameCode from "./GameCode.vue";
 import type {
   GameState,
   ServerToClientEvents,
   ClientToServerEvents,
 } from "../../types";
-import type { Socket } from "socket.io-client";
-import GameCode from "./GameCode.vue";
 
 const socket: Socket<ServerToClientEvents, ClientToServerEvents> = inject(
   "socket"
@@ -47,7 +47,6 @@ const handleStartGameClick = (): void => {
     props.code
   );
 };
-
 
 const handlePlayAgainClick = (): void => {
   emit("play-again-config");
@@ -159,5 +158,4 @@ input {
     flex-direction: row;
   }
 }
-
 </style>

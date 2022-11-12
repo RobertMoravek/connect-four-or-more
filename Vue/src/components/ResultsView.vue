@@ -1,14 +1,14 @@
 <script setup lang="ts">
 import { inject, computed, ref } from "vue";
 import type { Socket } from "socket.io-client";
+import ConfigMenu from "./ConfigMenu.vue";
+import PlayAgain from "./PlayAgain.vue";
 import type {
   Player,
   GameState,
   ClientToServerEvents,
   ServerToClientEvents,
 } from "../../types";
-import ConfigMenu from "./ConfigMenu.vue";
-import PlayAgainInvitationMessage from "./PlayAgainInvitationMessage.vue";
 
 const socket: Socket<ServerToClientEvents, ClientToServerEvents> = inject(
   "socket"
@@ -31,6 +31,7 @@ const emit = defineEmits<{
 
 const isConfigMenuVisible = ref<boolean>(false);
 const isPlayAgainClicked = ref<boolean>(false);
+
 const handlePlayAgainClick = (): void => {
   socket.emit("play-again", props.code);
   isPlayAgainClicked.value = true;
@@ -40,7 +41,6 @@ const handleLeaveGameClick = (): void => {
   emit("leave-game");
   isPlayAgainClicked.value = false;
 };
-
 const handleChangeSettingsClick = (): void => {
   isConfigMenuVisible.value = true;
 };
@@ -82,7 +82,7 @@ const backgroundColorEndContainer = computed<string>(() => {
       >
         {{ resultsMessage }}
       </h1>
-      <PlayAgainInvitationMessage
+      <PlayAgain
         :game-state="gameState"
         :player="player"
         :play-again="playAgain"
@@ -167,7 +167,6 @@ const backgroundColorEndContainer = computed<string>(() => {
   align-items: center;
   justify-content: center;
   overflow-y: auto;
-  /* transform: translateY(-100%); */
 }
 
 @media screen and (max-height: 600px) {

@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import { inject, ref } from "vue";
+import type { Socket } from "socket.io-client";
 import type {
   Player,
   ServerToClientEvents,
   ClientToServerEvents,
   ErrorMessage,
 } from "../../types";
-import type { Socket } from "socket.io-client";
 
 const code = ref<string>("");
 const props = defineProps<{

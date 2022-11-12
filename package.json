@@ -1,7 +1,7 @@
 {
     "name": "connect-four-or-more",
     "version": "1.0.0",
-    "description": "A 2-person online game of \"Connect 4\" with the ability to change the board size and rules",
+    "description": "A 2-person online game of \"Connect 4\" with the ability to change the board size and victory rules",
     "main": "./dist/app.js",
     "scripts": {
         "test": "NODE_ENV=test jest --forceExit",

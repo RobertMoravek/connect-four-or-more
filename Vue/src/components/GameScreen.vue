@@ -1,5 +1,8 @@
 <script setup lang="ts">
 import { inject, computed } from "vue";
+import type { Socket } from "socket.io-client";
+import GameBoardVue from "./GameBoard.vue";
+import ScoreBoard from "./ScoreBoard.vue";
 import type {
   Player,
   GameBoard,
@@ -8,9 +11,7 @@ import type {
   ServerToClientEvents,
   ClientToServerEvents,
 } from "../../types";
-import GameBoardVue from "./GameBoard.vue";
-import ScoreBoard from "./ScoreBoard.vue";
-import type { Socket } from "socket.io-client";
+
 const socket: Socket<ServerToClientEvents, ClientToServerEvents> = inject(
   "socket"
 ) as Socket<ServerToClientEvents, ClientToServerEvents>;
@@ -29,11 +30,11 @@ const props = defineProps<{
   winningComb: number;
 }>();
 
-const halfSlotSize = computed<number>(() => -(props.slotSize / 2));
-
 const emit = defineEmits<{
   (e: "leave-game"): void;
 }>();
+
+const halfSlotSize = computed<number>(() => -(props.slotSize / 2));
 
 const renumber = (param: number): number[] => {
   return [...Array(param).keys()];
@@ -42,6 +43,7 @@ const updatedRowCount = computed<number[]>(() =>
   renumber(props.rowCount).reverse()
 );
 const updatedColCount = computed<number[]>(() => renumber(props.colCount));
+
 const handleLeaveGameClick = (): void => {
   socket.emit("leave-game");
   emit("leave-game");

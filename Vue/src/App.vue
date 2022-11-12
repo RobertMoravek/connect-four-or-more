@@ -8,7 +8,8 @@ import {
   reactive,
   toRef,
 } from "vue";
-// import { RouterLink, RouterView } from "vue-router";
+import throttle from "lodash/throttle";
+import type { Socket } from "socket.io-client";
 import StartMenu from "./components/StartMenu.vue";
 import ConfigMenu from "./components/ConfigMenu.vue";
 import GameScreen from "./components/GameScreen.vue";
@@ -21,12 +22,6 @@ import type {
   ClientToServerEvents,
   ErrorMessage,
 } from "../types";
-import throttle from "lodash/throttle";
-import type { Socket } from "socket.io-client";
-
-const socket: Socket<ServerToClientEvents, ClientToServerEvents> = inject(
-  "socket"
-) as Socket<ServerToClientEvents, ClientToServerEvents>;
 
 let windowWidth = ref<number>(window.innerWidth);
 let windowHeight = ref<number>(window.innerHeight);
@@ -38,6 +33,7 @@ const useWindowSizeThrottled = throttle(useWindowSize, 200);
 onMounted(() => window.addEventListener("resize", useWindowSizeThrottled));
 onUnmounted(() => window.removeEventListener("resize", useWindowSizeThrottled));
 
+const player = ref<Player>(null);
 const inGame = ref<boolean>(false);
 const game: GameObject = reactive({
   gameBoard: null,
@@ -66,8 +62,6 @@ const resetGame: GameObject = {
   playAgain: [false, false],
   playerStartedLast: null,
 };
-
-const player = ref<Player>(null);
 const code = ref<string>("");
 const config = toRef(game, "config");
 const colCount = computed<number>(() => config.value[0]);
@@ -83,8 +77,11 @@ const slotSize = computed<number>(() =>
 );
 const error = ref<string>("");
 
+const socket: Socket<ServerToClientEvents, ClientToServerEvents> = inject(
+  "socket"
+) as Socket<ServerToClientEvents, ClientToServerEvents>;
+
 socket.on("game-update", (gameObject: GameObject, gameCode?: string) => {
-  console.log("game update event", gameObject);
   if (gameCode !== undefined) {
     code.value = gameCode;
   }
@@ -104,7 +101,6 @@ socket.on("game-update", (gameObject: GameObject, gameCode?: string) => {
 });
 
 socket.on("error", (errorMessage: ErrorMessage) => {
-  console.log("error socket", errorMessage);
   if (errorMessage.errorCode === 4) {
     inGame.value = false;
     error.value =
@@ -203,11 +199,6 @@ socket.on("error", (errorMessage: ErrorMessage) => {
     :col-count="colCount"
     :winning-comb="winningComb"
   />
-  <!-- <nav>
-        <RouterLink to="/">Home</RouterLink>
-        <RouterLink to="/about">About</RouterLink>
-  </nav>
-  <RouterView /> -->
 </template>
 
 <style scoped>

@@ -71,7 +71,9 @@ const handleLeaveGameClick = (): void => {
       :winning-slots="winningSlots"
     />
     <div id="game-bottom-container">
-      <h5>Connect {{ winningComb }} to win</h5>
+      <h5>
+        Connect <span class="winningComb">{{ winningComb }}</span> to win
+      </h5>
       <button id="in-game-leave-button" @click="handleLeaveGameClick">
         Leave game
       </button>
@@ -105,6 +107,12 @@ const handleLeaveGameClick = (): void => {
 
 .scoreboard {
   margin-bottom: v-bind(halfSlotSize + "px");
+}
+
+.winningComb {
+  border-radius: 255px 15px 225px 15px/15px 225px 15px 255px;
+  border: 3px solid var(--color-text);
+  padding: 0.25rem;
 }
 
 @media screen and (max-width: 500px) {

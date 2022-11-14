@@ -1,5 +1,3 @@
-Vue/src/assets/game_start.gif
-Vue/src/assets/playing.gif
-Vue/src/assets/results.gif
-Vue/src/assets/play_again.gif
-Vue/src/assets/leave_disconnect.gif
+readme-assets/
+build/
+dist/

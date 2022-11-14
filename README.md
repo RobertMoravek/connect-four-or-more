@@ -1,4 +1,4 @@
-# 🔴🎮🟡 Connect4/more - Online two-player game
+# 🔴 Connect4/more - Online two-player game 🟡
 
 ## Live at:
 
@@ -47,8 +47,8 @@ The first user who manages to connect horizontally, vertically or diagonally fou
 
 ## Technology
 
--   Typescript
--   Vue3
+-   Typescript (Backend and Frontend)
+-   Vue3 (Composition API + Script Setup)
 -   Node.js & Express
 -   Socket.io
 
@@ -62,28 +62,28 @@ The first user who manages to connect horizontally, vertically or diagonally fou
 
 ### Game start & configuration
 
-<img src="Vue/src/assets/game_start.gif">
+<img src="readme-assets/game_start.gif">
 
 <br>
 
 ### Realtime game experience: playing
 
-<img src="Vue/src/assets/playing.gif">
+<img src="readme-assets/playing.gif">
 
 <br>
 
 ### Realtime game experience: results
 
-<img src="Vue/src/assets/results.gif">
+<img src="readme-assets/results.gif">
 
 <br>
 
 ### Multiple games
 
-<img src="Vue/src/assets/play_again.gif">
+<img src="readme-assets/play_again.gif">
 
 ### User leave/disconnect
 
-<img src="Vue/src/assets/leave_disconnect.gif">
+<img src="readme-assets/leave_disconnect.gif">
 
 <br>

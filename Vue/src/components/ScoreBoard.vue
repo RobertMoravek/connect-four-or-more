@@ -41,6 +41,7 @@ const props = defineProps<{
   border-radius: 255px 15px 225px 15px/15px 225px 15px 255px;
   border: 3px solid var(--color-text);
   padding: 0.25rem 0.5rem;
+  min-width: 4rem;
 }
 
 .underline {

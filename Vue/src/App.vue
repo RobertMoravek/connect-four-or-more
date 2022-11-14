@@ -207,6 +207,8 @@ socket.on("error", (errorMessage: ErrorMessage) => {
   justify-content: center;
   align-items: flex-start;
   min-height: 100%;
+  max-height: 100%;
+  overflow: hidden;
 }
 
 .fall-enter-active {

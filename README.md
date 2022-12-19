@@ -2,7 +2,7 @@
 
 ## Live at:
 
-https://connect-4-or-more.herokuapp.com
+https://connect4-more.herokuapp.com
 
 ## Overview
 
